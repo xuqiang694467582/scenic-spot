@@ -50,10 +50,16 @@
                 }
                 ,{
                     "path" : "specialty/specialty",
+                    "style": {
+                    	"navigationStyle": "custom"
+                    }
+                
+                }
+                ,{
+                    "path" : "specialtyDetail/specialtyDetail",
                     "style" :                                                                                    
                 {
-                    "navigationBarTitleText": "",
-                    "enablePullDownRefresh": false
+                    "navigationStyle": "custom"
                 }
                 
                 }
