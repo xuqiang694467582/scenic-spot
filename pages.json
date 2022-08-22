@@ -32,14 +32,43 @@
 	],
 	"subPackages": [{
 		"root": "pages_minute",
-		"pages": [{
-			"path": "parktour/parktour",
-			"style": {
-				"navigationBarTitleText": "园区导览",
-				"enablePullDownRefresh": false
+		"pages": [
+			{
+				"path": "parktour/parktour",
+				"style": {
+					"navigationBarTitleText": "园区导览",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path": "parktourDetail/parktourDetail",
+				"style": {
+					"navigationBarTitleText": "园区导览",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path": "orderDetail/orderDetail",
+				"style": {
+					"navigationBarTitleText": "园区导览",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path": "specialty/specialty",
+				"style": {
+					"navigationBarTitleText": "园区导览",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path": "specialtyDetail/specialtyDetail",
+				"style": {
+					"navigationBarTitleText": "园区导览",
+					"enablePullDownRefresh": false
+				}
 			}
-
-		}]
+		]
 	}],
 	// 底部导航栏
 	"tabBar": {
