@@ -1,0 +1,80 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/order/order",
+			"style": {
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/shopping/shopping",
+			"style": {
+				"navigationBarTitleText": "购物车",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"subPackages": [{
+		"root": "pages_minute",
+		"pages": [{
+			"path": "parktour/parktour",
+			"style": {
+				"navigationBarTitleText": "园区导览",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}],
+	// 底部导航栏
+	"tabBar": {
+		"selectedColor": "#04B85F",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "./static/tabbarIcon/tabIcon_1.png",
+				"selectedIconPath": "./static/tabbarIcon/tabIcon1.png"
+			},
+			{
+				"pagePath": "pages/order/order",
+				"text": "订单",
+				"iconPath": "./static/tabbarIcon/tabIcon_2.png",
+				"selectedIconPath": "./static/tabbarIcon/tabIcon2.png"
+			},
+			{
+				"pagePath": "pages/shopping/shopping",
+				"text": "购物车",
+				"iconPath": "./static/tabbarIcon/tabIcon_3.png",
+				"selectedIconPath": "./static/tabbarIcon/tabIcon3.png"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"text": "我的",
+				"iconPath": "./static/tabbarIcon/tabIcon_4.png",
+				"selectedIconPath": "./static/tabbarIcon/tabIcon4.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "前锋景区",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
