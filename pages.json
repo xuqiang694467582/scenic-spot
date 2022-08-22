@@ -39,12 +39,6 @@
 				"enablePullDownRefresh": false
 			}
 
-		}, {
-			"path": "parktourDetail/parktourDetail",
-			"style": {
-				"navigationStyle": "custom"
-			}
-
 		}]
 	}],
 	// 底部导航栏
