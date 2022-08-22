@@ -18,7 +18,7 @@
 			</uni-nav-bar>
 			<!-- 滚动通知 -->
 			<view class="notice">
-				<u-notice-bar color="#E4E4E4" :text="text"></u-notice-bar>
+				<u-notice-bar bgColor="transparent" color="#E4E4E4" :text="text"></u-notice-bar>
 			</view>
 			<!-- 轮播图 -->
 			<view class="swiperBanner">
@@ -30,13 +30,88 @@
 					<view class="scroll-list">
 						<view class="scroll-list__line" v-for="(item, index) in menuArr" :key="index">
 							<view class="scroll-list__line__item" v-for="(item1, index1) in item" :key="index1"
-								:class="[(index1 === item.length - 1) && 'scroll-list__line__item--no-margin-right']" @click="getJump(index1)">
+								:class="[(index1 === item.length - 1) && 'scroll-list__line__item--no-margin-right']"
+								@click="getJump(index1)">
 								<image class="scroll-list__line__item__image" :src="item1.icon" mode=""></image>
 								<text class="scroll-list__line__item__text">{{ item1.name }}</text>
 							</view>
 						</view>
 					</view>
 				</u-scroll-list>
+			</view>
+			<!-- 园区特产 -->
+			<view class="specialty">
+				<view class="specialty-title">园区特产</view>
+				<u-scroll-list indicatorColor="#fff0f0" indicatorActiveColor="#f56c6c">
+					<view class="specialty-list">
+						<view class="specialty-list-con" v-for="item in 6">
+							<image src="../../static/logo.png"></image>
+							<view class="specialty-list-con-text">园区自培农户有机土鸡蛋</view>
+							<view class="specialty-list-con-price">
+								<text style="color: #333;font-size: 30rpx;">￥30.6</text>
+								<text style="color: #999;font-size: 26rpx;">￥49</text>
+							</view>
+						</view>
+					</view>
+				</u-scroll-list>
+			</view>
+			<!-- tab -->
+			<view class="tab">
+				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false"></u-tabs>
+			</view>
+			<!-- 特色餐饮 -->
+			<view class="food">
+				<view style="display: flex;justify-content: space-between;">
+					<view class="food-title">特色餐饮</view>
+					<view style="color: #999;font-size: 26rpx;">更多></view>
+				</view>
+				<view class="food-block">
+					<view class="food-block-l" v-for="item in 4">
+						<image src="../../static/logo.png"></image>
+						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
+						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<view class="food-block-l-price">
+							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
+							<u-icon name="thumb-up" label="63444" ></u-icon>
+						</view>
+					</view>
+				</view>
+			</view>
+			<!-- 旅游住宿 -->
+			<view class="food">
+				<view style="display: flex;justify-content: space-between;">
+					<view class="food-title">旅游住宿</view>
+					<view style="color: #999;font-size: 26rpx;">更多></view>
+				</view>
+				<view class="food-block">
+					<view class="food-block-l" v-for="item in 4">
+						<image src="../../static/logo.png"></image>
+						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
+						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<view class="food-block-l-price">
+							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
+							<u-icon name="thumb-up" label="63444" ></u-icon>
+						</view>
+					</view>
+				</view>
+			</view>
+			<!-- 休闲娱乐 -->
+			<view class="food">
+				<view style="display: flex;justify-content: space-between;">
+					<view class="food-title">休闲娱乐</view>
+					<view style="color: #999;font-size: 26rpx;">更多></view>
+				</view>
+				<view class="food-block">
+					<view class="food-block-l" v-for="item in 4">
+						<image src="../../static/logo.png"></image>
+						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
+						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<view class="food-block-l-price">
+							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
+							<u-icon name="thumb-up" label="63444" ></u-icon>
+						</view>
+					</view>
+				</view>
 			</view>
 		</view>
 
@@ -55,23 +130,36 @@
 					'https://cdn.uviewui.com/uview/swiper/swiper3.png',
 				],
 				menuArr: [
-					[{
-						name: '园区导览',
-						icon: '../../static/index/menu_1.png'
+					[
+						{
+							name: '园区导览',
+							icon: '../../static/index/menu_1.png'
+						},
+						{
+							name: '餐饮美食',
+							icon: '../../static/index/menu_2.png'
+						}, {
+							name: '旅馆住宿',
+							icon: '../../static/index/menu_3.png'
+						}, {
+							name: '园区特产',
+							icon: '../../static/index/menu_4.png'
+						}, {
+							name: '休闲娱乐',
+							icon: '../../static/index/menu_5.png'
+						}
+					],
+				],
+				Tablist: [
+					{
+						name: '特色餐饮',
 					},
 					{
-						name: '餐饮美食',
-						icon: '../../static/index/menu_2.png'
-					}, {
-						name: '旅馆住宿',
-						icon: '../../static/index/menu_3.png'
-					}, {
-						name: '园区特产',
-						icon: '../../static/index/menu_4.png'
-					}, {
+						name: '旅游住宿',
+					},
+					{
 						name: '休闲娱乐',
-						icon: '../../static/index/menu_5.png'
-					}],
+					}
 				]
 			}
 		},
@@ -80,8 +168,8 @@
 		},
 		methods: {
 			// 跳转页面
-			getJump(index1){
-				switch(index1){
+			getJump(index1) {
+				switch (index1) {
 					case 0:
 						uni.navigateTo({
 							url: '/pages_minute/parktour/parktour'
@@ -92,13 +180,16 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+	page {
+		background-color: #f4f4f4;
+	}
+
 	.back {
 		width: 100%;
 		height: 568rpx;
 		background: linear-gradient(180deg, rgba(3, 184, 95, 1) 75%, rgba(255, 255, 255, 1) 95%);
-		position: fixed;
-		top: 0;
+		position: absolute;
 	}
 
 	.top-content {
@@ -109,8 +200,8 @@
 			margin-left: 20rpx;
 			width: 56rpx;
 			height: 56rpx;
-			
-			image{
+
+			image {
 				width: 100%;
 				height: 100%;
 			}
@@ -127,6 +218,7 @@
 
 	.menu {
 		padding: 20rpx;
+		background-color: #fff;
 
 		.scroll-list {
 			@include flex(column);
@@ -185,6 +277,82 @@
 					&--no-margin-right {
 						margin-right: 0;
 					}
+				}
+			}
+		}
+	}
+
+	.specialty {
+		padding: 20rpx;
+		background-color: #fff;
+		border-radius: 0 0 20rpx 20rpx;
+
+		&-title {
+			padding-left: 10rpx;
+			border-left: 6rpx solid #03B85F;
+			margin-bottom: 20rpx;
+		}
+		
+		.specialty-list{
+			display: flex;
+		}
+		
+		.specialty-list-con{
+			width: 180rpx;
+			margin-right: 20rpx;
+			image{
+				width: 180rpx;
+				height: 180rpx;
+			}
+			
+			.specialty-list-con-text{
+				font-size: 24rpx;
+				font-weight: 600;
+			}
+			
+			.specialty-list-con-price{
+				width: 90%;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin: 10rpx 0px;
+			}
+		}
+	}
+	.tab{
+		padding: 20rpx;
+		background-color: #fff;
+		margin: 20rpx 0;
+		border-radius: 20rpx;
+	}
+	
+	.food{
+		margin-bottom: 20rpx;
+		padding: 20rpx;
+		background-color: #fff;
+		border-radius: 20rpx;
+		&-title {
+			padding-left: 10rpx;
+			border-left: 6rpx solid #03B85F;
+			margin-bottom: 20rpx;
+		}
+		
+		&-block{
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			&-l{
+				width: 48%;
+				image{
+					width: 100%;
+					height: 270rpx;
+				}
+				&-price{
+					width: 90%;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					margin: 10rpx 0px;
 				}
 			}
 		}
