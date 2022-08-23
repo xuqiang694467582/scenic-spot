@@ -48,25 +48,34 @@
 			{
 				"path": "orderDetail/orderDetail",
 				"style": {
-					"navigationBarTitleText": "园区导览",
+					"navigationBarTitleText": "订单详情",
 					"enablePullDownRefresh": false
 				}
 			},
 			{
 				"path": "specialty/specialty",
 				"style": {
-					"navigationBarTitleText": "园区导览",
-					"enablePullDownRefresh": false
+					"navigationStyle": "custom"
 				}
 			},
 			{
 				"path": "specialtyDetail/specialtyDetail",
 				"style": {
-					"navigationBarTitleText": "园区导览",
-					"enablePullDownRefresh": false
+					"navigationStyle": "custom"
 				}
 			}
-		]
+		    ,{
+                    "path" : "specialtyPlaceOrder/specialtyPlaceOrder",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "提交订单",
+                    "enablePullDownRefresh": false,
+					"navigationBarTextStyle": "white",
+					"navigationBarBackgroundColor": "#03B85F"
+                }
+                
+                }
+            ]
 	}],
 	// 底部导航栏
 	"tabBar": {
