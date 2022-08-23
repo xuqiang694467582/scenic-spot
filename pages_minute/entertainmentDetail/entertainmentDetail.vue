@@ -1,6 +1,9 @@
 <template>
 	<view>
-		<image src="../../static/index/menu_4.png" class="bannerImg"></image>
+		<view class="banner">
+			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
+			<image src="../../static/index/menu_4.png" class="bannerImg"></image>
+		</view>
 		<view class="content">
 			<view class="mouduleBox">
 				<view class="name">新运动潮玩空间</view>
@@ -9,7 +12,7 @@
 					<image src="../../static/parktour/navigation.png" class="navigationIco"></image>
 				</view>
 				<view class="shopDate">
-					<image src="../../static/index/cust.png"></image>
+					<image src="../../static/time.png"></image>
 					<view>开放时间：周一至周五10:00-22:00周一至周五10:00-22:00</view>
 				</view>
 				<view class="deviceBox">
@@ -46,13 +49,21 @@
 	export default {
 		data() {
 			return {
-
+				barHightTop: ''
 			}
 		},
+		onLoad() {
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
+		},
 		methods: {
-			toDetail(){
+			toDetail() {
 				uni.navigateTo({
-					url:'/pages_minute/entertainmentSetMeal/entertainmentSetMeal'
+					url: '/pages_minute/entertainmentSetMeal/entertainmentSetMeal'
+				})
+			},
+			backTap() {
+				uni.navigateBack({
+					delta: 1
 				})
 			}
 		}
@@ -72,6 +83,7 @@
 			display: flex;
 			align-items: center;
 			margin-bottom: 34rpx;
+
 			.priceBox {
 				font-size: 24rpx;
 				font-weight: bold;
@@ -238,10 +250,25 @@
 		position: relative;
 	}
 
-	.bannerImg {
+	.banner {
 		width: 100%;
 		height: 448rpx;
+		position: relative;
+
+		.backImg {
+			width: 60rpx;
+			height: 60rpx;
+			position: absolute;
+			left: 28rpx;
+			z-index: 11;
+		}
+
+		.bannerImg {
+			width: 100%;
+			height: 100%;
+		}
 	}
+
 
 	page {
 		background: rgba(244, 244, 244, 1);
