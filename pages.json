@@ -110,6 +110,19 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "submitorder/submitorder",
+				"style": {
+					"navigationBarTitleText": "提交订单",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "diningOrder/diningOrder",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
 			}
 		]
 	}],

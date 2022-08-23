@@ -43,14 +43,42 @@
 		<view class="block">
 			<text style="font-weight: bold;">购买须知</text>
 			<view>
-				<view style="margin: 20rpx 0;">
+				<view style="margin: 20rpx 0;display: flex;">
 					<u-tag text="有效期限" bgColor="#08B761" borderColor="#08B761"></u-tag>
 				</view>
 				<text style="font-size: 26rpx;">2021.04.21-2021.05.26(周末、法定节假日通用)</text>
-				<view style="margin: 20rpx 0;">
+				<view style="margin: 20rpx 0;display: flex;">
 					<u-tag text="使用时间" bgColor="#08B761" borderColor="#08B761"></u-tag>
 				</view>
 				<text style="font-size: 26rpx;margin: 20rpx 0;">11：00-13:00、17:00-21:00</text>
+			</view>
+		</view>
+		<!-- 可用商户 -->
+		<view class="block">
+			<text style="font-weight: bold;">可用商户</text>
+			<view style="display: flex;align-items: center;margin-top: 20rpx;">
+				<image style="width: 160rpx;height: 160rpx;margin-right: 20rpx;" src="../../static/logo.png"></image>
+				<view>
+					<text>荣廷花园餐厅</text>
+					<view style="display: flex;align-items: center;">
+						<view class="tag1">4.8分</view>
+						<view class="tag2">108/人</view>
+						<u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761"></u-tag>
+					</view>
+					<text style="color: #333;font-size: 24rpx;">开放时间: 11:00-13:00 17:00-21:00</text>
+				</view>
+			</view>
+			<u-divider></u-divider>
+			<text style="font-weight: bold;">本店套餐</text>
+			<view style="display: flex;flex-wrap: wrap;justify-content: space-between;">
+				<view style="width: 49%;margin-top: 20rpx;" v-for="item in 6">
+					<image style="width: 100%;height: 236rpx;border-radius: 20rpx;" src="../../static/entertainment.png"></image>
+					<view style="font-size: 30rpx;margin: 20rpx;">4人餐，提供免费饮品</view>
+					<view style="display: flex;align-items: center;justify-content: space-between;width: 70%;">
+						<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥128</text>
+						<text style="font-size: 24rpx;color: #999;">￥209</text>
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -64,7 +92,11 @@
 			}
 		},
 		methods: {
-			
+			gotoPage(){
+				uni.navigateTo({
+					url: '/pages_minute/submitorder/submitorder'
+				})
+			}
 		}
 	}
 </script>
@@ -114,5 +146,29 @@ page{
 	padding: 20rpx;
 	background-color: #fff;
 	border-radius: 20rpx;
+}
+
+.tag1{
+	width: 100rpx;
+	border-radius: 10rpx 0 10rpx 0;
+	background: linear-gradient(180deg, rgba(243,152,43,1) 50%, rgba(255,83,62,1) 85%);
+	display: flex;
+	color: #fff;
+	font-size: 24rpx;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20rpx;
+}
+
+.tag2{
+	width: 100rpx;
+	border-radius: 20rpx;
+	background: #EDF8EF;
+	display: flex;
+	color: #333;
+	font-size: 24rpx;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20rpx;
 }
 </style>
