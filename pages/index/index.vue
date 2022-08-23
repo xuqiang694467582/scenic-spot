@@ -57,7 +57,8 @@
 			</view>
 			<!-- tab -->
 			<view class="tab">
-				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false"></u-tabs>
+				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
+				</u-tabs>
 			</view>
 			<!-- 特色餐饮 -->
 			<view class="food">
@@ -69,10 +70,10 @@
 					<view class="food-block-l" v-for="item in 4">
 						<image src="../../static/logo.png"></image>
 						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<u-icon name="home" label="七虹餐饮中心"></u-icon>
 						<view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
-							<u-icon name="thumb-up" label="63444" ></u-icon>
+							<u-icon name="thumb-up" label="63444"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -87,10 +88,10 @@
 					<view class="food-block-l" v-for="item in 4">
 						<image src="../../static/logo.png"></image>
 						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<u-icon name="home" label="七虹餐饮中心"></u-icon>
 						<view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
-							<u-icon name="thumb-up" label="63444" ></u-icon>
+							<u-icon name="thumb-up" label="63444"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -105,10 +106,10 @@
 					<view class="food-block-l" v-for="item in 4">
 						<image src="../../static/logo.png"></image>
 						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心" ></u-icon>
+						<u-icon name="home" label="七虹餐饮中心"></u-icon>
 						<view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
-							<u-icon name="thumb-up" label="63444" ></u-icon>
+							<u-icon name="thumb-up" label="63444"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -130,8 +131,7 @@
 					'https://cdn.uviewui.com/uview/swiper/swiper3.png',
 				],
 				menuArr: [
-					[
-						{
+					[{
 							name: '园区导览',
 							icon: '../../static/index/menu_1.png'
 						},
@@ -150,8 +150,7 @@
 						}
 					],
 				],
-				Tablist: [
-					{
+				Tablist: [{
 						name: '特色餐饮',
 					},
 					{
@@ -173,6 +172,11 @@
 					case 0:
 						uni.navigateTo({
 							url: '/pages_minute/parktour/parktour'
+						})
+						break;
+					case 3:
+						uni.navigateTo({
+							url: '/pages_minute/specialty/specialty'
 						})
 				}
 			}
@@ -292,25 +296,26 @@
 			border-left: 6rpx solid #03B85F;
 			margin-bottom: 20rpx;
 		}
-		
-		.specialty-list{
+
+		.specialty-list {
 			display: flex;
 		}
-		
-		.specialty-list-con{
+
+		.specialty-list-con {
 			width: 180rpx;
 			margin-right: 20rpx;
-			image{
+
+			image {
 				width: 180rpx;
 				height: 180rpx;
 			}
-			
-			.specialty-list-con-text{
+
+			.specialty-list-con-text {
 				font-size: 24rpx;
 				font-weight: 600;
 			}
-			
-			.specialty-list-con-price{
+
+			.specialty-list-con-price {
 				width: 90%;
 				display: flex;
 				align-items: center;
@@ -319,35 +324,40 @@
 			}
 		}
 	}
-	.tab{
+
+	.tab {
 		padding: 20rpx;
 		background-color: #fff;
 		margin: 20rpx 0;
 		border-radius: 20rpx;
 	}
-	
-	.food{
+
+	.food {
 		margin-bottom: 20rpx;
 		padding: 20rpx;
 		background-color: #fff;
 		border-radius: 20rpx;
+
 		&-title {
 			padding-left: 10rpx;
 			border-left: 6rpx solid #03B85F;
 			margin-bottom: 20rpx;
 		}
-		
-		&-block{
+
+		&-block {
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
-			&-l{
+
+			&-l {
 				width: 48%;
-				image{
+
+				image {
 					width: 100%;
 					height: 270rpx;
 				}
-				&-price{
+
+				&-price {
 					width: 90%;
 					display: flex;
 					align-items: center;
