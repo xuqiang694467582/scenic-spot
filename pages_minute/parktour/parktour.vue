@@ -174,9 +174,18 @@
 				});
 			},
 			gotoPage(){
-				uni.navigateTo({
-					url: '/pages_minute/parktourDetail/parktourDetail'
-				})
+				switch(this.menuType){
+					case 1:
+						uni.navigateTo({
+							url: '/pages_minute/parktourDetail/parktourDetail'
+						})
+						break;
+					case 2:
+						uni.navigateTo({
+							url: '/pages_minute/diningDetail/diningDetail'
+						})
+						break;
+				}
 			},
 			gotoIntro(){
 				this.showDetail = true;
