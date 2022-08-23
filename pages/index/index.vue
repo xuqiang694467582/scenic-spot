@@ -64,7 +64,7 @@
 			<view class="food">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">特色餐饮</view>
-					<view style="color: #999;font-size: 26rpx;">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList">更多></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="item in 4">
@@ -166,6 +166,11 @@
 
 		},
 		methods: {
+			toProductList(){
+				uni.navigateTo({
+					url:'/pages_minute/productList/productList'
+				})
+			},
 			// 跳转页面
 			getJump(index1) {
 				switch (index1) {
