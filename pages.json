@@ -13,7 +13,6 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-
 		}, {
 			"path": "pages/shopping/shopping",
 			"style": {
@@ -43,8 +42,7 @@
 			{
 				"path": "parktourDetail/parktourDetail",
 				"style": {
-					"navigationBarTitleText": "园区导览",
-					"enablePullDownRefresh": false
+					"navigationStyle": "custom"
 				}
 			},
 			{
