@@ -75,6 +75,40 @@
                 }
                 
                 }
+                ,{
+                    "path" : "entertainmentDetail/entertainmentDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
+                ,{
+                    "path" : "entertainmentSetMeal/entertainmentSetMeal",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "套餐详情",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "entertainmentPlaceOrder/entertainmentPlaceOrder",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "提交订单",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "productList/productList",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
             ]
 	}],
 	// 底部导航栏
