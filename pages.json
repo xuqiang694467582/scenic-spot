@@ -26,11 +26,19 @@
 				"navigationStyle": "custom"
 			}
 
+		}, {
+			"path": "pages/getTel/getTel",
+			"style": {
+				"navigationBarTitleText": "获取手机号",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"subPackages": [{
 		"root": "pages_minute",
-		"pages": [{
+		"pages": [
+			{
 				"path": "parktour/parktour",
 				"style": {
 					"navigationBarTitleText": "园区导览",
@@ -61,11 +69,13 @@
 				"style": {
 					"navigationStyle": "custom"
 				}
-			}, {
-				"path": "specialtyPlaceOrder/specialtyPlaceOrder",
-				"style": {
-					"navigationBarTitleText": "提交订单",
-					"enablePullDownRefresh": false,
+			}
+		    ,{
+                    "path" : "specialtyPlaceOrder/specialtyPlaceOrder",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "提交订单",
+                    "enablePullDownRefresh": false,
 					"navigationBarTextStyle": "white",
 					"navigationBarBackgroundColor": "#03B85F"
 				}

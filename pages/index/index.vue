@@ -120,6 +120,10 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -162,17 +166,112 @@
 				]
 			}
 		},
+		computed: mapState(['token','userInfo']),
 		onLoad() {
-
+			// 登录获取token
+			uni.login({
+				provider: 'weixin',
+				success: async (loginRes) => {
+					this.$store.dispatch('login', loginRes.code).then(() => {						
+					})
+				}
+			});
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45
+		},
+		onShow(){
+		this.getLocation()	
 		},
 		methods: {
+			...mapMutations(['SET_LOCATION']),
+			getLocation() {
+				const that = this
+				uni.getLocation({
+					success: res => {
+						const data = {
+							latitude: res.latitude,
+							longitude: res.longitude
+						}
+						that.SET_LOCATION(data)
+					},
+					fail: e => {
+						uni.getSetting({
+							success: res => {
+								if (typeof(res.authSetting['scope.userLocation']) != 'undefined' &&
+									!res.authSetting['scope.userLocation']) {
+									uni.showModal({
+										title: '提示',
+										content: '您拒绝了定位权限，将无法使用某些功能',
+										success: res => {
+											if (res.confirm) {
+												wx.openSetting({
+													success: res => {
+														if (res
+															.authSetting[
+																'scope.userLocation'
+															]) {
+															// 授权成功，重新定位
+															wx.getLocation({
+																success: res => {
+																	const
+																		data = {
+																			latitude: res
+																				.latitude,
+																			longitude: res
+																				.longitude
+																		}
+																	that.SET_LOCATION(
+																		data
+																	)
+																}
+															});
+														} else {
+															// 没有允许定位权限
+															wx.showToast({
+																title: '您拒绝了定位权限，将无法使用某些功能',
+																icon: 'none'
+															});
+														}
+													}
+												})
+											}
+										}
+									})
+								}
+							}
+						})
+					}
+				})
+			},
+			
+			//校验手机号
+			isGetTel(){
+				console.log(this.userInfo)
+				if (!this.userInfo.phone) {
+					uni.showModal({
+						title: '提示',
+						content: '请授权手机号',
+						success: function(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '/pages/getTel/getTel'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					return false
+				}
+			},
 			toProductList(){
+				if(!this.isGetTel()) return
 				uni.navigateTo({
 					url:'/pages_minute/productList/productList'
 				})
 			},
 			// 跳转页面
 			getJump(index1) {
+				if(!this.isGetTel()) return
 				switch (index1) {
 					case 0:
 						uni.navigateTo({
