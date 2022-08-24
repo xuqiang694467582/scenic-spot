@@ -1,14 +1,14 @@
 <template>
 	<view class="pages">
 		<view class="block">
-			<image src="../../static/hotel.png"></image>
+			<image :src="packData.mainImage"></image>
 			<view style="width: 80%;">
-				<view>双人餐，提供免费饮品</view>
-				<view style="font-size: 24rpx;color: #333;margin: 10rpx 0;">11:00-13:00、17:00-21:30</view>
+				<view>{{ packData.name }}</view>
+				<view style="font-size: 24rpx;color: #333;margin: 10rpx 0;">{{ packData.introduce }}</view>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view style="display: flex;align-items: center;justify-content: space-between;width: 200rpx;">
-						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥128</text>
-						<text style="font-size: 24rpx;color: #999;">￥209</text>
+						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥{{ packData.price }}</text>
+						<text style="font-size: 24rpx;color: #999;">￥{{ packData.originalPrice }}</text>
 					</view>
 					<u-number-box v-model="value" siz :integer="true" min="1"></u-number-box>
 				</view>
@@ -42,9 +42,11 @@
 </template>
 
 <script>
+	import { diningPackDetail } from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
+				packData: {},
 				show: false,
 				columns: [
 					['在线支付', '线下支付']
@@ -60,12 +62,19 @@
 		},
 		onReady() {
 			// 如果需要兼容微信小程序，并且校验规则中含有方法等，只能通过setRules方法设置规则
-			this.$refs.form1.setRules(this.rules)
+			this.$refs.form.setRules(this.rules)
 		},
-		onLoad() {
-
+		onLoad(option) {
+			this.load(option.id)
 		},
 		methods: {
+			async load(id){
+				const { data } = await diningPackDetail({
+					id: id
+				})
+				console.log(data);
+				this.packData = data;
+			},
 			gotoPage(){
 				uni.navigateTo({
 					url:'/pages_minute/diningOrder/diningOrder'

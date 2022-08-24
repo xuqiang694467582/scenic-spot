@@ -25,16 +25,16 @@
 		<!-- 底部列表弹框 -->
 		<u-popup :show="show" mode="bottom" :overlay="false" round="12">
 			<view class="cont-list">
-				<view class="list" v-for="item in 7">
-					<view class="list-l"  @click="gotoPage()">
-						<image src="../../static/index/menu_4.png"></image>
+				<view class="list" v-for="(item,index1) in list">
+					<view class="list-l"  @click="gotoPage(item)">
+						<image :src="item.coverImg"></image>
 						<view class="list-l-r">
-							<text>元宫门与二十四臣像</text>
-							<u-icon name="map-fill" label="距离你1.2KM" color="#08B761" size="24rpx" labelSize="24rpx"></u-icon>
+							<text>{{ item.name }}</text>
+							<u-icon name="map-fill" :label="'距离你' + item.distanceStr" color="#08B761" size="24rpx" labelSize="24rpx"></u-icon>
 						</view>
 					</view>
 					<view class="list-r">
-						<image src="@/static/parktour/navigation.png"></image>
+						<image src="@/static/parktour/navigation.png" @click="getAss(item)"></image>
 					</view>
 				</view>
 			</view>
@@ -79,14 +79,15 @@
 </template>
 
 <script>
-	import { hotelList } from '@/api/parktour.js';
+	import { soptList, diningList, hotelList, mentList } from '@/api/parktour.js';
 	import { mapState } from 'vuex';
 	export default {
 		data() {
 			return {
 				// 顶部菜单列表
 				menuType: 1,
-				menulist: [{
+				menulist: [
+					{
 						type: 1,
 						imgUrl: '../../static/parktour/tm1.png',
 						imgUrls: '../../static/parktour/tm_1.png',
@@ -111,53 +112,105 @@
 						text: '娱乐'
 					}
 				],
+				list: [],
 				// 当前地图中心经纬度
 				latitude: "30.463158909233673",
 				longitude: "104.58973142824175",
 				// 标记点，多个对象可生成多个点
-				markers: [{
-						id: 1,
-						width: 20,
-						height: 30,
-						latitude: "30.463158909233673",
-						longitude: "104.58973142824175",
-						title: '前锋村景区'
-					},
-					{
-						id: 2,
-						width: 20,
-						height: 30,
-						latitude: "30.463208909233673",
-						longitude: "104.58945142824175",
-						title: '前锋村景区'
-					}
-				],
+				markers: [],
 				show: true,
-				showDetail: false,
-				content: `山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。
-				苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。
-				无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？`,
-				urls:[
-					'https://cdn.uviewui.com/uview/album/1.jpg',
-					'https://cdn.uviewui.com/uview/album/2.jpg',
-					'https://cdn.uviewui.com/uview/album/3.jpg',
-					'https://cdn.uviewui.com/uview/album/4.jpg',
-					'https://cdn.uviewui.com/uview/album/5.jpg',
-				]
 			}
 		},
 		computed: mapState(['location']),
 		onLoad() {
-			console.log('location', this.location);
+			this.load();
 		},
 		methods: {
-			// 顶级顶部菜单触发
+			// 获取列表
+			async load(){
+				// 清空地图标点
+				this.markers = [];
+				switch(this.menuType){
+					case 1:
+						const { data } = await soptList({
+							latitude: "30.463158909233673",
+							longitude: "104.58973142824175",
+						});
+						// 列表取值
+						this.list = data.records;
+						// 地图标点
+						data.records.map((val) => {
+							this.markers.push({
+								id: Number(val.id),
+								width: 20,
+								height: 30,
+								latitude: val.latitude,
+								longitude: val.longitude,
+								title: val.name
+							})
+						})
+						break;
+					case 2:
+						const data1 = await diningList({
+							latitude: "30.463158909233673",
+							longitude: "104.58973142824175",
+						})
+						this.list = data1.data.records;
+						// 地图标点
+						data1.data.records.map((val) => {
+							this.markers.push({
+								id: Number(val.id),
+								width: 20,
+								height: 30,
+								latitude: val.latitude,
+								longitude: val.longitude,
+								title: val.name
+							})
+						})
+						break;
+					case 3:
+						const data2 = await hotelList({
+							latitude: "30.463158909233673",
+							longitude: "104.58973142824175",
+						})
+						this.list = data2.data.records;
+						// 地图标点
+						data2.data.records.map((val) => {
+							this.markers.push({
+								id: Number(val.id),
+								width: 20,
+								height: 30,
+								latitude: val.latitude,
+								longitude: val.longitude,
+								title: val.name
+							})
+						})
+						break;
+					case 4:
+						const data3 = await mentList({
+							latitude: "30.463158909233673",
+							longitude: "104.58973142824175",
+						});
+						this.list = data3.data.records;
+						// 地图标点
+						data3.data.records.map((val) => {
+							this.markers.push({
+								id: Number(val.id),
+								width: 20,
+								height: 30,
+								latitude: val.latitude,
+								longitude: val.longitude,
+								title: val.name
+							})
+						})
+				}
+			},
+			// 点击顶部菜单触发
 			getMenu(type) {
-				this.show = false;
+				this.show = true;
 				this.menuType = type;
-				setTimeout(() => {
-					this.show = true;
-				}, 500)
+				this.list = [];
+				this.load();
 			},
 			// 联系客服
 			contactClick() {
@@ -166,7 +219,6 @@
 			// 点击地图触发
 			mapTab() {
 				this.show = false;
-				this.showDetail = false;
 			},
 			// 定位/点击以后跳至当前所在位置
 			positionClick() {
@@ -179,22 +231,35 @@
 					}
 				});
 			},
-			gotoPage(){
+			gotoPage(val){
 				switch(this.menuType){
 					case 1:
 						uni.navigateTo({
-							url: '/pages_minute/parktourDetail/parktourDetail'
+							url: `/pages_minute/parktourDetail/parktourDetail?id=${val.id}`
 						})
 						break;
 					case 2:
 						uni.navigateTo({
-							url: '/pages_minute/diningDetail/diningDetail'
+							url: `/pages_minute/diningDetail/diningDetail?id=${val.id}`
 						})
 						break;
 				}
 			},
-			gotoIntro(){
-				this.showDetail = true;
+			getAss(val){
+				uni.getLocation({
+					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
+					success: function (res) {
+						const latitude = res.latitude;
+						const longitude = res.longitude;
+						uni.openLocation({
+							latitude: latitude,
+							longitude: longitude,
+							success: function () {
+								console.log('success');
+							}
+						});
+					}
+				});
 			}
 		}
 	}

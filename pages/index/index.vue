@@ -184,7 +184,7 @@
 			
 		},
 		onShow(){
-		this.getLocation()	
+			this.getLocation()
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),

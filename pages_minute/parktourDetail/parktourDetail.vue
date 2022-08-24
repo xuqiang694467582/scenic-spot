@@ -1,60 +1,81 @@
 <template>
 	<view class="pages">
 		<view class="back">
-			<image src="../../static/parktour/back_image.png"></image>
+			<image :src="formData.coverImg"></image>
 		</view>
 		<!-- 导航栏 -->
 		<uni-nav-bar :statusBar="true" :border="false" leftIcon="left" color="#fff" backgroundColor="transparent" @clickLeft="clickLeft"></uni-nav-bar>
 		<view class="content">
 			<view class="content-title">
-				<text>元宫门与二十四臣像</text>
+				<text>{{ formData.name }}</text>
 				<view class="content-title-one">
 					<view class="content-title-one-left">
 						<view class="content-title-one-left-t">
-							4.8分
+							{{ formData.score }}分
 						</view>
-						<u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag>
+						<!-- <u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag> -->
 					</view>
-					<image src="@/static/parktour/navigation.png"></image>
+					<veiw>
+						<image src="@/static/parktour/navigation.png" @click="getAddress()"></image>
+					</veiw>
 				</view>
 				<view class="content-title-tag">
-					<view class="content-title-tag-c" v-for="item in 6">
-						<u-tag text="古老建筑" :plain="true" borderColor="#08B761" color="#08B761" bgColor="#EDF8EF"></u-tag>
+					<view class="content-title-tag-c" v-for="(item,index) in formData.label" :key="index">
+						<u-tag :text="item" :plain="true" borderColor="#08B761" color="#08B761" bgColor="#EDF8EF"></u-tag>
 					</view>
 				</view>
 				<u-read-more showHeight="50" closeText="展开" :toggle="true">
-				    <rich-text :nodes="content"></rich-text>
+				    <rich-text :nodes="formData.introduction"></rich-text>
 				</u-read-more>
 			</view>
 			<view class="content-image">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" singleSize="210rpx" multipleSize="100" :urls="urls"></u-album>
+				<u-album :maxCount="3" :space="10" :singleSize="210" :multipleSize="100" :urls="formData.photoExplanation"></u-album>
 			</view>
 		</view>
 	</view>
 </template>	
 
 <script>
+	import { soptDetail } from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
-				content: `山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。
-				苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。
-				无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？`,
-				urls:[
-					'https://cdn.uviewui.com/uview/album/1.jpg',
-					'https://cdn.uviewui.com/uview/album/2.jpg',
-					'https://cdn.uviewui.com/uview/album/3.jpg',
-					'https://cdn.uviewui.com/uview/album/4.jpg',
-					'https://cdn.uviewui.com/uview/album/5.jpg',
-				]
+				formData: {},
 			}
 		},
+		onLoad(option) {
+			this.load(option.id)
+		},
 		methods: {
+			async load(id){
+				try{
+					const { data } = await soptDetail({
+						id: id
+					})
+					this.formData = data;
+				}catch(e){}
+			},
 			clickLeft(){
 				uni.navigateBack({
 					delta: -1
 				})
+			},
+			getAddress(){
+				uni.getLocation({
+					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
+					success: function (res) {
+						const latitude = res.latitude;
+						const longitude = res.longitude;
+						uni.openLocation({
+							latitude: latitude,
+							longitude: longitude,
+							success: function () {
+								console.log('success');
+							}
+						});
+					}
+				});
 			}
 		}
 	}
@@ -113,6 +134,7 @@ page{
 		.content-title-tag{
 			display: flex;
 			flex-wrap: wrap;
+			margin-bottom: 20rpx;
 			
 			.content-title-tag-c{
 				margin-right: 10rpx;

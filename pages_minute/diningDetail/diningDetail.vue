@@ -1,32 +1,32 @@
 <template>
 	<view class="pages">
 		<view class="back">
-			<image src="../../static/parktour/back_image.png"></image>
+			<image :src="formData.coverImg"></image>
 		</view>
 		<!-- 导航栏 -->
 		<uni-nav-bar :statusBar="true" :border="false" leftIcon="left" color="#fff" backgroundColor="transparent" @clickLeft="clickLeft"></uni-nav-bar>
 		<view class="content">
 			<view class="content-title">
-				<text>元宫门与二十四臣像</text>
+				<text>{{ formData.name }}</text>
 				<view class="content-title-one">
 					<view class="content-title-one-left">
 						<view class="content-title-one-left-t">
-							4.8分
+							{{ formData.score }}分
 						</view>
-						<view class="content-title-one-left-l">
+						<!-- <view class="content-title-one-left-l">
 							108/人
-						</view>
-						<u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag>
+						</view> -->
+						<!-- <u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag> -->
 					</view>
 					<image src="@/static/parktour/navigation.png"></image>
 				</view>
 				<u-divider></u-divider>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view>
-						<u-icon name="clock-fill" color="#08B761" label="开放时间:11:00-13:00,17:00-21:00"></u-icon>
+						<u-icon name="clock-fill" color="#08B761" :label="'开放时间：'+ formData.alternate.openingHours"></u-icon>
 						<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
-							<view v-for="item in 4" style="margin-right: 10rpx;margin-bottom: 10rpx;">
-								<u-tag size="mini" text="500+点评" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666"></u-tag>
+							<view v-for="item in formData.label" style="margin-right: 10rpx;margin-bottom: 10rpx;">
+								<u-tag size="mini" :text="item" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666"></u-tag>
 							</view>
 						</view>
 					</view>
@@ -44,26 +44,26 @@
 			</view>
 			<view class="content-combo">
 				<view class="content-combo-title">
-					<view>休闲娱乐</view>
+					<view>推荐套餐</view>
 					<view style="color: #999;font-size: 26rpx;">更多></view>
 				</view>
-				<view class="combo-list" v-for="item in 4">
-					<view style="display: flex;align-items: center;">
-						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" src="../../static/logo.png"></image>
-						<view>
-							<text>双人餐，提供免费饮品</text>
+				<view class="combo-list" v-for="(item, index) in formData.diningRoomRecommendedPackage" :key="index">
+					<view style="display: flex;align-items: center;"  @click="gotoPage()">
+						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" :src="item.mainImage"></image>
+						<view>	`
+							<text>{{ item.name }}</text>
 							<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
-								<view v-for="item in 1" style="margin-right: 10rpx;margin-bottom: 10rpx;">
-									<u-tag size="mini" text="环境优美 分量很足" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666"></u-tag>
+								<view v-for="(item1,index1) in item.label" :key="index1" style="margin-right: 10rpx;margin-bottom: 10rpx;">
+									<u-tag size="mini" :text="item1" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666"></u-tag>
 								</view>
 							</view>
-							<view style="display: flex;align-items: center;justify-content: space-between;width: 70%;">
-								<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥128</text>
-								<text style="font-size: 24rpx;color: #999;">￥209</text>
+							<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
+								<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
+								<text style="font-size: 24rpx;color: #999;">￥{{ item.originalPrice }}</text>
 							</view>
 						</view>
 					</view>
-					<view class="combo-list-btn" @click="gotoPage()">
+					<view class="combo-list-btn" @click="getReserve(item)">
 						预定
 					</view>
 				</view>
@@ -73,19 +73,12 @@
 </template>	
 
 <script>
+	import { diningDetail } from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
-				content: `山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。
-				苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。
-				无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？`,
-				urls:[
-					'https://cdn.uviewui.com/uview/album/1.jpg',
-					'https://cdn.uviewui.com/uview/album/2.jpg',
-					'https://cdn.uviewui.com/uview/album/3.jpg',
-					'https://cdn.uviewui.com/uview/album/4.jpg',
-					'https://cdn.uviewui.com/uview/album/5.jpg',
-				],
+				formData: {},
+				urls:[],
 				Tablist: [
 					{
 						name: '图片介绍',
@@ -96,7 +89,19 @@
 				]
 			}
 		},
+		onLoad(option) {
+			this.load(option.id)
+		},
 		methods: {
+			async load(id){
+				try{
+					const { data } = await diningDetail({
+						id: id
+					})
+					this.formData = data;
+					this.urls = data.photoExplanation;
+				}catch(e){}
+			},
 			clickLeft(){
 				uni.navigateBack({
 					delta: -1
@@ -105,6 +110,11 @@
 			gotoPage(){
 				uni.navigateTo({
 					url: '/pages_minute/reserve/reserve'
+				})
+			},
+			getReserve(val){
+				uni.navigateTo({
+					url: `/pages_minute/submitorder/submitorder?id=${val.id}`
 				})
 			}
 		}
