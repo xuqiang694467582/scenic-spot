@@ -53,7 +53,7 @@
 			<image :src="item" class="goodsInfo" mode="widthFix" v-for="(item,index) in detail.detailsImg" :key="index"></image>
 		</view>
 		<view class="footerBox">
-			<view class="cartBox">
+			<view class="cartBox" @click="toCart">
 				<image src="../../static/order/cart.png"></image>
 				<view>购物车</view>
 			</view>
@@ -127,6 +127,11 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
+			toCart(){
+				uni.switchTab({
+					url:'/pages/shopping/shopping'
+				})
+			},
 			close(){
 				this.show=false
 			},

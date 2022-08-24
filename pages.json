@@ -11,7 +11,8 @@
 		}, {
 			"path": "pages/order/order",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "订单列表",
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/shopping/shopping",
