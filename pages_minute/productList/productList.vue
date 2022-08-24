@@ -53,6 +53,7 @@
 </template>
 
 <script>
+	// import {getChooseFood,getChooseHotel,getChooseAmusement} from '@/api/index.js'
 	export default {
 		data() {
 			return {
@@ -70,13 +71,30 @@
 						img: '../../static/entertainment.png'
 					}
 				],
-				barHightTop:''
+				barHightTop:'',
+				listQuery:{
+					latitude:'',
+					longitude:'',
+					page :1,
+					pageSize:10
+				},
+				list:[]
 			}
 		},
 		onLoad() {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight +5
 		},
 		methods: {
+			// async getList(){					
+			// 	if(this.curt===0){
+			// 		await getChooseFood()
+					
+			// 	}else if(this.curt===1){
+					
+			// 	}else if(this.curt===2){
+					
+			// 	}
+			// },
 			toDetail() {
 				switch (this.curt) {
 					case 2:

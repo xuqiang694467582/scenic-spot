@@ -11,17 +11,23 @@
 							<view class="pickUpData">
 								<view class="puDate">
 									<view class="puText">自取时间</view>
-									<view class="puInfo">10:36</view>
+									<picker mode="time" :value="time" :start="startTime" end="21:00"
+										@change="bindTimeChange">
+										<view class="puInfo">{{time}}</view>
+									</picker>
 								</view>
 								<view>
 									<view class="puText">预留电话</view>
-									<view class="puInfo">13198568974<image src="../../static/order/edit.png"></image>
+									<view class="puInfo">
+										<input :value="phone" placeholder="请输入电话号码" />
+										<image src="../../static/order/edit.png"></image>
 									</view>
 								</view>
 							</view>
 							<view class="agreeBox">
 								<u-checkbox-group>
-									<u-checkbox activeColor="#08B761" label="同意并接受" labelSize="10" size="14">
+									<u-checkbox activeColor="#08B761" label="同意并接受" labelSize="10" size="14"
+										:checked="isAgree" @change="checkboxChange">
 									</u-checkbox>
 								</u-checkbox-group>
 								<text>《自提自取服务协议》</text>
@@ -29,10 +35,10 @@
 						</view>
 						<view class="distanceBox">
 							<image src="../../static/order/shop.png" class="shopImg"></image>
-							<view class="distance">
+							<!-- 	<view class="distance">
 								<image src="../../static/order/distance.png"></image>
 								<view class="dText">距您1.3km</view>
-							</view>
+							</view> -->
 						</view>
 					</view>
 				</view>
@@ -40,20 +46,21 @@
 		</view>
 		<view class="content">
 			<view class="goodsContent">
-				<view class="list" v-for="(item,index) in 2" :key="index">
+				<view class="list" v-for="(item,index) in orderData" :key="index">
 					<view class="listR">
-						<image src="../../static/index/menu_4.png" class="goodsImg"></image>
+						<image :src="item.mainImage" class="goodsImg"></image>
 						<view class="infoBox">
-							<view class="name">【营养均衡】园区谷物蛋自农户有机土鸡蛋30枚净重（1.5kg/份）</view>
+							<view class="name">{{item.name}}</view>
 							<view class="priceBox">
 								<view class="price">
-									<text class="pPrice"><text>￥</text>30.60</text>
-									<text class="oldPrice">￥49</text>
+									<text class="pPrice"><text>￥</text>{{item.price}}</text>
+									<text class="oldPrice">￥{{item.originalPrice}}</text>
 								</view>
 								<view class="numBox">
-									<image src="../../static/order/jia.png"></image>
+									×{{item.number}}
+									<!-- <image src="../../static/order/jian.png" ></image>
 									<input value="1" />
-									<image src="../../static/order/jian.png"></image>
+									<image src="../../static/order/jia.png"></image> -->
 								</view>
 							</view>
 						</view>
@@ -62,26 +69,96 @@
 			</view>
 			<view class="remarkBox">
 				<view>订单备注</view>
-				<input placeholder="输入备注信息" />
+				<input placeholder="输入备注信息" :value="remark" />
 			</view>
 		</view>
 		<view class="botBox">
-			<view><text class="totalText">总计：</text><text class="unit">￥</text><text class="tPrice">61.20</text></view>
-			<view class="payTap">支付</view>
+			<view><text class="totalText">总计：</text><text class="unit">￥</text><text class="tPrice">{{price}}</text>
+			</view>
+			<view class="payTap" @click="payTap">支付</view>
 		</view>
 
 	</view>
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
+	import getDateTime from '@/utils/getdateTime.js';
+	import {addPlace} from'@/api/order.js'
 	export default {
 		data() {
 			return {
-
+				startTime: '',
+				time: '',
+				isAgree: true,
+				remark: '',
+				phone: ''
 			}
 		},
-		methods: {
+		computed: {
+			...mapState(['orderData', 'userInfo']),
+			price() {
+				let price = 0
+				this.orderData.forEach(item => {
+					price += item.price * 1 * item.number * 1
+				})
+				return price
+			}
+		},
+		onShow() {
+			this.startTime = getDateTime.timeStr('y-m-d h:i:s');
+			this.time = getDateTime.timeStr('y-m-d h:i:s');
+			this.phone = this.userInfo.phone
+			console.log(this.time)
 
+		},
+		methods: {
+			bindTimeChange(e) {
+				this.time = e.detail.value
+			},
+			checkboxChange(e) {
+				this.isAgree = e
+			},
+			async payTap() {
+				if (this.isAgree === false) {
+					wx.showToast({
+						title: '请勾选协议',
+						icon: 'none'
+					})
+					return
+				}
+				const params = [{
+					type: 3,
+					specialtyGoodInfoVo: {
+						remakes: this.remark,
+						tel: this.phone,
+						time: this.time
+					},
+					merchantId:0,
+					merchantName:0,
+					orderItems: []
+				}]
+				this.orderData.forEach(item => {
+					params[0].orderItems.push({
+						productId: item.id,
+						specialtyGoodDetailInfo: {
+							number: item.number
+						}
+					})
+				})
+				await addPlace({orders:params})
+				uni.showToast({
+					title:'支付成功'
+				})
+				setTimeout(()=>{
+					uni.switchTab({
+						url:'/pages/order/order'
+					})
+				},1000)
+				
+			}
 		}
 	}
 </script>
@@ -347,6 +424,10 @@
 							margin-top: 16rpx;
 							display: flex;
 							align-items: center;
+
+							input {
+								width: 180rpx;
+							}
 
 							image {
 								width: 32rpx;

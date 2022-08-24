@@ -17,9 +17,9 @@
 				</view>
 			</uni-nav-bar>
 			<!-- 滚动通知 -->
-			<view class="notice">
+			<!-- <view class="notice">
 				<u-notice-bar bgColor="transparent" color="#E4E4E4" :text="text"></u-notice-bar>
-			</view>
+			</view> -->
 			<!-- 轮播图 -->
 			<view class="swiperBanner">
 				<u-swiper :list="list" bgColor="transparent" radius="12"></u-swiper>
@@ -63,18 +63,18 @@
 			<!-- 特色餐饮 -->
 			<view class="food">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title">特色餐饮</view>
+					<view class="food-title">特色餐厅</view>
 					<view style="color: #999;font-size: 26rpx;" @click="toProductList">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="item in 4">
-						<image src="../../static/logo.png"></image>
-						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心"></u-icon>
-						<view class="food-block-l-price">
+					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index">
+						<image :src="item.coverImg"></image>
+						<view class="food-block-l-text">{{item.name}}</view>
+						<!-- <u-icon name="home" :label="item.name"></u-icon> -->
+						<!-- <view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
 							<u-icon name="thumb-up" label="63444"></u-icon>
-						</view>
+						</view> -->
 					</view>
 				</view>
 			</view>
@@ -85,19 +85,19 @@
 					<view style="color: #999;font-size: 26rpx;">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="item in 4">
-						<image src="../../static/logo.png"></image>
-						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心"></u-icon>
+					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index">
+						<image :src="item.coverImg"></image>
+						<view class="food-block-l-text">{{item.name}}</view>
+						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon>
 						<view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
 							<u-icon name="thumb-up" label="63444"></u-icon>
-						</view>
+						</view> -->
 					</view>
 				</view>
 			</view>
 			<!-- 休闲娱乐 -->
-			<view class="food">
+		<!-- 	<view class="food">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">休闲娱乐</view>
 					<view style="color: #999;font-size: 26rpx;">更多></view>
@@ -113,7 +113,7 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 
 	</view>
@@ -124,6 +124,7 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	import {getDiningRoom,getHotel} from '@/api/index.js'
 	export default {
 		data() {
 			return {
@@ -155,18 +156,20 @@
 					],
 				],
 				Tablist: [{
-						name: '特色餐饮',
+						name: '特色餐厅',
 					},
 					{
 						name: '旅游住宿',
 					},
-					{
-						name: '休闲娱乐',
-					}
-				]
+					// {
+					// 	name: '休闲娱乐',
+					// }
+				],
+				diningRoomList:[],
+				hotelList:[]
 			}
 		},
-		computed: mapState(['token','userInfo']),
+		computed: mapState(['token','userInfo','location']),
 		onLoad() {
 			// 登录获取token
 			uni.login({
@@ -177,12 +180,26 @@
 				}
 			});
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45
+			// this.getList()
 		},
 		onShow(){
 		this.getLocation()	
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
+			getList(){
+				const params={
+					...this.location,
+					page:1,
+					pageSize:4
+				}
+				getDiningRoom(params).then(res=>{
+					this.diningRoomList=res.data.records
+				})
+				getHotel(params).then(res=>{
+					this.hotelList=res.data.records
+				})
+			},			
 			getLocation() {
 				const that = this
 				uni.getLocation({
@@ -192,6 +209,7 @@
 							longitude: res.longitude
 						}
 						that.SET_LOCATION(data)
+						that.getList()
 					},
 					fail: e => {
 						uni.getSetting({
@@ -224,6 +242,7 @@
 																	)
 																}
 															});
+															that.getList()
 														} else {
 															// 没有允许定位权限
 															wx.showToast({
@@ -264,14 +283,14 @@
 				}
 			},
 			toProductList(){
-				if(!this.isGetTel()) return
+				if(this.isGetTel()===false) return			
 				uni.navigateTo({
 					url:'/pages_minute/productList/productList'
 				})
 			},
 			// 跳转页面
 			getJump(index1) {
-				// if(!this.isGetTel()) return
+				if(this.isGetTel()===false) return		
 				switch (index1) {
 					case 0:
 						uni.navigateTo({
