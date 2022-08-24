@@ -14,6 +14,7 @@ const store = new Vuex.Store({
 		token: uni.getStorageSync("token") ? uni.getStorageSync("token") : "", //token
 		location: uni.getStorageSync("location") ? uni.getStorageSync("location") : "", //当前位置
 		wechatUserId:uni.getStorageSync("wechatUserId") ?uni.getStorageSync("wechatUserId") : "",
+		orderData:''
 	},
 	mutations: {
 		SET_USERINFO(state, data) {
@@ -29,8 +30,11 @@ const store = new Vuex.Store({
 			uni.setStorageSync("location", state.location)
 		},
 		SET_WECHATUSERID(state, data){
-			state.location = data
+			state.wechatUserId = data
 			uni.setStorageSync("wechatUserId", state.location)
+		},
+		SET_ORDERDATA(state, data){
+			state.orderData = data
 		},
 	},
 	actions: {

@@ -61,7 +61,8 @@
 			{
 				"path": "specialty/specialty",
 				"style": {
-					"navigationStyle": "custom"
+					"navigationStyle": "custom",
+					"enablePullDownRefresh": true
 				}
 			},
 			{
@@ -133,7 +134,7 @@
 				}
 
 			}
-		]
+            ]
 	}],
 	// 底部导航栏
 	"tabBar": {

@@ -1,23 +1,23 @@
 <template>
 	<view>
 		<view class="content">
-			<view class="list" v-for="(item,index) in 2" :key="index">
-				<view class="selectBox">
-					<image src="../../static/order/select.png"></image>
+			<view class="list" v-for="(item,index) in list" :key="index">
+				<view class="selectBox" @click="selectTap(index)">
+					<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'"></image>
 				</view>
 				<view class="listR">
-					<image src="../../static/index/menu_4.png" class="goodsImg"></image>
+					<image :src="item.productMainImage" class="goodsImg"></image>
 					<view class="infoBox">
-						<view class="name">【营养均衡】园区谷物蛋自农户有机土鸡蛋30枚净重（1.5kg/份）</view>
+						<view class="name">{{item.productName}}</view>
 						<view class="priceBox">
 							<view class="price">
-								<text class="pPrice"><text>￥</text>30.60</text>
-								<text class="oldPrice">￥49</text>
+								<text class="pPrice"><text>￥</text>{{item.productPrice}}</text>
+								<text class="oldPrice">￥{{item.productOriginalPrice}}</text>
 							</view>
 							<view class="numBox">
-								<image src="../../static/order/jia.png"></image>
-								<input value="1" />
 								<image src="../../static/order/jian.png"></image>
+								<input :value="item.number" />
+								<image src="../../static/order/jia.png"></image>
 							</view>
 						</view>
 					</view>
@@ -25,13 +25,13 @@
 			</view>
 		</view>
 		<view class="botBox">
-			<view class="allSelect">
-				<image src="../../static/order/select.png"></image>
+			<view class="allSelect" @click="allSelect">
+				<image :src="isAllSelect?'../../static/order/selectA.png':'../../static/order/select.png'"></image>
 				全选
 			</view>
 			<view class="botR">
-				<view><text class="totalText">合计：</text><text class="unit">￥</text><text class="totalPrice">61.20</text></view>
-				<view class="payTap">去支付(2)</view>
+				<view><text class="totalText">合计：</text><text class="unit">￥</text><text class="totalPrice">{{price}}</text></view>
+				<view class="payTap">去支付({{selectNum}})</view>
 			</view>
 		</view>
 
@@ -39,14 +39,55 @@
 </template>
 
 <script>
+	import {getCartList} from '@/api/order.js'
 	export default {
 		data() {
 			return {
-
+				list:[],
+				isAllSelect:false,
+			}
+		},
+		onShow() {
+			this.getList()
+		},
+		computed:{
+			price(){
+				let price = 0
+				this.list.forEach(item => {
+					if(item.checked){
+						price += item.productPrice * 1 * item.number * 1
+					}				
+				})
+				return price
+			},
+			selectNum(){
+				const list= this.list.map(item=>{
+					return item.checked===true
+				})
+				console.log(list)
+				return list.length
 			}
 		},
 		methods: {
-
+			allSelect(){
+				this.isAllSelect=!this.isAllSelect
+				this.list.forEach(item=>{
+					item.checked=this.isAllSelect
+				})
+			},
+			// 选择
+			selectTap(index){
+				this.list[index].checked=!this.list[index].checked
+			},
+			// 购物车列表
+			async getList(){
+				const {data}=await getCartList()
+				const list=data[0].details
+				list.forEach(item=>{
+					item.checked=false
+				})
+				this.list=list
+			}
 		}
 	}
 </script>

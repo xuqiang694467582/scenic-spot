@@ -76,7 +76,7 @@
 							avatar: e.userInfo.avatarUrl,
 							nickname: e.userInfo.nickName,
 							sex: e.userInfo.gender,
-							id:this.wechatUserId
+							id:that.wechatUserId
 						})
 						this.$store.dispatch('getUserInfos')
 					}
