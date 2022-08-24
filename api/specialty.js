@@ -2,7 +2,7 @@ import {
 	http
 } from '@/api/service.js'
 /**
- * 餐厅信息列表
+ * 特产列表
  */
 export const getSpecialtyGood = (params) => {
   return http.get('/wx/specialty-good/list', {

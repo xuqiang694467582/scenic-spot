@@ -1,35 +1,57 @@
 <template>
 	<view class="content">
-		<view class="topBox">
-			<view>
+		<view class="topBox" v-show="detail.status==='0'">
+			<view >
+				<view class="status">订单待支付</view>
+				<!-- <view class="statusInfo">订单将在2分钟后自动取消</view> -->
+			</view>
+			<view class="btn">立即支付</view>
+		</view>
+		<view class="topBox" v-show="detail.status==='1'">
+			<view >
 				<view class="status">订单已支付</view>
 				<view class="statusInfo">正在打包中，稍后可前往自提点提取</view>
 			</view>
 			<view class="btn" @click="show=true">取货码</view>
 		</view>
+		<view class="topBox" v-show="detail.status==='2'">
+			<view >
+				<view class="status">订单已完成</view>
+				<view class="statusInfo">取货完成，期待您的再次光顾</view>
+			</view>
+		</view>
+		<view class="topBox" v-show="detail.status==='3'">
+			<view >
+				<view class="status">订单已取消</view>
+				<view class="statusInfo">已取消订单，希望再次光顾</view>
+			</view>
+		</view>
 		<view class="orderBox">
 			<view class="titleBox">
 				<view>园区农产品自提点</view>
-				<view>
+				<!-- <view>
 					<image src="../../static/order/navigation.png"></image>
 					<image src="../../static/order/tel.png"></image>
-				</view>
+				</view> -->
 			</view>
-			<view class="listInfo" v-for="(item,index) in 2" :key="index">
-				<image src="../../static/index/menu_4.png"></image>
-				<view class="infoR">
-					<view class="infoName">【营养均衡】园区江粮谷物蛋自培农户有机土鸡蛋30枚净重（1.5kg/份）</view>
-					<view class="spec">30枚 1.5kg/份</view>
-					<view class="priceBox">
-						<text class="unit">￥</text>
-						<text class="price">61.20</text>
-						<text class="oldPrice">￥49</text>
+			<view v-for="(item,index) in detail.childrenOrder" :key="index">
+				<view class="listInfo" v-for="(items,indexs) in item.orderItemDetailVoList" :key="indexs">
+					<image :src="items.productInfo.productImage"></image>
+					<view class="infoR">
+						<view class="infoName">{{items.productInfo.productName}}</view>
+						<!-- <view class="spec">30枚 1.5kg/份</view> -->
+						<view class="priceBox">
+							<text class="unit">￥</text>
+							<text class="price">{{items.productInfo.price}}</text>
+							<text class="oldPrice">￥{{items.productInfo.totalPrice}}</text>
+						</view>
 					</view>
 				</view>
 			</view>
+			
 			<view class="totalPriceBox">
 				<view class="text">合计</view>
-				<view class="totalPrice"><text>￥</text>61.20</view>
+				<view class="totalPrice"><text>￥</text>{{detail.payPrice}}</view>
 			</view>
 		</view>
 		<view class="orderBox">
@@ -39,30 +61,31 @@
 			<view class="orderInfoBox">
 				<view class="orderInfo">
 					<view>订单号：</view>
-					<view>165989897845698878458994</view>
+					<view>{{detail.orderSn}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>下单时间：</view>
-					<view>2022-06-25 16:26:36</view>
+					<view>{{detail.placeTimeStr}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>取货码：</view>
-					<view>0089</view>
+					<view>{{detail.childrenOrder[0].couponInfo.couponNumber}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>备注：</view>
-					<view>--</view>
+					<view>{{detail.childrenOrder[0].otherInfo.remakes?detail.childrenOrder[0].otherInfo.remakes:'--'}}</view>
 				</view>
 			</view>
 		</view>
-		<view class="cancelTap">取消订单</view>
+		<view class="cancelTap" v-show="detail.status==='0'" @click="cancelOrder">取消订单</view>
 		<!-- 取货码 -->
-		<u-popup :show="show" mode="top"  @close="close"  bgColor="transparent">
+		<u-popup :show="show" mode="center"  @close="close"  bgColor="transparent">
 		    <view class="codeBox">
 				<image src="../../static/order/codeBg.png" class="codeBg"></image>
 				<view class="codeContent">
-					<view class="code">0089</view>
-					<image src="../../static/index/menu_4.png"></image>
+					<view class="title">取货码</view>
+					<view class="code">{{detail.childrenOrder[0].couponInfo.couponNumber}}</view>
+					<view class="tip">凭取货码到自提点取货</view>
 				</view>
 			</view>  
 		</u-popup>
@@ -70,13 +93,48 @@
 </template>
 
 <script>
+	import {getOrderDetail,addOrderCancel} from '@/api/order.js'
 	export default {
 		data() {
 			return {
-				show:false
+				show:false,
+				id:'',
+				detail:''
 			}
 		},
+		onLoad(options){
+			this.id=options.id
+			this.getDetail()
+		},
 		methods: {
+			// 取消订单
+			cancelOrder(){
+				uni.showModal({
+					title: '提示',
+					content: '确定取消',
+					success: async (res)=> {
+						if (res.confirm) {
+							await addOrderCancel({id:this.id})
+							uni.showToast({
+								title:'取消成功'
+							})
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+							
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
+			},
+			async getDetail(){
+				const {data}=await getOrderDetail({id:this.id})
+				this.detail=data
+			},
 			close(){
 				this.show=false
 			}
@@ -85,10 +143,10 @@
 </script>
 
 <style lang="scss">
-	.codeBox{
+.codeBox{
 		width: 596rpx;
-		height: 650rpx;
-		margin: 20% auto 0 auto;
+		height: 390rpx;
+		
 		position: relative;
 		.codeBg{
 			width: 100%;
@@ -104,19 +162,26 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-			image{
-				width: 380rpx;
-				height: 380rpx;
-				margin-top: 56rpx;
+			.tip{
+				margin-top: 26rpx;
+				font-weight: 400;
+				color: #999999;
+				font-size: 24rpx;
 			}
 			.code{
-				width: 526rpx;
-				height: 156rpx;
-				line-height: 156rpx;
-				text-align: center;
+				font-size: 72rpx;
 				font-weight: bold;
 				color: #333333;
-				font-size: 62rpx;
+				margin-top: 38rpx;
+			}
+			.title{
+				width: 526rpx;
+				height: 136rpx;
+				line-height: 156rpx;
+				text-align: center;
+				font-weight: 600;
+				color: #333333;
+				font-size: 40rpx;
 				border-bottom: 1px dashed #ccc;
 			}
 		}

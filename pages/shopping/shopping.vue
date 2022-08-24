@@ -1,28 +1,33 @@
 <template>
 	<view>
-		<view class="content">
-			<view class="list" v-for="(item,index) in list" :key="index">
-				<view class="selectBox" @click="selectTap(index)">
-					<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'"></image>
-				</view>
-				<view class="listR">
-					<image :src="item.productMainImage" class="goodsImg"></image>
-					<view class="infoBox">
-						<view class="name">{{item.productName}}</view>
-						<view class="priceBox">
-							<view class="price">
-								<text class="pPrice"><text>￥</text>{{item.productPrice}}</text>
-								<text class="oldPrice">￥{{item.productOriginalPrice}}</text>
-							</view>
-							<view class="numBox">
-								<image src="../../static/order/jian.png" @click="jianTap(index)"></image>
-								<input :value="item.number" @input="getNum(index)"/>
-								<image src="../../static/order/jia.png"  @click="jiaTap(index)"></image>
+		<view class="content" >
+			<u-swipe-action >
+				<u-swipe-action-item :options="item.options" v-for="(item,index) in list" :key="index" @click="delTap(index)" :autoClose="true">
+					<view class="list">
+						<view class="selectBox" @click="selectTap(index)">
+							<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
+							</image>
+						</view>
+						<view class="listR">
+							<image :src="item.productMainImage" class="goodsImg"></image>
+							<view class="infoBox">
+								<view class="name">{{item.productName}}</view>
+								<view class="priceBox">
+									<view class="price">
+										<text class="pPrice"><text>￥</text>{{item.productPrice}}</text>
+										<text class="oldPrice">￥{{item.productOriginalPrice}}</text>
+									</view>
+									<view class="numBox">
+										<image src="../../static/order/jian.png" @click="jianTap(index)"></image>
+										<view class="num">{{item.number}}</view>
+										<image src="../../static/order/jia.png" @click="jiaTap(index)"></image>
+									</view>
+								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-			</view>
+				</u-swipe-action-item>
+			</u-swipe-action>
 		</view>
 		<view class="botBox">
 			<view class="allSelect" @click="allSelect">
@@ -30,8 +35,9 @@
 				全选
 			</view>
 			<view class="botR">
-				<view><text class="totalText">合计：</text><text class="unit">￥</text><text class="totalPrice">{{price}}</text></view>
-				<view class="payTap">去支付({{selectNum}})</view>
+				<view><text class="totalText">合计：</text><text class="unit">￥</text><text
+						class="totalPrice">{{price}}</text></view>
+				<view class="payTap" @click="payTap">去支付({{selectNum}})</view>
 			</view>
 		</view>
 
@@ -39,31 +45,36 @@
 </template>
 
 <script>
-	import {getCartList} from '@/api/order.js'
+	import {
+		mapMutations
+	} from 'vuex'
+	import {
+		getCartList,updateNumber,delCart
+	} from '@/api/order.js'
 	export default {
 		data() {
 			return {
-				list:[],
-				isAllSelect:false,
+				list: [],
+				isAllSelect: false,
 			}
 		},
 		onShow() {
 			this.getList()
 		},
-		computed:{
-			price(){
+		computed: {
+			price() {
 				let price = 0
 				this.list.forEach(item => {
-					if(item.checked){
+					if (item.checked) {
 						price += item.productPrice * 1 * item.number * 1
-					}				
+					}
 				})
 				return price
 			},
-			selectNum(){
-				const list=[]
-				 this.list.forEach(item=>{
-					if(item.checked){
+			selectNum() {
+				const list = []
+				this.list.forEach(item => {
+					if (item.checked) {
 						list.push(item)
 					}
 				})
@@ -71,37 +82,84 @@
 			}
 		},
 		methods: {
-			getNum(index){
-				this.list[index].number<1?1:this.list[index].number
+			...mapMutations(['SET_ORDERDATA']),
+			// 跳转提交订单
+			payTap(){
+				const list=[]
+				this.list.forEach(item=>{
+					if(item.checked){
+						list.push({
+							...item,
+							id:item.productId,
+							name:item.productName,
+							price:item.productPrice,
+							originalPrice:item.productOriginalPrice,
+							mainImage:item.productMainImage
+						})
+					}
+				})
+				if(list.length===0){
+					uni.showToast({
+						title:'请选择商品',
+						icon:'none'
+					})
+					return 
+				}
+				this.SET_ORDERDATA(list)
+				uni.navigateTo({
+					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
+				})
+			},
+			// 删除
+			async delTap(index){
+				await delCart({shoppingCartIds:[this.list[index].id]})
+				this.getList()
 			},
 			// 减
-			jiaTap(index){
-				this.list[index].number++				
+			 jiaTap(index) {
+				this.list[index].number++
+				this.chageNumber(this.list[index].id,this.list[index].number)
 			},
 			// 加
-			jianTap(index){
-				if(this.list[index].number>1){
+			jianTap(index) {
+				if (this.list[index].number > 1) {
 					this.list[index].number--
+					this.chageNumber(this.list[index].id,this.list[index].number)
 				}
 			},
-			allSelect(){
-				this.isAllSelect=!this.isAllSelect
-				this.list.forEach(item=>{
-					item.checked=this.isAllSelect
+			async chageNumber(id,number){
+				await updateNumber({id:id,number:number})
+			},
+			allSelect() {
+				this.isAllSelect = !this.isAllSelect
+				this.list.forEach(item => {
+					item.checked = this.isAllSelect
 				})
 			},
 			// 选择
-			selectTap(index){
-				this.list[index].checked=!this.list[index].checked
+			selectTap(index) {
+				this.list[index].checked = !this.list[index].checked
 			},
 			// 购物车列表
-			async getList(){
-				const {data}=await getCartList()
-				const list=data[0].details
-				list.forEach(item=>{
-					item.checked=false
+			async getList() {
+				const {
+					data
+				} = await getCartList()
+				if(data.length===0){
+					this.list=[]
+					return
+				}
+				const list = data[0].details
+				list.forEach(item => {
+					item.checked = false
+					item.options = [{
+						text: '删除',
+						style: {
+							backgroundColor: 'red'
+						}
+					}]
 				})
-				this.list=list
+				this.list = list
 			}
 		}
 	}
@@ -120,11 +178,13 @@
 		box-sizing: border-box;
 		height: 124rpx;
 		width: 100%;
-		box-shadow: 0px -66rpx 126rpx 26rpx rgba(205,205,205,0.16);
-		.botR{
+		box-shadow: 0px -66rpx 126rpx 26rpx rgba(205, 205, 205, 0.16);
+
+		.botR {
 			display: flex;
 			align-items: center;
-			.payTap{
+
+			.payTap {
 				width: 180rpx;
 				height: 80rpx;
 				border-radius: 100rpx;
@@ -136,18 +196,22 @@
 				line-height: 80rpx;
 				margin-left: 26rpx;
 			}
-			.totalText{
+
+			.totalText {
 				font-size: 28rpx;
 			}
-			.unit{
+
+			.unit {
 				font-size: 26rpx;
 				color: rgba(238, 17, 17, 1);
 			}
-			.totalPrice{
+
+			.totalPrice {
 				font-size: 32rpx;
 				color: rgba(238, 17, 17, 1);
 			}
 		}
+
 		.allSelect {
 			display: flex;
 			align-items: center;
@@ -200,7 +264,7 @@
 							height: 40rpx;
 						}
 
-						input {
+						.num {
 							width: 50rpx;
 							text-align: center;
 							font-size: 32rpx;

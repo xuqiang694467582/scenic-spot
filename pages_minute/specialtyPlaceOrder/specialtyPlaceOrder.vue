@@ -86,7 +86,7 @@
 		mapState
 	} from 'vuex'
 	import getDateTime from '@/utils/getdateTime.js';
-	import {addPlace} from'@/api/order.js'
+	import {addPlace,addOrderPay} from'@/api/order.js'
 	export default {
 		data() {
 			return {
@@ -148,7 +148,13 @@
 						}
 					})
 				})
-				await addPlace({orders:params})
+				const {data}=await addPlace({orders:params})
+				this.payOrder(data)
+				
+				
+			},
+			async payOrder(orderSn){
+				await addOrderPay({orderSn:orderSn})
 				uni.showToast({
 					title:'支付成功'
 				})
@@ -157,8 +163,8 @@
 						url:'/pages/order/order'
 					})
 				},1000)
-				
 			}
+			
 		}
 	}
 </script>

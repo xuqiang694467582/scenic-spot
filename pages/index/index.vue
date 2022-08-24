@@ -26,7 +26,7 @@
 			</view>
 			<!-- 菜单 -->
 			<view class="menu">
-				<u-scroll-list :indicator="false">
+				<u-scroll-list :indicator="false" >
 					<view class="scroll-list">
 						<view class="scroll-list__line" v-for="(item, index) in menuArr" :key="index">
 							<view class="scroll-list__line__item" v-for="(item1, index1) in item" :key="index1"
@@ -42,14 +42,14 @@
 			<!-- 园区特产 -->
 			<view class="specialty">
 				<view class="specialty-title">园区特产</view>
-				<u-scroll-list indicatorColor="#fff0f0" indicatorActiveColor="#f56c6c">
+				<u-scroll-list indicatorActiveColor="#A8A1A1" indicatorColor="#ABABAB">
 					<view class="specialty-list">
-						<view class="specialty-list-con" v-for="item in 6">
-							<image src="../../static/logo.png"></image>
-							<view class="specialty-list-con-text">园区自培农户有机土鸡蛋</view>
+						<view class="specialty-list-con" v-for="(item,index) in specialtyList" :key="index" @click="tospecialty(item.id)">
+							<image :src="item.mainImage"></image>
+							<view class="specialty-list-con-text">{{item.name}}</view>
 							<view class="specialty-list-con-price">
-								<text style="color: #333;font-size: 30rpx;">￥30.6</text>
-								<text style="color: #999;font-size: 26rpx;">￥49</text>
+								<text style="color: #333;font-size: 30rpx;">￥{{item.price}}</text>
+								<text style="color: #999;font-size: 26rpx;">￥{{item.originalPrice}}</text>
 							</view>
 						</view>
 					</view>
@@ -125,6 +125,7 @@
 		mapMutations
 	} from 'vuex'
 	import {getDiningRoom,getHotel} from '@/api/index.js'
+	import {getSpecialtyGood} from '@/api/specialty.js'
 	export default {
 		data() {
 			return {
@@ -166,7 +167,8 @@
 					// }
 				],
 				diningRoomList:[],
-				hotelList:[]
+				hotelList:[],
+				specialtyList:[]
 			}
 		},
 		computed: mapState(['token','userInfo','location']),
@@ -199,6 +201,9 @@
 				})
 				getHotel(params).then(res=>{
 					this.hotelList=res.data.records
+				})
+				getSpecialtyGood({...params,pageSize:8}).then(res=>{
+					this.specialtyList=res.data.records
 				})
 			},			
 			getLocation() {
@@ -286,6 +291,13 @@
 				if(this.isGetTel()===false) return			
 				uni.navigateTo({
 					url:'/pages_minute/productList/productList'
+				})
+			},
+			// 特产详情
+			tospecialty(id){
+				if(this.isGetTel()===false) return	
+				uni.navigateTo({
+					url:`/pages_minute/specialtyDetail/specialtyDetail?id=${id}`
 				})
 			},
 			// 跳转页面
@@ -436,6 +448,11 @@
 			.specialty-list-con-text {
 				font-size: 24rpx;
 				font-weight: 600;
+				overflow: hidden; 
+				text-overflow: ellipsis; 
+				display: -webkit-box;		
+				-webkit-line-clamp: 2; 
+				-webkit-box-orient: vertical;
 			}
 
 			.specialty-list-con-price {
