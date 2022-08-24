@@ -68,7 +68,7 @@ http.interceptors.response.use(
 					title: response.data.msg,
 					icon: "none",
 				})
-				if (response.data.code === 404 || response.data.code === 408) { //token过期
+				if (response.data.code === 'SCENIC_TOURISM_A0008') { //token过期
 					uni.showToast({
 						title: '登录过期，自动登录中...',
 						icon: 'none'

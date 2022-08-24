@@ -15,9 +15,9 @@
 								<text class="oldPrice">￥{{item.productOriginalPrice}}</text>
 							</view>
 							<view class="numBox">
-								<image src="../../static/order/jian.png"></image>
-								<input :value="item.number" />
-								<image src="../../static/order/jia.png"></image>
+								<image src="../../static/order/jian.png" @click="jianTap(index)"></image>
+								<input :value="item.number" @input="getNum(index)"/>
+								<image src="../../static/order/jia.png"  @click="jiaTap(index)"></image>
 							</view>
 						</view>
 					</view>
@@ -61,14 +61,29 @@
 				return price
 			},
 			selectNum(){
-				const list= this.list.map(item=>{
-					return item.checked===true
+				const list=[]
+				 this.list.forEach(item=>{
+					if(item.checked){
+						list.push(item)
+					}
 				})
-				console.log(list)
 				return list.length
 			}
 		},
 		methods: {
+			getNum(index){
+				this.list[index].number<1?1:this.list[index].number
+			},
+			// 减
+			jiaTap(index){
+				this.list[index].number++				
+			},
+			// 加
+			jianTap(index){
+				if(this.list[index].number>1){
+					this.list[index].number--
+				}
+			},
 			allSelect(){
 				this.isAllSelect=!this.isAllSelect
 				this.list.forEach(item=>{

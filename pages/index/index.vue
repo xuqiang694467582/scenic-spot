@@ -175,12 +175,13 @@
 			uni.login({
 				provider: 'weixin',
 				success: async (loginRes) => {
-					this.$store.dispatch('login', loginRes.code).then(() => {						
+					this.$store.dispatch('login', loginRes.code).then(() => {	
+						this.getList()
 					})
 				}
 			});
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45
-			// this.getList()
+			
 		},
 		onShow(){
 		this.getLocation()	
@@ -209,7 +210,6 @@
 							longitude: res.longitude
 						}
 						that.SET_LOCATION(data)
-						that.getList()
 					},
 					fail: e => {
 						uni.getSetting({
@@ -242,7 +242,7 @@
 																	)
 																}
 															});
-															that.getList()
+															
 														} else {
 															// 没有允许定位权限
 															wx.showToast({
