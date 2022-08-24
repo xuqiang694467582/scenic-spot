@@ -271,7 +271,7 @@
 			},
 			// 跳转页面
 			getJump(index1) {
-				if(!this.isGetTel()) return
+				// if(!this.isGetTel()) return
 				switch (index1) {
 					case 0:
 						uni.navigateTo({
