@@ -79,6 +79,8 @@
 </template>
 
 <script>
+	import { hotelList } from '@/api/parktour.js';
+	import { mapState } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -143,6 +145,10 @@
 					'https://cdn.uviewui.com/uview/album/5.jpg',
 				]
 			}
+		},
+		computed: mapState(['location']),
+		onLoad() {
+			console.log('location', this.location);
 		},
 		methods: {
 			// 顶级顶部菜单触发
