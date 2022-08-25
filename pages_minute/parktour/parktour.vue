@@ -138,6 +138,8 @@
 						});
 						// 列表取值
 						this.list = data.records;
+						this.latitude = data.records[0].latitude;
+						this.longitude = data.records[0].longitude;
 						// 地图标点
 						data.records.map((val) => {
 							this.markers.push({
@@ -157,6 +159,8 @@
 							longitude: "104.58973142824175",
 						})
 						this.list = data1.data.records;
+						this.latitude = data1.data.records[0].latitude;
+						this.longitude = data1.data.records[0].longitude;
 						// 地图标点
 						data1.data.records.map((val) => {
 							this.markers.push({
@@ -176,6 +180,8 @@
 							longitude: "104.58973142824175",
 						})
 						this.list = data2.data.records;
+						this.latitude = data2.data.records[0].latitude;
+						this.longitude = data2.data.records[0].longitude;
 						// 地图标点
 						data2.data.records.map((val) => {
 							this.markers.push({
@@ -195,6 +201,8 @@
 							longitude: "104.58973142824175",
 						});
 						this.list = data3.data.records;
+						this.latitude = data3.data.records[0].latitude;
+						this.longitude = data3.data.records[0].longitude;
 						// 地图标点
 						data3.data.records.map((val) => {
 							this.markers.push({
@@ -228,7 +236,7 @@
 			positionClick() {
 				let _this = this;
 				uni.getLocation({
-					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
+					type: 'gcj02',
 					success: function(res) {
 						_this.latitude = res.latitude;
 						_this.longitude = res.longitude;
