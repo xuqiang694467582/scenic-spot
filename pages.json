@@ -105,7 +105,8 @@
 			}, {
 				"path": "productList/productList",
 				"style": {
-					"navigationStyle": "custom"
+					"navigationStyle": "custom",
+					"enablePullDownRefresh": true
 				}
 
 			}, {

@@ -7,41 +7,41 @@
 		
 		<view class="content">
 			<view class="typeBox">
-				<view v-for="(item,index) in typeList" :key="index" :class="curt===index?'active':''"
+				<view v-for="(item,index) in typeList" :key="index" :class="curt==index?'active':''"
 					@click="changeType(index)">{{item.name}}
 				</view>
 			</view>
-			<view class="listBox" v-for="(item,index) in 5" :key="index" @click="toDetail">
-				<image src="../../static/food.png" class="goodsImg"></image>
+			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+				<image :src="item.coverImg" class="goodsImg"></image>
 				<view class="listR">
-					<view class="name">蒸小碗私房菜</view>
+					<view class="name">{{item.name}}</view>
 					<view class="infoBox">
 						<view class="grade">
-							<text><text class="bold">4.8</text>分</text>
+							<text><text class="bold">{{item.score}}</text>分</text>
 							<view></view>
 						</view>
-						<view class="distance">距您0.5km</view>
+						<view class="distance">距您{{item.distanceStr}}</view>
 					</view>
 					<!-- 除酒店显示 -->
-					<block v-if="curt===0||curt===2">
+					<block v-if="curt==0||curt==2">
 						<view class="time">
 							<image src="../../static/time.png"></image>
-							11:00-13:00，17:00-21:00
+							<view>{{item.alternate.openingHours}}</view>
 						</view>
 						<view class="more">
-							<text>“家常特色菜”</text>
+							<text v-for="(items,indexs) in item.label" :key="indexs">“{{items}}”</text>
 						</view>
 					</block>
 					<block v-else>
 						<view class="more">
-							<text>“家常特色菜”</text>
+							<text v-for="(items,indexs) in item.label" :key="indexs">“{{items}}”</text>
 						</view>
-						<view class="price">
+					<!-- 	<view class="price">
 							<text class="unit">￥</text>
 							<text class="money">133</text>
 							<text class="qi">起</text>
 							<text class="oldPrice">￥168</text>
-						</view>
+						</view> -->
 					</block>
 
 
@@ -53,7 +53,10 @@
 </template>
 
 <script>
-	// import {getChooseFood,getChooseHotel,getChooseAmusement} from '@/api/index.js'
+	import {
+		mapState
+	} from 'vuex'
+	import {getChooseFood,getChooseHotel,getChooseAmusement} from '@/api/index.js'
 	export default {
 		data() {
 			return {
@@ -81,25 +84,50 @@
 				list:[]
 			}
 		},
-		onLoad() {
+		computed: mapState(['location']),
+		onLoad(options) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight +5
+			this.curt=options.type?options.type:0
+			this.listQuery={
+				...this.location,
+				page :1,
+				pageSize:10
+			},
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
 		},
 		methods: {
-			// async getList(){					
-			// 	if(this.curt===0){
-			// 		await getChooseFood()
+			async getList(){					
+				if(this.curt==0){
+					const {data}= await getChooseFood(this.listQuery)
+					uni.stopPullDownRefresh()
+					this.list = this.list.concat(data.records)
 					
-			// 	}else if(this.curt===1){
+				}else if(this.curt==1){
+					const {data}= await getChooseHotel(this.listQuery)
+					uni.stopPullDownRefresh()
+					this.list = this.list.concat(data.records)
 					
-			// 	}else if(this.curt===2){
+				}else if(this.curt==2){
+					const {data}= await getChooseAmusement(this.listQuery)
+					uni.stopPullDownRefresh()
+					this.list = this.list.concat(data.records)
 					
-			// 	}
-			// },
-			toDetail() {
+				}
+			},
+			toDetail(id) {
 				switch (this.curt) {
 					case 2:
 						uni.navigateTo({
-							url: '/pages_minute/entertainmentDetail/entertainmentDetail'
+							url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${id}`
 						})
 					break;
 
@@ -107,6 +135,9 @@
 			},
 			changeType(index) {
 				this.curt = index
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
 			},
 			backTap(){
 				uni.navigateBack({
@@ -139,10 +170,6 @@
 				display: -webkit-box;
 				-webkit-line-clamp: 1;
 				-webkit-box-orient: vertical;
-
-				text {
-					margin-right: 20rpx;
-				}
 			}
 
 			.price {
@@ -188,6 +215,15 @@
 					width: 22rpx;
 					height: 22rpx;
 					margin-right: 12rpx;
+				}
+				view{
+					display: flex;
+					flex: 1;
+					overflow: hidden; 		
+					text-overflow: ellipsis; 					
+					display: -webkit-box;					
+					-webkit-line-clamp: 1; 		
+					-webkit-box-orient: vertical;
 				}
 			}
 

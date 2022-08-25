@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="container">
 		<!-- 顶部底色 -->
 		<view class="back"></view>
 		<!-- 主体结构 -->
@@ -57,14 +57,14 @@
 			</view>
 			<!-- tab -->
 			<view class="tab">
-				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
+				<u-tabs :list="Tablist" @click="changeType" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
 				</u-tabs>
 			</view>
 			<!-- 特色餐饮 -->
 			<view class="food">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">特色餐厅</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList(0)">更多></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index">
@@ -82,7 +82,7 @@
 			<view class="food">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">旅游住宿</view>
-					<view style="color: #999;font-size: 26rpx;">更多></view>
+					<view style="color: #999;font-size: 26rpx;"  @click="toProductList(1)">更多></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index">
@@ -97,23 +97,23 @@
 				</view>
 			</view>
 			<!-- 休闲娱乐 -->
-		<!-- 	<view class="food">
+			<view class="food">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">休闲娱乐</view>
-					<view style="color: #999;font-size: 26rpx;">更多></view>
+					<view style="color: #999;font-size: 26rpx;"  @click="toProductList(2)">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="item in 4">
-						<image src="../../static/logo.png"></image>
-						<view class="food-block-l-text">农户养殖生态柴火鸡</view>
-						<u-icon name="home" label="七虹餐饮中心"></u-icon>
-						<view class="food-block-l-price">
+					<view class="food-block-l" v-for="(item,index) in amusementList" :key="index" @click="toAmusementDetail(item.id)">
+						<image :src="item.coverImg"></image>
+						<view class="food-block-l-text">{{item.name}}</view>
+						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon> -->
+						<!-- <view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
 							<u-icon name="thumb-up" label="63444"></u-icon>
-						</view>
+						</view> -->
 					</view>
 				</view>
-			</view> -->
+			</view>
 		</view>
 
 	</view>
@@ -124,7 +124,7 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-	import {getDiningRoom,getHotel} from '@/api/index.js'
+	import {getDiningRoom,getHotel,getAmusement} from '@/api/index.js'
 	import {getSpecialtyGood} from '@/api/specialty.js'
 	export default {
 		data() {
@@ -162,12 +162,13 @@
 					{
 						name: '旅游住宿',
 					},
-					// {
-					// 	name: '休闲娱乐',
-					// }
+					{
+						name: '休闲娱乐',
+					}
 				],
 				diningRoomList:[],
 				hotelList:[],
+				amusementList:[],
 				specialtyList:[]
 			}
 		},
@@ -190,6 +191,24 @@
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
+			// 切换商品类型
+			changeType(e){
+				const id=''
+				// uni.createSelectorQuery()
+				//     .select(".container")//对应外层节点
+				//     .boundingClientRect((container) => {
+				//         uni.createSelectorQuery()
+				//         .select("#target")//目标节点
+				//         .boundingClientRect((target) => {
+				//             uni.pageScrollTo({
+				//             scrollTop: target.top - container.top,//滚动到实际距离是元素距离顶部的距离减去最外层盒子的滚动距离
+				//             });
+				//         })
+				//         .exec();
+				//     })
+				//     .exec();
+
+			},
 			getList(){
 				const params={
 					...this.location,
@@ -201,6 +220,9 @@
 				})
 				getHotel(params).then(res=>{
 					this.hotelList=res.data.records
+				})
+				getAmusement(params).then(res=>{
+					this.amusementList=res.data.records
 				})
 				getSpecialtyGood({...params,pageSize:8}).then(res=>{
 					this.specialtyList=res.data.records
@@ -287,10 +309,11 @@
 					return false
 				}
 			},
-			toProductList(){
+			// 商品列表
+			toProductList(type){
 				if(this.isGetTel()===false) return			
 				uni.navigateTo({
-					url:'/pages_minute/productList/productList'
+					url:`/pages_minute/productList/productList?type=${type}`
 				})
 			},
 			// 特产详情
@@ -298,6 +321,13 @@
 				if(this.isGetTel()===false) return	
 				uni.navigateTo({
 					url:`/pages_minute/specialtyDetail/specialtyDetail?id=${id}`
+				})
+			},
+			// 娱乐详情
+			toAmusementDetail(id){
+				if(this.isGetTel()===false) return
+				uni.navigateTo({
+					url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${id}`
 				})
 			},
 			// 跳转页面
@@ -313,6 +343,12 @@
 						uni.navigateTo({
 							url: '/pages_minute/specialty/specialty'
 						})
+						break;
+						case 4:
+							uni.navigateTo({
+								url: '/pages_minute/productList/productList?type=2'
+							})
+							break;
 				}
 			}
 		}
