@@ -28,9 +28,9 @@
 		</view>
 		<view class="orderBox"  v-for="(item,index) in detail.childrenOrder" :key="index">
 			<view class="titleBox">
-				<view>{{item.merchantName===0?'园区农产品自提点':item.merchantName}}</view>
+				<view>{{item.merchantName==0?'园区农产品自提点':item.merchantName}}</view>
 				<view>
-					<image src="../../static/order/navigation.png"></image>
+					<image src="../../static/order/navigation.png" @click="navigationTap(item.latitude,item.longitude,item.merchantName,item.address)"></image>
 					<!-- <image src="../../static/order/tel.png"></image> -->
 				</view>
 			</view>
@@ -111,6 +111,24 @@
 			this.getDetail()
 		},
 		methods: {
+			navigationTap(latitude,longitude,merchantName,address){
+				if(!latitude){
+					uni.showToast({
+						title:'暂无地址',
+						icon:'none'
+					})
+					return
+				}
+				uni.openLocation({
+					latitude: latitude * 1,
+					longitude: longitude * 1,
+					name: merchantName,
+					address: address,
+					success: function() {
+						console.log('success');
+					}
+				});
+			},
 			// 取消订单
 			cancelOrder(){
 				uni.showModal({

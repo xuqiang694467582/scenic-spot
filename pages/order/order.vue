@@ -9,7 +9,7 @@
 
 		<u-tabs :list="typeList" @click="changeType" :activeStyle="{ color: 'rgba(8, 183, 97, 1)' }"
 			:inactiveStyle="{ color: 'rgba(51, 51, 51, 1)' }" :itemStyle="{width:'14%',height:'80rpx'}"
-			lineColor="rgba(8, 183, 97, 1)"></u-tabs>
+			lineColor="rgba(8, 183, 97, 1)" :current="curt"></u-tabs>
 
 		<view class="content">
 			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
@@ -84,10 +84,12 @@
 				}, {
 					name: '已取消'
 				}],
-				show:false
+				show:false,
+				curt:0
 			}
 		},
-		onShow() {
+		onLoad(options) {
+			this.curt=options.type
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -124,6 +126,7 @@
 				
 			},
 			async getList() {
+				this.listQuery.status=this.curt==0?'':this.curt-1
 				const {
 					data
 				} = await getOrderList(this.listQuery)
@@ -136,7 +139,7 @@
 				})
 			},
 			changeType(item) {
-				this.listQuery.status = item.index === 0 ? '' : item.index - 1
+				this.curt = item.index
 				this.list = []
 				this.listQuery.page = 1
 				this.getList()

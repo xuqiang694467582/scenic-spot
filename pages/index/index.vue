@@ -8,11 +8,12 @@
 			<uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
 				<view slot="left">
 					<view class="top-content">
-						<u-search v-model="keyword" :showAction="false" placeholder="搜索美食/住宿/商品"></u-search>
+						<u-search v-model="keyword" :showAction="false" placeholder="搜索美食/住宿/商品" @search="searchTap"></u-search>
+						<button open-type='contact' class="kfBox">
 						<view class="top-content-icon">
 							<image src="@/static/index/cust.png"></image>
-							<!-- <u-icon name="../../static/index/cust.png" color="#fff" size="32"></u-icon> -->
 						</view>
+						</button>
 					</view>
 				</view>
 			</uni-nav-bar>
@@ -22,11 +23,11 @@
 			</view> -->
 			<!-- 轮播图 -->
 			<view class="swiperBanner">
-				<u-swiper :list="list" bgColor="transparent" radius="12"></u-swiper>
+				<u-swiper :list="list" bgColor="transparent" radius="12" height="150"></u-swiper>
 			</view>
 			<!-- 菜单 -->
 			<view class="menu">
-				<u-scroll-list :indicator="false" >
+				<u-scroll-list :indicator="false">
 					<view class="scroll-list">
 						<view class="scroll-list__line" v-for="(item, index) in menuArr" :key="index">
 							<view class="scroll-list__line__item" v-for="(item1, index1) in item" :key="index1"
@@ -44,7 +45,8 @@
 				<view class="specialty-title">园区特产</view>
 				<u-scroll-list indicatorActiveColor="#A8A1A1" indicatorColor="#ABABAB">
 					<view class="specialty-list">
-						<view class="specialty-list-con" v-for="(item,index) in specialtyList" :key="index" @click="tospecialty(item.id)">
+						<view class="specialty-list-con" v-for="(item,index) in specialtyList" :key="index"
+							@click="tospecialty(item.id)">
 							<image :src="item.mainImage"></image>
 							<view class="specialty-list-con-text">{{item.name}}</view>
 							<view class="specialty-list-con-price">
@@ -57,11 +59,12 @@
 			</view>
 			<!-- tab -->
 			<view class="tab">
-				<u-tabs :list="Tablist" @click="changeType" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
+				<u-tabs :list="Tablist" @click="changeType" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662"
+					:scrollable="false">
 				</u-tabs>
 			</view>
 			<!-- 特色餐饮 -->
-			<view class="food">
+			<view class="food" id="foodBox">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">特色餐厅</view>
 					<view style="color: #999;font-size: 26rpx;" @click="toProductList(0)">更多></view>
@@ -79,10 +82,10 @@
 				</view>
 			</view>
 			<!-- 旅游住宿 -->
-			<view class="food">
+			<view class="food" id="hotelBox">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">旅游住宿</view>
-					<view style="color: #999;font-size: 26rpx;"  @click="toProductList(1)">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList(1)">更多></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index">
@@ -97,13 +100,14 @@
 				</view>
 			</view>
 			<!-- 休闲娱乐 -->
-			<view class="food">
+			<view class="food" id="amusementBox">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title">休闲娱乐</view>
-					<view style="color: #999;font-size: 26rpx;"  @click="toProductList(2)">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList(2)">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="(item,index) in amusementList" :key="index" @click="toAmusementDetail(item.id)">
+					<view class="food-block-l" v-for="(item,index) in amusementList" :key="index"
+						@click="toAmusementDetail(item.id)">
 						<image :src="item.coverImg"></image>
 						<view class="food-block-l-text">{{item.name}}</view>
 						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon> -->
@@ -124,8 +128,14 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-	import {getDiningRoom,getHotel,getAmusement} from '@/api/index.js'
-	import {getSpecialtyGood} from '@/api/specialty.js'
+	import {
+		getDiningRoom,
+		getHotel,
+		getAmusement
+	} from '@/api/index.js'
+	import {
+		getSpecialtyGood
+	} from '@/api/specialty.js'
 	export default {
 		data() {
 			return {
@@ -166,68 +176,87 @@
 						name: '休闲娱乐',
 					}
 				],
-				diningRoomList:[],
-				hotelList:[],
-				amusementList:[],
-				specialtyList:[]
+				diningRoomList: [],
+				hotelList: [],
+				amusementList: [],
+				specialtyList: []
 			}
 		},
-		computed: mapState(['token','userInfo','location']),
+		computed: mapState(['token', 'userInfo', 'location']),
 		onLoad() {
 			// 登录获取token
 			uni.login({
 				provider: 'weixin',
 				success: async (loginRes) => {
-					this.$store.dispatch('login', loginRes.code).then(() => {	
+					this.$store.dispatch('login', loginRes.code).then(() => {
 						this.getList()
 					})
 				}
 			});
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45
-			
+
 		},
-		onShow(){
+		onShow() {
+			this.keyword=''
 			this.getLocation()
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
+			// 搜索
+			searchTap(){
+				if (this.isGetTel() === false) return
+				uni.navigateTo({
+					url: `/pages_minute/productList/productList?keyword=${this.keyword}`
+				})
+			},
 			// 切换商品类型
-			changeType(e){
-				const id=''
-				// uni.createSelectorQuery()
-				//     .select(".container")//对应外层节点
-				//     .boundingClientRect((container) => {
-				//         uni.createSelectorQuery()
-				//         .select("#target")//目标节点
-				//         .boundingClientRect((target) => {
-				//             uni.pageScrollTo({
-				//             scrollTop: target.top - container.top,//滚动到实际距离是元素距离顶部的距离减去最外层盒子的滚动距离
-				//             });
-				//         })
-				//         .exec();
-				//     })
-				//     .exec();
+			changeType(e) {
+				let id = ''
+				if (e.index === 0) {
+					id = '#foodBox'
+				} else if (e.index === 1) {
+					id = '#hotelBox'
+				} else if (e.index === 2) {
+					id = '#amusementBox'
+				}
+				console.log(e, id)
+				uni.createSelectorQuery()
+					.select(".container") //对应外层节点
+					.boundingClientRect((container) => {
+						uni.createSelectorQuery()
+							.select(id) //目标节点
+							.boundingClientRect((target) => {
+								uni.pageScrollTo({
+									scrollTop: target.top - container.top,
+								});
+							})
+							.exec();
+					})
+					.exec();
 
 			},
-			getList(){
-				const params={
+			getList() {
+				const params = {
 					...this.location,
-					page:1,
-					pageSize:4
+					page: 1,
+					pageSize: 4
 				}
-				getDiningRoom(params).then(res=>{
-					this.diningRoomList=res.data.records
+				getDiningRoom(params).then(res => {
+					this.diningRoomList = res.data.records
 				})
-				getHotel(params).then(res=>{
-					this.hotelList=res.data.records
+				getHotel(params).then(res => {
+					this.hotelList = res.data.records
 				})
-				getAmusement(params).then(res=>{
-					this.amusementList=res.data.records
+				getAmusement(params).then(res => {
+					this.amusementList = res.data.records
 				})
-				getSpecialtyGood({...params,pageSize:8}).then(res=>{
-					this.specialtyList=res.data.records
+				getSpecialtyGood({
+					...params,
+					pageSize: 8
+				}).then(res => {
+					this.specialtyList = res.data.records
 				})
-			},			
+			},
 			getLocation() {
 				const that = this
 				uni.getLocation({
@@ -269,7 +298,7 @@
 																	)
 																}
 															});
-															
+
 														} else {
 															// 没有允许定位权限
 															wx.showToast({
@@ -288,9 +317,9 @@
 					}
 				})
 			},
-			
+
 			//校验手机号
-			isGetTel(){
+			isGetTel() {
 				console.log(this.userInfo)
 				if (!this.userInfo.phone) {
 					uni.showModal({
@@ -310,33 +339,43 @@
 				}
 			},
 			// 商品列表
-			toProductList(type){
-				if(this.isGetTel()===false) return			
+			toProductList(type) {
+				if (this.isGetTel() === false) return
 				uni.navigateTo({
-					url:`/pages_minute/productList/productList?type=${type}`
+					url: `/pages_minute/productList/productList?type=${type}`
 				})
 			},
 			// 特产详情
-			tospecialty(id){
-				if(this.isGetTel()===false) return	
+			tospecialty(id) {
+				if (this.isGetTel() === false) return
 				uni.navigateTo({
-					url:`/pages_minute/specialtyDetail/specialtyDetail?id=${id}`
+					url: `/pages_minute/specialtyDetail/specialtyDetail?id=${id}`
 				})
 			},
 			// 娱乐详情
-			toAmusementDetail(id){
-				if(this.isGetTel()===false) return
+			toAmusementDetail(id) {
+				if (this.isGetTel() === false) return
 				uni.navigateTo({
 					url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${id}`
 				})
 			},
 			// 跳转页面
 			getJump(index1) {
-				if(this.isGetTel()===false) return		
+				if (this.isGetTel() === false) return
 				switch (index1) {
 					case 0:
 						uni.navigateTo({
 							url: '/pages_minute/parktour/parktour'
+						})
+						break;
+					case 1:
+						uni.navigateTo({
+							url: '/pages_minute/productList/productList?type=0'
+						})
+						break;
+					case 2:
+						uni.navigateTo({
+							url: '/pages_minute/productList/productList?type=1'
 						})
 						break;
 					case 3:
@@ -344,11 +383,11 @@
 							url: '/pages_minute/specialty/specialty'
 						})
 						break;
-						case 4:
-							uni.navigateTo({
-								url: '/pages_minute/productList/productList?type=2'
-							})
-							break;
+					case 4:
+						uni.navigateTo({
+							url: '/pages_minute/productList/productList?type=2'
+						})
+						break;
 				}
 			}
 		}
@@ -359,7 +398,22 @@
 	page {
 		background-color: #f4f4f4;
 	}
-
+	.kfBox {
+	    margin: 0;
+	    padding: 0;
+	    background-color: inherit;
+	    position: static;
+		height: 60rpx;
+	}
+	
+	.kfBox:after {
+	    content: none;
+	}
+	
+	/* 去掉边框 */
+	.kfBox::after {
+	    border: none;
+	}
 	.back {
 		width: 100%;
 		height: 568rpx;
@@ -484,10 +538,10 @@
 			.specialty-list-con-text {
 				font-size: 24rpx;
 				font-weight: 600;
-				overflow: hidden; 
-				text-overflow: ellipsis; 
-				display: -webkit-box;		
-				-webkit-line-clamp: 2; 
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
 				-webkit-box-orient: vertical;
 			}
 

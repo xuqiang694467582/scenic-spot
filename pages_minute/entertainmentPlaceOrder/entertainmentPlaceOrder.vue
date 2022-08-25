@@ -101,7 +101,7 @@
 					title:'支付成功'
 				})
 				setTimeout(()=>{
-					uni.switchTab({
+					uni.navigateTo({
 						url:'/pages/order/order'
 					})
 				},1000)
