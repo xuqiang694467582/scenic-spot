@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<uni-nav-bar :statusBar="true" :border="false" leftWidth="460rpx" backgroundColor="#fff">
-			<view slot="left">
+			<view slot="left" class="topBox">
+				<image src="../../static/jtL.png" class="back" @click="backTap"></image>
 				<u-search v-model="listQuery.name" :showAction="false" clearabled placeholder="搜索特产商品" bgColor="#fff" borderColor="rgba(60, 180, 82, 1)" height="28" @search="searchTap"></u-search>
 			</view>
 		</uni-nav-bar>
@@ -48,6 +49,11 @@
 			this.getList()
 		},
 		methods: {
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
 			searchTap(){
 				this.list = []
 				this.listQuery.page = 1
@@ -68,6 +74,16 @@
 </script>
 
 <style lang="scss">
+	.topBox{
+		display: flex;
+		align-items: center;
+		.back{
+			width: 35rpx;
+			height: 35rpx;
+			margin-right: 24rpx;
+		}
+	}
+	
 	.content{
 		padding: 24rpx;
 		box-sizing: border-box;

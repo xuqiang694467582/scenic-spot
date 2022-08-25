@@ -63,15 +63,15 @@
 				curt: 0,
 				typeList: [{
 						name: '选美食',
-						img: '../../static/food.png'
+						img: 'https://village-tourism.oss-cn-hangzhou.aliyuncs.com/scenic-tourism/img/9lzhEdGOFlTtfzeqnGKz.png'
 					},
 					{
 						name: '订住宿',
-						img: '../../static/hotel.png'
+						img: 'https://village-tourism.oss-cn-hangzhou.aliyuncs.com/scenic-tourism/img/9oORPG0QsHEjvDf4sIVl.png'
 					},
 					{
 						name: '玩娱乐',
-						img: '../../static/entertainment.png'
+						img: 'https://village-tourism.oss-cn-hangzhou.aliyuncs.com/scenic-tourism/img/cGd3BJXKWYuoEkD80d4e.png'
 					}
 				],
 				barHightTop:'',
@@ -79,7 +79,8 @@
 					latitude:'',
 					longitude:'',
 					page :1,
-					pageSize:10
+					pageSize:10,
+					name:''
 				},
 				list:[]
 			}
@@ -91,7 +92,8 @@
 			this.listQuery={
 				...this.location,
 				page :1,
-				pageSize:10
+				pageSize:10,
+				name:options.keyword?options.keyword:''
 			},
 			this.getList()
 		},

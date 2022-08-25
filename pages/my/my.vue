@@ -12,7 +12,7 @@
 				<view class="avatar-left" v-else>
 					<u-button type="success" @click="getUserProfile" size="small">授权用户信息</u-button>
 				</view>
-				<u-icon name="setting" size="20"></u-icon>
+				<!-- <u-icon name="setting" size="20"></u-icon> -->
 			</view>
 			<view class="myOrder">
 				<view class="myOrder-text">我的订单</view>
@@ -21,7 +21,7 @@
 						<view class="scroll-list__line" v-for="(item, index) in menuArr" :key="index">
 							<view class="scroll-list__line__item" v-for="(item1, index1) in item" :key="index1"
 								:class="[(index1 === item.length - 1) && 'scroll-list__line__item--no-margin-right']"
-								@click="getJump(index1)">
+								 @click="toOrder(item1.type)">
 								<image class="scroll-list__line__item__image" :src="item1.icon" mode=""></image>
 								<text class="scroll-list__line__item__text">{{ item1.name }}</text>
 							</view>
@@ -45,20 +45,25 @@
 				menuArr: [
 					[{
 							name: '待付款',
-							icon: '../../static/my/1.png'
+							icon: '../../static/my/1.png',
+							type:1
 						},
 						{
 							name: '已支付',
-							icon: '../../static/my/2.png'
+							icon: '../../static/my/2.png',
+							type:2
 						}, {
 							name: '已完成',
-							icon: '../../static/my/3.png'
+							icon: '../../static/my/3.png',
+							type:3
 						}, {
 							name: '已取消',
-							icon: '../../static/my/4.png'
+							icon: '../../static/my/4.png',
+							type:4
 						}, {
 							name: '全部订单',
-							icon: '../../static/my/5.png'
+							icon: '../../static/my/5.png',
+							type:0
 						}
 					],
 				],
@@ -66,6 +71,11 @@
 		},
 		computed: mapState(['userInfo','wechatUserId']),
 		methods: {
+			toOrder(type){
+				uni.navigateTo({
+					url:`/pages/order/order?type=${type}`
+				})
+			},
 			// 获取用户信息
 			getUserProfile() {
 				const that = this
