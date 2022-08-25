@@ -243,6 +243,16 @@
 							url: `/pages_minute/diningDetail/diningDetail?id=${val.id}`
 						})
 						break;
+					case 3:
+						uni.navigateTo({
+							url: `/pages_minute/hotelDetail/hotelDetail?id=${val.id}`
+						})
+						break;
+					case 4:
+						uni.navigateTo({
+							url: `/pages_minute/mentDetail/mentDetail?id=${val.id}`
+						})
+						break;
 				}
 			},
 			getAss(val){

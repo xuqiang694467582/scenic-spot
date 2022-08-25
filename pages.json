@@ -38,8 +38,7 @@
 	],
 	"subPackages": [{
 		"root": "pages_minute",
-		"pages": [
-			{
+		"pages": [{
 				"path": "parktour/parktour",
 				"style": {
 					"navigationBarTitleText": "园区导览",
@@ -71,13 +70,11 @@
 				"style": {
 					"navigationStyle": "custom"
 				}
-			}
-		    ,{
-                    "path" : "specialtyPlaceOrder/specialtyPlaceOrder",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "提交订单",
-                    "enablePullDownRefresh": false,
+			}, {
+				"path": "specialtyPlaceOrder/specialtyPlaceOrder",
+				"style": {
+					"navigationBarTitleText": "提交订单",
+					"enablePullDownRefresh": false,
 					"navigationBarTextStyle": "white",
 					"navigationBarBackgroundColor": "#03B85F"
 				}
@@ -134,8 +131,27 @@
 					"navigationStyle": "custom"
 				}
 
+			}, {
+				"path": "hotelDetail/hotelDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "mentDetail/mentDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "mentOrder/mentOrder",
+				"style": {
+					"navigationBarTitleText": "提交订单",
+					"enablePullDownRefresh": false
+				}
+
 			}
-            ]
+		]
 	}],
 	// 底部导航栏
 	"tabBar": {

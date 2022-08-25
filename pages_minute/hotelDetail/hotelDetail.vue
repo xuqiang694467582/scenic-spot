@@ -20,17 +20,21 @@
 					</view>
 					<image src="@/static/parktour/navigation.png"></image>
 				</view>
-				<u-divider></u-divider>
-				<view style="display: flex;align-items: center;justify-content: space-between;">
+				<!-- <u-divider></u-divider> -->
+				<view>
 					<view>
-						<u-icon name="clock-fill" color="#08B761" :label="'开放时间：'+ formData.alternate.openingHours"></u-icon>
+						<!-- <u-icon name="clock-fill" color="#08B761" :label="'开放时间：'+ formData.alternate.openingHours"></u-icon> -->
 						<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
 							<view v-for="item in formData.label" style="margin-right: 10rpx;margin-bottom: 10rpx;">
-								<u-tag size="mini" :text="item" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666"></u-tag>
+								<u-tag size="mini" :text="item" bgColor="#EDF8EF" borderColor="#08B761" color="#08B761"></u-tag>
 							</view>
 						</view>
 					</view>
-					<u-icon name="arrow-right"></u-icon>
+					<!-- <view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
+						<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
+						<text style="font-size: 24rpx;color: #999;">￥{{ item.originalPrice }}</text>
+					</view> -->
+					<!-- <u-icon name="arrow-right"></u-icon> -->
 				</view>
 			</view>
 			<!-- tab -->
@@ -44,7 +48,7 @@
 			</view>
 			<view class="content-combo">
 				<view class="content-combo-title">
-					<view>推荐套餐</view>
+					<view>优选房型</view>
 					<view style="color: #999;font-size: 26rpx;">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
@@ -73,7 +77,7 @@
 </template>	
 
 <script>
-	import { diningDetail, diningRecoDetail } from '@/api/parktour.js';
+	import { hotelDetail, hotelRecoType } from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
@@ -85,7 +89,7 @@
 						name: '图片介绍',
 					},
 					{
-						name: '推荐套餐',
+						name: '优选房型',
 					}
 				]
 			}
@@ -96,13 +100,13 @@
 		methods: {
 			async load(id){
 				try{
-					const { data } = await diningDetail({
+					const { data } = await hotelDetail({
 						id: id
 					})
 					this.formData = data;
 					this.urls = data.photoExplanation;
-					const res = await diningRecoDetail({
-						diningRoomId: id
+					const res = await hotelRecoType({
+						hotelId: id
 					})
 					this.recommend = res.data;
 				}catch(e){}
