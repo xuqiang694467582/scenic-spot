@@ -143,7 +143,8 @@
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
-								height: 30,
+								height: 20,
+								iconPath: '/static/parktour/tm_1.png',
 								latitude: val.latitude,
 								longitude: val.longitude,
 								title: val.name
@@ -161,7 +162,8 @@
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
-								height: 30,
+								height: 20,
+								iconPath: '/static/parktour/tm_2.png',
 								latitude: val.latitude,
 								longitude: val.longitude,
 								title: val.name
@@ -179,7 +181,8 @@
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
-								height: 30,
+								height: 20,
+								iconPath: '/static/parktour/tm_3.png',
 								latitude: val.latitude,
 								longitude: val.longitude,
 								title: val.name
@@ -197,7 +200,8 @@
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
-								height: 30,
+								height: 20,
+								iconPath: '/static/parktour/tm_4.png',
 								latitude: val.latitude,
 								longitude: val.longitude,
 								title: val.name
@@ -252,7 +256,6 @@
 						uni.navigateTo({
 							url: `/pages_minute/mentDetail/mentDetail?id=${val.id}`
 						})
-						break;
 				}
 			},
 			getAss(val){
