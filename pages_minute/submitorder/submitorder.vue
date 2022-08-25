@@ -10,7 +10,15 @@
 						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥{{ packData.price }}</text>
 						<text style="font-size: 24rpx;color: #999;">￥{{ packData.originalPrice }}</text>
 					</view>
-					<u-number-box v-model="value" siz :integer="true" min="1" @change="change"></u-number-box>
+					<u-number-box v-model="value" :integer="true" min="1" @change="change">
+						<view slot="minus">
+							<u-icon name="/static/reduce.png" width="20" height="20" ></u-icon>
+						</view>
+						<text slot="input" style="margin-right: 20rpx;">{{value}}</text>
+						<view slot="plus">
+							<u-icon name="/static/add.png" width="20" height="20" ></u-icon>
+						</view>
+					</u-number-box>
 				</view>
 			</view>
 		</view>
@@ -48,6 +56,9 @@
 		addPlace,
 		addOrderPay
 	} from '@/api/order.js';
+	import {
+		mapState
+	} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -72,13 +83,13 @@
 						message: "姓名必须为中文",
 						trigger: ["change", "blur"],
 					}],
-					number:{
+					number: {
 						type: 'string',
 						required: true,
 						message: '请填写用餐人数',
 						trigger: ['blur']
 					},
-					tel:{
+					tel: {
 						type: 'string',
 						required: true,
 						message: '请填写手机号',
@@ -87,12 +98,14 @@
 				}
 			}
 		},
+		computed: mapState(['userInfo']),
 		onReady() {
 			// 如果需要兼容微信小程序，并且校验规则中含有方法等，只能通过setRules方法设置规则
 			this.$refs.form.setRules(this.rules)
 		},
 		onLoad(option) {
 			this.load(option.id)
+			this.model.tel = this.userInfo.phone;
 		},
 		methods: {
 			async load(id) {
@@ -105,9 +118,9 @@
 				this.price = data.price;
 			},
 			gotoPage() {
-				uni.navigateTo({
-					url: '/pages_minute/diningOrder/diningOrder'
-				})
+				// uni.navigateTo({
+				// 	url: '/pages_minute/diningOrder/diningOrder'
+				// })
 			},
 			hideKeyboard() {
 				uni.hideKeyboard()
@@ -137,7 +150,9 @@
 						}]
 					}]
 					try {
-						const { data } = await addPlace({
+						const {
+							data
+						} = await addPlace({
 							orders: params
 						})
 						console.log(data);
@@ -147,16 +162,18 @@
 					uni.$u.toast('校验失败')
 				})
 			},
-			async payOrder(orderSn){
-				await addOrderPay({orderSn:orderSn})
-				uni.showToast({
-					title:'支付成功'
+			async payOrder(orderSn) {
+				await addOrderPay({
+					orderSn: orderSn
 				})
-				setTimeout(()=>{
+				uni.showToast({
+					title: '支付成功'
+				})
+				setTimeout(() => {
 					uni.navigateTo({
-						url:'/pages/order/order'
+						url: '/pages/order/order'
 					})
-				},1000)
+				}, 1000)
 			}
 		}
 	}

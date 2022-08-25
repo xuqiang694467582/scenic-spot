@@ -10,7 +10,15 @@
 						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥{{ packData.price }}</text>
 						<text style="font-size: 24rpx;color: #999;">￥{{ packData.originalPrice }}</text>
 					</view>
-					<u-number-box v-model="value" siz :integer="true" min="1" @change="change"></u-number-box>
+					<u-number-box v-model="value" :integer="true" min="1" @change="change">
+						<view slot="minus">
+							<u-icon name="/static/reduce.png" width="20" height="20" ></u-icon>
+						</view>
+						<text slot="input" style="margin-right: 20rpx;">{{value}}</text>
+						<view slot="plus">
+							<u-icon name="/static/add.png" width="20" height="20" ></u-icon>
+						</view>
+					</u-number-box>
 				</view>
 			</view>
 		</view>
@@ -52,6 +60,7 @@
 		addPlace,
 		addOrderPay
 	} from '@/api/order.js';
+	import { mapState } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -93,12 +102,14 @@
 				time: []
 			}
 		},
+		computed: mapState(['userInfo']),
 		onReady() {
 			// 如果需要兼容微信小程序，并且校验规则中含有方法等，只能通过setRules方法设置规则
 			this.$refs.form.setRules(this.rules)
 		},
 		onLoad(option) {
 			this.load(option.id)
+			this.model.tel = this.userInfo.phone;
 		},
 		methods: {
 			async load(id) {

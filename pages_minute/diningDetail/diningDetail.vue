@@ -48,7 +48,7 @@
 					<view style="color: #999;font-size: 26rpx;">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
-					<view style="display: flex;align-items: center;"  @click="gotoPage()">
+					<view style="display: flex;align-items: center;" >
 						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" :src="item.mainImage"></image>
 						<view>
 							<text>{{ item.name }}</text>
