@@ -40,8 +40,8 @@
 					<!-- <u-icon name="arrow-right"></u-icon> -->
 				</view>
 			</view>
-			<view class="filter">
-				<!-- 吸顶 -->
+			<!-- 吸顶 筛选 -->
+			<!-- <view class="filter">
 				<u-sticky>
 					<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
 						<view style="display: flex;align-items: center;">
@@ -70,7 +70,7 @@
 						</view>
 					</view>
 				</u-sticky>
-			</view>
+			</view> -->
 			<!-- tab -->
 			<view class="tab">
 				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
@@ -310,7 +310,7 @@
 			},
 			getReserve(val) {
 				uni.navigateTo({
-					url: `/pages_minute/submitorder/submitorder?id=${val.id}`
+					url: `/pages_minute/hotelOrder/hotelOrder?id=${val.id}`
 				})
 			},
 			checkboxClick(name) {
