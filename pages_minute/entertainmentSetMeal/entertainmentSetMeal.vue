@@ -1,23 +1,23 @@
 <template>
 	<view class="content">
-		<u-swiper :list="bannerList" @change="change" @click="click" radius="12" height="197" :autoplay="false">
+		<u-swiper :list="[detail.mainImage]" @change="change" @click="click" radius="12" height="197" :autoplay="false">
 		</u-swiper>
 		<view class="mouduleBox">
-			<view class="name">【双人】全天全场通玩</view>
+			<view class="name">{{detail.name}}</view>
 			<view class="infoBox">
 				<view>
 					<text class="unit">￥</text>
-					<text class="price">298</text>
-					<tetx class="oldPrice">￥289</tetx>
+					<text class="price">{{detail.price}}</text>
+					<tetx class="oldPrice">￥{{detail.originalPrice}}</tetx>
 					<text class="iInfo">免预约</text>
-					<text class="iInfo" style="margin-left: 20rpx;">半年消费550</text>
+					<!-- <text class="iInfo" style="margin-left: 20rpx;">半年消费550</text> -->
 				</view>
 				<view class="reserve" @click="toPlaceOrder">预订</view>
 			</view>
-			<view class="tipBox">
+			<!-- <view class="tipBox">
 				<text class="tTitle">提示</text>
 				<text>周一至周五10:00-22:00 周六周日10:00-23:00</text>
-			</view>
+			</view> -->
 			<view class="tipBox">
 				<text class="tTitle">保障</text>
 				<text>可退款·过期自动退款</text>
@@ -26,12 +26,7 @@
 		<view class="mouduleBox">
 			<view class="name">规则介绍</view>
 			<view class="ruleBox">
-				卡座区域不可以吸烟哦，吸烟请到吸烟区。
-				工作日畅玩套餐使用时间:周一至周五10:00-22:00期间连
-				续畅玩5小时。
-				若游玩时长超出5小时且未超出门店正常打烊时间的,按照
-				本套餐价格20元/小时计时收费。超出门门店打烊时间的，
-				按门店价35元/小时收费。
+				{{detail.introduce}}
 			</view>
 		</view>
 		
@@ -40,20 +35,26 @@
 </template>
 
 <script>
+	import {getAmusementPackageDetail} from '@/api/index.js'
 	export default {
 		data() {
 			return {
-				bannerList: [
-					'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-					'https://cdn.uviewui.com/uview/swiper/swiper2.png',
-					'https://cdn.uviewui.com/uview/swiper/swiper3.png',
-				]
+				id:'',
+				detail:''
 			}
 		},
+		onLoad(options){
+			this.id=options.id
+			this.getDetail()
+		},
 		methods: {
+			async getDetail(){
+				const {data}=await getAmusementPackageDetail({id:this.id})
+				this.detail=data
+			},
 			toPlaceOrder(){
 				uni.navigateTo({
-					url:'/pages_minute/entertainmentPlaceOrder/entertainmentPlaceOrder'
+					url:`/pages_minute/entertainmentPlaceOrder/entertainmentPlaceOrder?id=${this.id}`
 				})
 			}
 		}

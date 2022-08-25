@@ -2,41 +2,46 @@
 	<view>
 		<view class="banner">
 			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
-			<image src="../../static/index/menu_4.png" class="bannerImg"></image>
+			<image :src="detail.coverImg" class="bannerImg"></image>
 		</view>
 		<view class="content">
 			<view class="mouduleBox">
-				<view class="name">新运动潮玩空间</view>
+				<view class="name">{{detail.name}}</view>
 				<view class="shopInfo">
-					<view class="fraction">4.8分</view>
-					<image src="../../static/parktour/navigation.png" class="navigationIco"></image>
+					<view class="fraction">{{detail.score}}分</view>
+					<image src="../../static/parktour/navigation.png" class="navigationIco" @click="navigationTap">
+					</image>
 				</view>
 				<view class="shopDate">
 					<image src="../../static/time.png"></image>
-					<view>开放时间：周一至周五10:00-22:00周一至周五10:00-22:00</view>
+					<view>开放时间：{{detail.alternate.openingHours}}</view>
 				</view>
 				<view class="deviceBox">
-					<view v-for="(item,index) in 5" :key="index">空调开放</view>
+					<view v-for="(item,index) in detail.label" :key="index">{{item}}</view>
 				</view>
 			</view>
 			<view class="mouduleBox">
 				<view class="title">图片介绍</view>
 				<scroll-view class="imgBox" scroll-x="true">
-					<image src="../../static/index/menu_4.png" v-for="(item,index) in 5" :key="index"></image>
-					<view class="imgNum">6图</view>
+					<image :src="item" v-for="(item,index) in detail.photoExplanation" :key="index"></image>
+					<view class="imgNum" v-show="detail.photoExplanation.length>4">{{detail.photoExplanation.length}}图
+					</view>
 				</scroll-view>
 			</view>
 			<view class="mouduleBox">
 				<view class="title">推荐套餐</view>
-				<view class="setMeal" v-for="(item,index) in 5" :key="index" @click="toDetail">
-					<image src="../../static/index/menu_4.png"></image>
+				<view class="setMeal" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+					<image :src="item.mainImage"></image>
 					<view class="setMealR">
-						<view class="sName">【双人】全天全场通玩</view>
-						<view class="sInfo">免预约<text>半年消费550</text></view>
+						<view class="sName">{{item.name}}</view>
+						<view class="sInfo">
+							免预约
+							<!-- <text>半年消费550</text> -->
+						</view>
 						<view class="priceBox">
 							￥
-							<text class="price">289</text>
-							<text class="oldPrice">￥289</text>
+							<text class="price">{{item.price}}</text>
+							<text class="oldPrice">￥{{item.originalPrice}}</text>
 						</view>
 					</view>
 				</view>
@@ -46,19 +51,53 @@
 </template>
 
 <script>
+	import {
+		getAmusementDetail,getAmusementPackage
+	} from '@/api/index.js'
 	export default {
 		data() {
 			return {
-				barHightTop: ''
+				barHightTop: '',
+				id: '',
+				detail: '',
+				list:[]
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
+			this.id = options.id
+			this.getDetail()
+			this.getList()
 		},
 		methods: {
-			toDetail() {
+			// 导航
+			navigationTap() {
+				const that = this
+				uni.openLocation({
+					latitude: that.detail.latitude * 1,
+					longitude: that.detail.longitude * 1,
+					name: that.detail.name,
+					address: that.detail.address,
+					success: function() {
+						console.log('success');
+					}
+				});
+			},
+			async getDetail() {
+				const {
+					data
+				} = await getAmusementDetail({
+					id: this.id
+				})
+				this.detail = data
+			},
+			async getList(){
+				const {data}=await getAmusementPackage({page:1,pageSize:100,amusementId:this.id})
+				this.list=data.records
+			},
+			toDetail(id) {
 				uni.navigateTo({
-					url: '/pages_minute/entertainmentSetMeal/entertainmentSetMeal'
+					url:`/pages_minute/entertainmentSetMeal/entertainmentSetMeal?id=${id}`
 				})
 			},
 			backTap() {

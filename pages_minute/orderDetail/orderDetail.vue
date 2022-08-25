@@ -26,19 +26,24 @@
 				<view class="statusInfo">已取消订单，希望再次光顾</view>
 			</view>
 		</view>
-		<view class="orderBox">
+		<view class="orderBox"  v-for="(item,index) in detail.childrenOrder" :key="index">
 			<view class="titleBox">
-				<view>园区农产品自提点</view>
-				<!-- <view>
+				<view>{{item.merchantName===0?'园区农产品自提点':item.merchantName}}</view>
+				<view>
 					<image src="../../static/order/navigation.png"></image>
-					<image src="../../static/order/tel.png"></image>
-				</view> -->
+					<!-- <image src="../../static/order/tel.png"></image> -->
+				</view>
 			</view>
-			<view v-for="(item,index) in detail.childrenOrder" :key="index">
-				<view class="listInfo" v-for="(items,indexs) in item.orderItemDetailVoList" :key="indexs">
-					<image :src="items.productInfo.productImage"></image>
+				<view class="listInfo" v-for="(items,indexs) in item.orderItemDetailVoList" :key="indexs">				
+					<image :src="items.productInfo.diningRoomPackageImage" v-show="item.type==='0'"></image>
+					<image :src="items.productInfo.amusementPackageImage" v-show="item.type==='1'"></image>
+					<image :src="items.productInfo.hotelTypeImage" v-show="item.type==='2'"></image>
+					<image :src="items.productInfo.productImage" v-show="item.type==='3'"></image>
 					<view class="infoR">
-						<view class="infoName">{{items.productInfo.productName}}</view>
+						<view class="infoName"  v-show="item.type==='0'">{{items.productInfo.diningRoomPackageName}}</view>
+						<view class="infoName"  v-show="item.type==='1'">{{items.productInfo.amusementPackageName}}</view>
+						<view class="infoName"  v-show="item.type==='2'">{{items.productInfo.hotelTypeName}}</view>
+						<view class="infoName"  v-show="item.type==='3'">{{items.productInfo.productName}}</view>
 						<!-- <view class="spec">30枚 1.5kg/份</view> -->
 						<view class="priceBox">
 							<text class="unit">￥</text>
@@ -47,7 +52,6 @@
 						</view>
 					</view>
 				</view>
-			</view>
 			
 			<view class="totalPriceBox">
 				<view class="text">合计</view>
