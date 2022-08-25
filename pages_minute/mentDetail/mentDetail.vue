@@ -18,7 +18,7 @@
 						</view> -->
 						<!-- <u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag> -->
 					</view>
-					<image src="@/static/parktour/navigation.png"></image>
+					<image src="@/static/parktour/navigation.png" @click="getAss()"></image>
 				</view>
 				<u-divider></u-divider>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
@@ -121,6 +121,23 @@
 				uni.navigateTo({
 					url: `/pages_minute/mentOrder/mentOrder?id=${val.id}`
 				})
+			},
+			getAss(val){
+				uni.getLocation({
+					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
+					success: function (res) {
+						console.log(res);
+						const latitude = res.latitude;
+						const longitude = res.longitude;
+						uni.openLocation({
+							latitude: latitude,
+							longitude: longitude,
+							success: function () {
+								console.log('success');
+							}
+						});
+					}
+				});
 			}
 		}
 	}

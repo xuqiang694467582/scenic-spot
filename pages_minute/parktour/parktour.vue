@@ -270,6 +270,7 @@
 				uni.getLocation({
 					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
 					success: function (res) {
+						console.log(res);
 						const latitude = res.latitude;
 						const longitude = res.longitude;
 						uni.openLocation({
