@@ -25,18 +25,20 @@
 		<!-- 底部列表弹框 -->
 		<u-popup :show="show" mode="bottom" :overlay="false" round="12">
 			<view class="cont-list">
-				<view class="list" v-for="(item,index1) in list">
-					<view class="list-l"  @click="gotoPage(item)">
-						<image :src="item.coverImg"></image>
-						<view class="list-l-r">
-							<text>{{ item.name }}</text>
-							<u-icon name="map-fill" :label="'距离你' + item.distanceStr" color="#08B761" size="24rpx" labelSize="24rpx"></u-icon>
+				<scroll-view style="height: 100%;" :scroll-y="true" @scrolltolower="lower">
+					<view class="list" v-for="(item,index1) in list">
+						<view class="list-l"  @click="gotoPage(item)">
+							<image :src="item.coverImg"></image>
+							<view class="list-l-r">
+								<text>{{ item.name }}</text>
+								<u-icon name="map-fill" :label="'距离你' + item.distanceStr" color="#08B761" size="24rpx" labelSize="24rpx"></u-icon>
+							</view>
+						</view>
+						<view class="list-r">
+							<image src="@/static/parktour/navigation.png" @click="getAss(item)"></image>
 						</view>
 					</view>
-					<view class="list-r">
-						<image src="@/static/parktour/navigation.png" @click="getAss(item)"></image>
-					</view>
-				</view>
+				</scroll-view>
 			</view>
 		</u-popup>
 		<!-- 底部简介弹框 -->
@@ -114,11 +116,15 @@
 				],
 				list: [],
 				// 当前地图中心经纬度
-				latitude: "30.463158909233673",
-				longitude: "104.58973142824175",
+				latitude: "",
+				longitude: "",
 				// 标记点，多个对象可生成多个点
 				markers: [],
 				show: true,
+				listQuery:{
+					page: 1,
+					pageSize: 10
+				},
 			}
 		},
 		computed: mapState(['location']),
@@ -126,6 +132,11 @@
 			this.load();
 		},
 		methods: {
+			// 上拉分页
+			lower() {
+				this.listQuery.page++
+				this.load()
+			},
 			// 获取列表
 			async load(){
 				// 清空地图标点
@@ -133,15 +144,16 @@
 				switch(this.menuType){
 					case 1:
 						const { data } = await soptList({
-							latitude: "30.463158909233673",
-							longitude: "104.58973142824175",
+							latitude: this.location.latitude,
+							longitude: this.location.longitude,
+							...this.listQuery
 						});
 						// 列表取值
-						this.list = data.records;
-						this.latitude = data.records[0].latitude;
-						this.longitude = data.records[0].longitude;
+						this.list = this.list.concat(data.records);
+						this.latitude = this.list[0].latitude;
+						this.longitude = this.list[0].longitude;
 						// 地图标点
-						data.records.map((val) => {
+						this.list.map((val) => {
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
@@ -155,14 +167,15 @@
 						break;
 					case 2:
 						const data1 = await diningList({
-							latitude: "30.463158909233673",
-							longitude: "104.58973142824175",
+							latitude: this.location.latitude,
+							longitude: this.location.longitude,
+							...this.listQuery
 						})
-						this.list = data1.data.records;
-						this.latitude = data1.data.records[0].latitude;
-						this.longitude = data1.data.records[0].longitude;
+						this.list = this.list.concat(data1.data.records);
+						this.latitude = this.list[0].latitude;
+						this.longitude = this.list[0].longitude;
 						// 地图标点
-						data1.data.records.map((val) => {
+						this.list.map((val) => {
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
@@ -176,14 +189,15 @@
 						break;
 					case 3:
 						const data2 = await hotelList({
-							latitude: "30.463158909233673",
-							longitude: "104.58973142824175",
+							latitude: this.location.latitude,
+							longitude: this.location.longitude,
+							...this.listQuery
 						})
-						this.list = data2.data.records;
-						this.latitude = data2.data.records[0].latitude;
-						this.longitude = data2.data.records[0].longitude;
+						this.list = this.list.concat(data2.data.records);
+						this.latitude = this.list[0].latitude;
+						this.longitude = this.list[0].longitude;
 						// 地图标点
-						data2.data.records.map((val) => {
+						this.list.map((val) => {
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
@@ -197,14 +211,15 @@
 						break;
 					case 4:
 						const data3 = await mentList({
-							latitude: "30.463158909233673",
-							longitude: "104.58973142824175",
+							latitude: this.location.latitude,
+							longitude: this.location.longitude,
+							...this.listQuery
 						});
-						this.list = data3.data.records;
-						this.latitude = data3.data.records[0].latitude;
-						this.longitude = data3.data.records[0].longitude;
+						this.list = this.list.concat(data3.data.records);
+						this.latitude = this.list[0].latitude;
+						this.longitude = this.list[0].longitude;
 						// 地图标点
-						data3.data.records.map((val) => {
+						this.list.map((val) => {
 							this.markers.push({
 								id: Number(val.id),
 								width: 20,
@@ -219,6 +234,7 @@
 			},
 			// 点击顶部菜单触发
 			getMenu(type) {
+				this.listQuery.page = 1;
 				this.show = true;
 				this.menuType = type;
 				this.list = [];
@@ -347,7 +363,6 @@
 	.cont-list {
 		height: 500rpx;
 		padding: 20rpx;
-		overflow: auto;
 	}
 
 	.list {
