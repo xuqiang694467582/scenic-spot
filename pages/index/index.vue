@@ -247,7 +247,6 @@
 				} else if (e.index === 2) {
 					id = '#amusementBox'
 				}
-				console.log(e, id)
 				uni.createSelectorQuery()
 					.select(".container") //对应外层节点
 					.boundingClientRect((container) => {

@@ -35,17 +35,17 @@
 			</view>
 			<!-- tab -->
 			<view class="tab">
-				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
+				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false" @click="changeType">
 				</u-tabs>
 			</view>
-			<view class="content-image">
+			<view class="content-image" id="foodBox">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" singleSize="210rpx" multipleSize="100" :urls="urls"></u-album>
+				<u-album maxCount="3" space="10" singleSize="100" multipleSize="100" :urls="urls"></u-album>
 			</view>
-			<view class="content-combo">
+			<view class="content-combo" id="hotelBox">
 				<view class="content-combo-title">
 					<view>推荐套餐</view>
-					<view style="color: #999;font-size: 26rpx;">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList()">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
 					<view style="display: flex;align-items: center;" >
@@ -117,9 +117,37 @@
 					url: '/pages_minute/reserve/reserve'
 				})
 			},
+			// 切换商品类型
+			changeType(e) {
+				let id = ''
+				if (e.index === 0) {
+					id = '#foodBox'
+				} else if (e.index === 1) {
+					id = '#hotelBox'
+				}
+				console.log(e, id)
+				uni.createSelectorQuery()
+					.select(".pages") //对应外层节点
+					.boundingClientRect((pages) => {
+						uni.createSelectorQuery()
+							.select(id) //目标节点
+							.boundingClientRect((target) => {
+								uni.pageScrollTo({
+									scrollTop: target.top - pages.top,
+								});
+							})
+							.exec();
+					})
+					.exec();
+			},
 			getReserve(val){
 				uni.navigateTo({
 					url: `/pages_minute/submitorder/submitorder?id=${val.id}`
+				})
+			},
+			toProductList() {
+				uni.navigateTo({
+					url: `/pages_minute/productList/productList?type=${0}`
 				})
 			},
 			getAss(val){

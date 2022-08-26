@@ -41,9 +41,22 @@
 				</view>
 			</view>
 			<!-- 吸顶 筛选 -->
-			<!-- <view class="filter">
+			<view class="filter">
 				<u-sticky>
-					<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
+					<view style="display: flex;align-items: center;justify-content: space-between;" @click="showTime = true">
+						<view>
+							<text style="font-weight: bold;margin-right: 12rpx;">{{ startTime }}</text>
+							<!-- <text style="font-size: 24rpx;color: #333;">今天</text> -->
+						</view>
+						<view style="margin: 0 20rpx;">
+							<u-tag text="1晚" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
+						</view>
+						<view>
+							<text style="font-weight: bold;margin-right: 12rpx;">{{ endTime }}</text>
+							<!-- <text style="font-size: 24rpx;color: #333;">明天</text> -->
+						</view>
+					</view>	
+					<!-- <view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
 						<view style="display: flex;align-items: center;">
 							<text style="font-size: 40rpx;font-weight: bold;margin-right: 12rpx;">6-20</text>
 							<text style="font-size: 26rpx;color: #333;">今天</text>
@@ -55,8 +68,8 @@
 						</view>
 						<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
 						<text style="font-size: 40rpx;font-weight: bold;">1间·1人</text>	
-					</view>
-					<view style="display: flex;align-items: center;justify-content: space-between;">
+					</view> -->
+					<!-- <view style="display: flex;align-items: center;justify-content: space-between;">
 						<view style="display: flex;align-items: center;">
 							<view style="margin-right: 10rpx;" v-for="(item, index) in checkboxs" :key="index">
 								<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" size="mini"
@@ -68,22 +81,22 @@
 						<view style="width: 150rpx;">
 							<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
 						</view>
-					</view>
+					</view> -->
 				</u-sticky>
-			</view> -->
+			</view>
 			<!-- tab -->
 			<view class="tab">
-				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false">
+				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false" @click="changeType">
 				</u-tabs>
 			</view>
-			<view class="content-image">
+			<view class="content-image" id="foodBox">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" singleSize="210rpx" multipleSize="100" :urls="urls"></u-album>
+				<u-album maxCount="3" space="10" singleSize="100" multipleSize="100" :urls="urls"></u-album>
 			</view>
-			<view class="content-combo">
+			<view class="content-combo" id="hotelBox">
 				<view class="content-combo-title">
 					<view>优选房型</view>
-					<view style="color: #999;font-size: 26rpx;">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList()">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
 					<view style="display: flex;align-items: center;">
@@ -115,6 +128,9 @@
 				</view>
 			</view>
 		</view>
+		<!-- 日期 -->
+		<u-calendar :show="showTime" mode="range" @confirm="confirm" @close="showTime = false" startText="住店"
+			endText="离店" confirmDisabledText="请选择离店日期"></u-calendar>
 		<!-- 筛选弹框 -->
 		<u-popup :show="show" mode="top" round="20" closeOnClickOverlay @close="show = false">
 			<view style="padding: 20rpx;margin-top: 3rem;">
@@ -207,7 +223,9 @@
 	export default {
 		data() {
 			return {
+				id: '',
 				show: false,
+				showTime: false,
 				formData: {},
 				urls: [],
 				recommend: [],
@@ -278,11 +296,14 @@
 						text: '无Wifi',
 						checked: false
 					}
-				]
+				],
+				startTime: '',
+				endTime: ''
 			}
 		},
 		onLoad(option) {
 			this.load(option.id)
+			this.id = option.id;
 		},
 		methods: {
 			async load(id) {
@@ -295,21 +316,56 @@
 					this.formData = data;
 					this.urls = data.photoExplanation;
 					// 当前时间
-					let startTime = uni.$u.timeFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+					this.startTime = uni.$u.timeFormat(new Date(), 'yyyy-mm-dd');
 					// 结束时间
-					let endTime = uni.$u.timeFormat(+new Date() + 24 * 60 * 60 * 1000, 'yyyy-mm-dd hh:MM:ss');
+					this.endTime = uni.$u.timeFormat(+new Date() + 24 * 60 * 60 * 1000, 'yyyy-mm-dd');
+					this.loadReco(id)
+				} catch (e) {}
+			},
+			async loadReco(id){
+				try{
 					const res = await hotelRecoList({
 						hotelId: id,
-						checkInStartTime: startTime,
-						checkOutEndTime: endTime
+						checkInStartTime: this.startTime,
+						checkOutEndTime: this.endTime
 					})
 					this.recommend = res.data.records;
-				} catch (e) {}
+				}catch(e){}
 			},
 			clickLeft() {
 				uni.navigateBack({
 					delta: -1
 				})
+			},
+			confirm(e){
+				// 当前时间
+				this.startTime = e[0];
+				// 结束时间
+				this.endTime = e[e.length - 1];
+				this.showTime = false;
+				this.loadReco(this.id);
+			},
+			// 切换商品类型
+			changeType(e) {
+				let id = ''
+				if (e.index === 0) {
+					id = '#foodBox'
+				} else if (e.index === 1) {
+					id = '#hotelBox'
+				}
+				uni.createSelectorQuery()
+					.select(".pages") //对应外层节点
+					.boundingClientRect((pages) => {
+						uni.createSelectorQuery()
+							.select(id) //目标节点
+							.boundingClientRect((target) => {
+								uni.pageScrollTo({
+									scrollTop: target.top - pages.top,
+								});
+							})
+							.exec();
+					})
+					.exec();
 			},
 			gotoPage() {
 				uni.navigateTo({
@@ -317,8 +373,19 @@
 				})
 			},
 			getReserve(val) {
+				let obj = {
+					id: val.id,
+					startTime: this.startTime,
+					endTime: this.endTime
+				}
+				let item = encodeURIComponent(JSON.stringify(obj));
 				uni.navigateTo({
-					url: `/pages_minute/hotelOrder/hotelOrder?id=${val.id}`
+					url: `/pages_minute/hotelOrder/hotelOrder?obj=${item}`
+				})
+			},
+			toProductList() {
+				uni.navigateTo({
+					url: `/pages_minute/productList/productList?type=${1}`
 				})
 			},
 			checkboxClick(name) {

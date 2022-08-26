@@ -108,7 +108,10 @@
 			this.$refs.form.setRules(this.rules)
 		},
 		onLoad(option) {
-			this.load(option.id)
+			const obj = JSON.parse(decodeURIComponent(option.obj));
+			this.load(obj.id);
+			this.model.hotel = obj.startTime + ' / ' + obj.endTime;
+			this.time = [obj.startTime,obj.endTime];
 			this.model.tel = this.userInfo.phone;
 		},
 		methods: {
