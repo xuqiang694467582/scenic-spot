@@ -49,7 +49,7 @@
 							<!-- <text style="font-size: 24rpx;color: #333;">今天</text> -->
 						</view>
 						<view style="margin: 0 20rpx;">
-							<u-tag text="1晚" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
+							<u-tag :text="num +'晚'" shape="circle" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
 						</view>
 						<view>
 							<text style="font-weight: bold;margin-right: 12rpx;">{{ endTime }}</text>
@@ -228,6 +228,7 @@
 				showTime: false,
 				formData: {},
 				urls: [],
+				num: 1,
 				recommend: [],
 				Tablist: [{
 						name: '图片介绍',
@@ -338,6 +339,7 @@
 				})
 			},
 			confirm(e){
+				this.num = e.length - 1;
 				// 当前时间
 				this.startTime = e[0];
 				// 结束时间
