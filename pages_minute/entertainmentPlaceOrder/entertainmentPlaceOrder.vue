@@ -21,8 +21,12 @@
 		</view>
 		<view class="mouduleBox" style="flex-direction: column;">
 			<view class="telBox">
+				<view>姓名</view>
+				<input placeholder="填写姓名" :value="name" />
+			</view>
+			<view class="telBox">
 				<view>预留手机尾号</view>
-				<input placeholder="填写手机尾号" :value="phone" />
+				<input placeholder="填写手机尾号" type="number" :value="phone" />
 			</view>
 			<view class="telBox">
 				<view>备注</view>
@@ -55,7 +59,8 @@
 				detail: '',
 				phone: '',
 				num:1,
-				remark:''
+				remark:'',
+				name:''
 			}
 		},
 		computed: {
@@ -71,6 +76,20 @@
 		},
 		methods: {
 			async payTap(){
+				if(!this.name){
+					uni.showToast({
+						title:'请输入姓名',
+						icon:'none'
+					})
+					return
+				}
+				if(!this.phone){
+					uni.showToast({
+						title:'请输入电话',
+						icon:'none'
+					})
+					return
+				}
 				const params = [{
 					type: 1,
 					specialtyGoodInfoVo: {
@@ -81,7 +100,7 @@
 					merchantId:this.detail.amusementId,
 					merchantName:this.detail.amusementName,
 					amusementPackageInfoVo:{
-						name:this.userInfo.nickname,
+						name:this.name,
 						number:'',
 						tel:this.phone
 					},

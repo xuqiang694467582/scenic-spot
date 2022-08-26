@@ -4,7 +4,7 @@
 			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
 			<image :src="typeList[curt].img" class="bannerImg"></image>
 		</view>
-		
+
 		<view class="content">
 			<view class="typeBox">
 				<view v-for="(item,index) in typeList" :key="index" :class="curt==index?'active':''"
@@ -36,7 +36,7 @@
 						<view class="more">
 							<text v-for="(items,indexs) in item.label" :key="indexs">“{{items}}”</text>
 						</view>
-					<!-- 	<view class="price">
+						<!-- 	<view class="price">
 							<text class="unit">￥</text>
 							<text class="money">133</text>
 							<text class="qi">起</text>
@@ -56,7 +56,11 @@
 	import {
 		mapState
 	} from 'vuex'
-	import {getChooseFood,getChooseHotel,getChooseAmusement} from '@/api/index.js'
+	import {
+		getChooseFood,
+		getChooseHotel,
+		getChooseAmusement
+	} from '@/api/index.js'
 	export default {
 		data() {
 			return {
@@ -74,28 +78,28 @@
 						img: 'https://village-tourism.oss-cn-hangzhou.aliyuncs.com/scenic-tourism/img/cGd3BJXKWYuoEkD80d4e.png'
 					}
 				],
-				barHightTop:'',
-				listQuery:{
-					latitude:'',
-					longitude:'',
-					page :1,
-					pageSize:10,
-					name:''
+				barHightTop: '',
+				listQuery: {
+					latitude: '',
+					longitude: '',
+					page: 1,
+					pageSize: 10,
+					name: ''
 				},
-				list:[]
+				list: []
 			}
 		},
 		computed: mapState(['location']),
 		onLoad(options) {
-			this.barHightTop = uni.getSystemInfoSync().statusBarHeight +5
-			this.curt=options.type?options.type:0
-			this.listQuery={
-				...this.location,
-				page :1,
-				pageSize:10,
-				name:options.keyword?options.keyword:''
-			},
-			this.getList()
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
+			this.curt = options.type ? options.type*1 : 0
+			this.listQuery = {
+					...this.location,
+					page: 1,
+					pageSize: 10,
+					name: options.keyword ? options.keyword : ''
+				},
+				this.getList()
 		},
 		onPullDownRefresh() {
 			this.list = []
@@ -107,31 +111,47 @@
 			this.getList()
 		},
 		methods: {
-			async getList(){					
-				if(this.curt==0){
-					const {data}= await getChooseFood(this.listQuery)
+			async getList() {
+				if (this.curt == 0) {
+					const {
+						data
+					} = await getChooseFood(this.listQuery)
 					uni.stopPullDownRefresh()
 					this.list = this.list.concat(data.records)
-					
-				}else if(this.curt==1){
-					const {data}= await getChooseHotel(this.listQuery)
+
+				} else if (this.curt == 1) {
+					const {
+						data
+					} = await getChooseHotel(this.listQuery)
 					uni.stopPullDownRefresh()
 					this.list = this.list.concat(data.records)
-					
-				}else if(this.curt==2){
-					const {data}= await getChooseAmusement(this.listQuery)
+
+				} else if (this.curt == 2) {
+					const {
+						data
+					} = await getChooseAmusement(this.listQuery)
 					uni.stopPullDownRefresh()
 					this.list = this.list.concat(data.records)
-					
+
 				}
 			},
 			toDetail(id) {
 				switch (this.curt) {
+					case 0:
+						uni.navigateTo({
+							url: `/pages_minute/diningDetail/diningDetail?id=${id}`
+						})
+						break;
+					case 1:
+						uni.navigateTo({
+							url: `/pages_minute/hotelDetail/hotelDetail?id=${id}`
+						})
+						break;
 					case 2:
 						uni.navigateTo({
 							url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${id}`
 						})
-					break;
+						break;
 
 				}
 			},
@@ -141,9 +161,9 @@
 				this.listQuery.page = 1
 				this.getList()
 			},
-			backTap(){
+			backTap() {
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
 			}
 		}
@@ -218,13 +238,14 @@
 					height: 22rpx;
 					margin-right: 12rpx;
 				}
-				view{
+
+				view {
 					display: flex;
 					flex: 1;
-					overflow: hidden; 		
-					text-overflow: ellipsis; 					
-					display: -webkit-box;					
-					-webkit-line-clamp: 1; 		
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: -webkit-box;
+					-webkit-line-clamp: 1;
 					-webkit-box-orient: vertical;
 				}
 			}
@@ -335,14 +356,16 @@
 		width: 100%;
 		height: 516rpx;
 		position: relative;
-		.backImg{
+
+		.backImg {
 			width: 60rpx;
 			height: 60rpx;
 			position: absolute;
 			left: 28rpx;
 			z-index: 11;
 		}
-		.bannerImg{
+
+		.bannerImg {
 			width: 100%;
 			height: 100%;
 		}

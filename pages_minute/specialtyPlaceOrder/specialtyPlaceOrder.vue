@@ -19,7 +19,7 @@
 								<view>
 									<view class="puText">预留电话</view>
 									<view class="puInfo">
-										<input :value="phone" placeholder="请输入电话号码" />
+										<input :value="phone" type="number" placeholder="请输入电话号码" />
 										<image src="../../static/order/edit.png"></image>
 									</view>
 								</view>
@@ -86,7 +86,11 @@
 		mapState
 	} from 'vuex'
 	import getDateTime from '@/utils/getdateTime.js';
-	import {addPlace,addOrderPay} from'@/api/order.js'
+	import {
+		addPlace,
+		addOrderPay,
+		delCart
+	} from '@/api/order.js'
 	export default {
 		data() {
 			return {
@@ -129,6 +133,13 @@
 					})
 					return
 				}
+				if(!this.phone){
+					uni.showToast({
+						title:'请输入电话',
+						icon:'none'
+					})
+					return
+				}
 				const params = [{
 					type: 3,
 					specialtyGoodInfoVo: {
@@ -136,10 +147,11 @@
 						tel: this.phone,
 						time: this.time
 					},
-					merchantId:0,
-					merchantName:0,
+					merchantId: 0,
+					merchantName: 0,
 					orderItems: []
 				}]
+				const listId=[]
 				this.orderData.forEach(item => {
 					params[0].orderItems.push({
 						productId: item.id,
@@ -147,24 +159,51 @@
 							number: item.number
 						}
 					})
+					listId.push(item.cartId)
 				})
-				const {data}=await addPlace({orders:params})
-				this.payOrder(data)
-				
-				
+				const {
+					data
+				} = await addPlace({
+					orders: params
+				})
+				this.payOrder(data,listId)
+
+
 			},
-			async payOrder(orderSn){
-				await addOrderPay({orderSn:orderSn})
-				uni.showToast({
-					title:'支付成功'
+			async payOrder(orderSn,listId) {
+				const {
+					data
+				} = await addOrderPay({
+					orderSn: orderSn
 				})
-				setTimeout(()=>{
-					uni.navigateTo({
-						url:'/pages/order/order'
-					})
-				},1000)
+				await delCart({shoppingCartIds:listId})
+				uni.requestPayment({
+					timeStamp: data.orderResult.timeStamp,
+					nonceStr: data.orderResult.nonceStr,
+					package: data.orderResult.packageValue,
+					signType: data.orderResult.signType,
+					paySign: data.orderResult.paySign,
+					// 支付成功的回调
+					success(result) {
+						console.log(result)
+						uni.showToast({
+							title: '支付成功'
+						})
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/order/order'
+							})
+						}, 1000)
+
+					},
+					// 支付失败回调
+					fail(err) {
+
+					}
+				})
+
 			}
-			
+
 		}
 	}
 </script>
