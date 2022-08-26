@@ -89,7 +89,7 @@
 			}
 		},
 		onLoad(options) {
-			this.curt=options.type
+			this.curt=options.type?options.type:0
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()

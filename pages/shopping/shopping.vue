@@ -59,6 +59,7 @@
 			}
 		},
 		onShow() {
+			this.isAllSelect=false
 			this.getList()
 		},
 		computed: {
@@ -90,6 +91,7 @@
 					if(item.checked){
 						list.push({
 							...item,
+							cartId:item.id,
 							id:item.productId,
 							name:item.productName,
 							price:item.productPrice,
@@ -107,7 +109,7 @@
 				}
 				this.SET_ORDERDATA(list)
 				uni.navigateTo({
-					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
+					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder?type=cart'
 				})
 			},
 			// 删除

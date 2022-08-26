@@ -159,7 +159,16 @@
 				}
 
 			}
-		]
+		    ,{
+                    "path" : "bannerDetail/bannerDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "详情",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+            ]
 	}],
 	// 底部导航栏
 	"tabBar": {

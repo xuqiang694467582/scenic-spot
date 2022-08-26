@@ -72,3 +72,19 @@ export const getAmusementPackageDetail = (params) => {
     params
   })
 }
+/**
+ * banner列表
+ */
+export const getBanner = (params) => {
+  return http.get('/wx/banner/list', {
+    params
+  })
+}
+/**
+ * banner详情
+ */
+export const getBannerDetail = (params) => {
+  return http.get('/wx/banner/detail', {
+    params
+  })
+}
