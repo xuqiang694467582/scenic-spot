@@ -54,10 +54,12 @@
 	} from '@/api/parktour.js';
 	import {
 		addPlace,
-		addOrderPay
+		addOrderPay,
+		delCart
 	} from '@/api/order.js';
 	import {
-		mapState
+		mapState,
+		mapMutations
 	} from 'vuex';
 	export default {
 		data() {
@@ -108,6 +110,7 @@
 			this.model.tel = this.userInfo.phone;
 		},
 		methods: {
+			...mapMutations(['SET_ORDERDATA']),
 			async load(id) {
 				const {
 					data
@@ -155,7 +158,6 @@
 						} = await addPlace({
 							orders: params
 						})
-						console.log(data);
 						this.payOrder(data)
 					} catch (e) {}
 				}).catch(errors => {
@@ -163,17 +165,45 @@
 				})
 			},
 			async payOrder(orderSn) {
-				await addOrderPay({
+				const {
+					data
+				} = await addOrderPay({
 					orderSn: orderSn
 				})
-				uni.showToast({
-					title: '支付成功'
+				uni.requestPayment({
+					// 时间戳
+					timeStamp: data.orderResult.timeStamp,
+					// 随机字符串 
+					nonceStr: data.orderResult.nonceStr,
+					// 统一下单接口返回的 prepay_id 参数值
+					package: data.orderResult.packageValue,
+					// 签名算法，应与后台下单时的值一致
+					signType: data.orderResult.signType,
+					// 签名
+					paySign: data.orderResult.paySign,
+					// 支付成功的回调
+					success(result) {
+						uni.showToast({
+							title: '支付成功'
+						})
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/order/order'
+							})
+						}, 1000)
+					},
+					// 支付失败回调
+					fail(err) {
+						uni.showToast({
+							title: '支付失败'
+						})
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/order/order'
+							})
+						}, 1000)
+					}
 				})
-				setTimeout(() => {
-					uni.navigateTo({
-						url: '/pages/order/order'
-					})
-				}, 1000)
 			}
 		}
 	}

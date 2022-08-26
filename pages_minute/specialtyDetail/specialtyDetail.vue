@@ -163,8 +163,8 @@
 				})
 			},
 			payTap(){
-				const data=this.detail
-				data.number=this.num
+				const data = this.detail
+				data.number = this.num
 				this.SET_ORDERDATA([data])
 				uni.navigateTo({
 					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
