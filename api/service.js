@@ -36,12 +36,12 @@ http.setConfig((config) => {
 http.interceptors.request.use(
 	(config) => {
 		/* 请求之前拦截器。可以使用async await 做异步操作 */
-		if(getTokenStorage()!==''){
+		// if(getTokenStorage()!==''){
 			config.header = {
 				...config.header,
-				Authorization:  "Bearer "+getTokenStorage(),
+				Authorization: getTokenStorage()? "Bearer "+getTokenStorage():'',
 			}
-		}
+		// }
 		
 		/*
  if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求

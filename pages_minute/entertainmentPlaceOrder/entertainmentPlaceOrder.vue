@@ -22,15 +22,15 @@
 		<view class="mouduleBox" style="flex-direction: column;">
 			<view class="telBox">
 				<view>姓名</view>
-				<input placeholder="填写姓名" :value="name" />
+				<input placeholder="填写姓名" v-model="name" />
 			</view>
 			<view class="telBox">
 				<view>预留手机尾号</view>
-				<input placeholder="填写手机尾号" type="number" :value="phone" />
+				<input placeholder="填写手机尾号" type="number" v-model="phone" />
 			</view>
 			<view class="telBox">
 				<view>备注</view>
-				<input placeholder="填写备注" :value="remark" />
+				<input placeholder="填写备注" v-model="remark" />
 			</view>
 		</view>
 		<view class="botBox">
@@ -115,15 +115,31 @@
 				this.payOrder(data)
 			},
 			async payOrder(orderSn){
-				await addOrderPay({orderSn:orderSn})
-				uni.showToast({
-					title:'支付成功'
+				const {data}=await addOrderPay({orderSn:orderSn})
+				uni.requestPayment({
+					timeStamp: data.orderResult.timeStamp,
+					nonceStr: data.orderResult.nonceStr,
+					package: data.orderResult.packageValue,
+					signType: data.orderResult.signType,
+					paySign: data.orderResult.paySign,
+					// 支付成功的回调
+					success(result) {
+						console.log(result)
+						uni.showToast({
+							title: '支付成功'
+						})
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/order/order'
+							})
+						}, 1000)
+				
+					},
+					// 支付失败回调
+					fail(err) {
+				
+					}
 				})
-				setTimeout(()=>{
-					uni.navigateTo({
-						url:'/pages/order/order'
-					})
-				},1000)
 			},
 			jianTap(){
 				if(this.num>1){

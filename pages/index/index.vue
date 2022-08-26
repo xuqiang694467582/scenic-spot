@@ -8,11 +8,12 @@
 			<uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
 				<view slot="left">
 					<view class="top-content">
-						<u-search v-model="keyword" :showAction="false" placeholder="搜索美食/住宿/商品" @search="searchTap"></u-search>
+						<u-search v-model="keyword" :showAction="false" placeholder="搜索美食/住宿/商品" @search="searchTap">
+						</u-search>
 						<button open-type='contact' class="kfBox">
-						<view class="top-content-icon">
-							<image src="@/static/index/cust.png"></image>
-						</view>
+							<view class="top-content-icon">
+								<image src="@/static/index/cust.png"></image>
+							</view>
 						</button>
 					</view>
 				</view>
@@ -23,7 +24,8 @@
 			</view> -->
 			<!-- 轮播图 -->
 			<view class="swiperBanner">
-				<u-swiper :list="list" bgColor="transparent" radius="12" height="150"></u-swiper>
+				<u-swiper :list="bannerList" bgColor="transparent" radius="12" height="150" keyName="img"
+					@click="toBannerDetail"></u-swiper>
 			</view>
 			<!-- 菜单 -->
 			<view class="menu">
@@ -70,7 +72,7 @@
 					<view style="color: #999;font-size: 26rpx;" @click="toProductList(0)">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index">
+					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index" @click="toFood(item.id)">
 						<image :src="item.coverImg"></image>
 						<view class="food-block-l-text">{{item.name}}</view>
 						<!-- <u-icon name="home" :label="item.name"></u-icon> -->
@@ -88,7 +90,7 @@
 					<view style="color: #999;font-size: 26rpx;" @click="toProductList(1)">更多></view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index">
+					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index" @click="toHotel(item.id)">
 						<image :src="item.coverImg"></image>
 						<view class="food-block-l-text">{{item.name}}</view>
 						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon>
@@ -131,7 +133,8 @@
 	import {
 		getDiningRoom,
 		getHotel,
-		getAmusement
+		getAmusement,
+		getBanner
 	} from '@/api/index.js'
 	import {
 		getSpecialtyGood
@@ -179,7 +182,8 @@
 				diningRoomList: [],
 				hotelList: [],
 				amusementList: [],
-				specialtyList: []
+				specialtyList: [],
+				bannerList: []
 			}
 		},
 		computed: mapState(['token', 'userInfo', 'location']),
@@ -197,13 +201,37 @@
 
 		},
 		onShow() {
-			this.keyword=''
+			this.keyword = ''
 			this.getLocation()
+			this.getBannerList()
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
+			toHotel(id){
+				if (this.isGetTel() === false) return
+				uni.navigateTo({
+					url: `/pages_minute/hotelDetail/hotelDetail?id=${id}`
+				})
+			},
+			toFood(id){
+				if (this.isGetTel() === false) return
+				uni.navigateTo({
+					url: `/pages_minute/diningDetail/diningDetail?id=${id}`
+				})
+			},
+			toBannerDetail(e) {
+				uni.navigateTo({
+					url: `/pages_minute/bannerDetail/bannerDetail?id=${this.bannerList[e].id}`
+				})
+			},
+			async getBannerList() {
+				const {
+					data
+				} = await getBanner()
+				this.bannerList = data
+			},
 			// 搜索
-			searchTap(){
+			searchTap() {
 				if (this.isGetTel() === false) return
 				uni.navigateTo({
 					url: `/pages_minute/productList/productList?keyword=${this.keyword}`
@@ -398,22 +426,24 @@
 	page {
 		background-color: #f4f4f4;
 	}
+
 	.kfBox {
-	    margin: 0;
-	    padding: 0;
-	    background-color: inherit;
-	    position: static;
+		margin: 0;
+		padding: 0;
+		background-color: inherit;
+		position: static;
 		height: 60rpx;
 	}
-	
+
 	.kfBox:after {
-	    content: none;
+		content: none;
 	}
-	
+
 	/* 去掉边框 */
 	.kfBox::after {
-	    border: none;
+		border: none;
 	}
+
 	.back {
 		width: 100%;
 		height: 568rpx;

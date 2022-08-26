@@ -19,7 +19,7 @@
 								<view>
 									<view class="puText">预留电话</view>
 									<view class="puInfo">
-										<input :value="phone" type="number" placeholder="请输入电话号码" />
+										<input v-model="phone" type="number" placeholder="请输入电话号码" />
 										<image src="../../static/order/edit.png"></image>
 									</view>
 								</view>
@@ -69,7 +69,7 @@
 			</view>
 			<view class="remarkBox">
 				<view>订单备注</view>
-				<input placeholder="输入备注信息" :value="remark" />
+				<input placeholder="输入备注信息" v-model="remark" />
 			</view>
 		</view>
 		<view class="botBox">
@@ -176,7 +176,7 @@
 				} = await addOrderPay({
 					orderSn: orderSn
 				})
-				await delCart({shoppingCartIds:listId})
+				// await delCart({shoppingCartIds:listId})
 				uni.requestPayment({
 					timeStamp: data.orderResult.timeStamp,
 					nonceStr: data.orderResult.nonceStr,
