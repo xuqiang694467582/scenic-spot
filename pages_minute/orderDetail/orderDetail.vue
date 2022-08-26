@@ -5,19 +5,19 @@
 				<view class="status">订单待支付</view>
 				<!-- <view class="statusInfo">订单将在2分钟后自动取消</view> -->
 			</view>
-			<view class="btn">立即支付</view>
+			<view class="btn" @click="payTap">立即支付</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='1'">
 			<view>
 				<view class="status">订单已支付</view>
-				<view class="statusInfo">正在打包中，稍后可前往自提点提取</view>
+				<!-- <view class="statusInfo">正在打包中，稍后可前往自提点提取</view> -->
 			</view>
-			<view class="btn" @click="show=true">查看券码</view>
+			<view class="btn" @click="show=true">核销码</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='2'">
 			<view>
 				<view class="status">订单已完成</view>
-				<view class="statusInfo">取货完成，期待您的再次光顾</view>
+				<!-- <view class="statusInfo">取货完成，期待您的再次光顾</view> -->
 			</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='3'">
@@ -46,10 +46,13 @@
 					<view class="infoName" v-show="productDetail.type==='2'">{{items.productInfo.hotelTypeName}}</view>
 					<view class="infoName"  v-show="productDetail.type==='3'">{{items.productInfo.productName}}</view>
 					<!-- <view class="spec">30枚 1.5kg/份</view> -->
-					<view class="priceBox">
-						<text class="unit">￥</text>
-						<text class="price">{{items.productInfo.price}}</text>
-						<text class="oldPrice">￥{{items.productInfo.totalPrice}}</text>
+					<view class="setMealBox" >
+						<view class="priceBox" >
+							<text class="unit">￥</text>
+							<text class="price">{{items.productInfo.price}}</text>
+							<text class="oldPrice">￥{{items.productInfo.totalPrice}}</text>
+						</view>
+						<view class="sNum" >×{{items.productInfo.number}}</view>
 					</view>
 				</view>
 			</view>
@@ -75,11 +78,15 @@
 			</view>
 			<view class="setMeal">
 				<view class="sName">{{item.productInfo.hotelTypeName}}</view>
-				<view class="priceBox" style="margin-bottom: 16rpx;">
-					<text class="unit">￥</text>
-					<text class="price">{{item.productInfo.price}}</text>
-					<text class="oldPrice">￥{{item.productInfo.totalPrice}}</text>
+				<view class="setMealBox" style="margin-bottom: 16rpx;">
+					<view class="priceBox" >
+						<text class="unit">￥</text>
+						<text class="price">{{item.productInfo.price}}</text>
+						<text class="oldPrice">￥{{item.productInfo.totalPrice}}</text>
+					</view>
+					<view class="sNum">×{{item.productInfo.number}}</view>
 				</view>
+				
 				<view class="tag">{{item.productInfo.meal}}·{{item.productInfo.roomType}}</view>
 			</view>
 			<view class="otherInfo">
@@ -118,13 +125,13 @@
 					<view>支付时间：</view>
 					<view>{{detail.payTimeStr}}</view>
 				</view>
-				<view class="orderInfo">
-					<view>券 码：</view>
+				<view class="orderInfo" v-if="detail.childrenOrder[0].couponInfo.couponNumber">
+					<view>核销码：</view>
 					<view>{{detail.childrenOrder[0].couponInfo.couponNumber}}</view>
 				</view>
-				<view class="orderInfo">
+				<view class="orderInfo" v-if="detail.childrenOrder[0].otherInfo.remakes">
 					<view>备注：</view>
-					<view>{{detail.childrenOrder[0].otherInfo.remakes?detail.childrenOrder[0].otherInfo.remakes:'--'}}
+					<view>{{detail.childrenOrder[0].otherInfo.remakes}}
 					</view>
 				</view>
 			</view>
@@ -135,7 +142,7 @@
 			<view class="codeBox">
 				<image src="../../static/order/codeBg.png" class="codeBg"></image>
 				<view class="codeContent">
-					<view class="title">取货码</view>
+					<view class="title">核销码</view>
 					<view class="code">{{detail.childrenOrder[0].couponInfo.couponNumber}}</view>
 					<view class="tip">凭取货码到自提点取货</view>
 				</view>
@@ -147,7 +154,8 @@
 <script>
 	import {
 		getOrderDetail,
-		addOrderCancel
+		addOrderCancel,
+		addOrderPay
 	} from '@/api/order.js'
 	export default {
 		data() {
@@ -163,6 +171,42 @@
 			this.getDetail()
 		},
 		methods: {
+			// 支付
+				async payTap() {
+					const that = this
+					const {
+						data
+					} = await addOrderPay({
+						orderSn: this.detail.orderSn
+					})
+			
+					uni.requestPayment({
+						timeStamp: data.orderResult.timeStamp,
+						nonceStr: data.orderResult.nonceStr,
+						package: data.orderResult.packageValue,
+						signType: data.orderResult.signType,
+						paySign: data.orderResult.paySign,
+						// 支付成功的回调
+						success(result) {
+							console.log(result)
+							uni.showToast({
+								title: '支付成功'
+							})
+							setTimeout(() => {
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 1000)
+			
+						},
+						// 支付失败回调
+						fail(err) {
+			
+						}
+					})
+			
+			
+			},
 			navigationTap() {
 				if (!this.productDetail.latitude) {
 					uni.showToast({
@@ -242,9 +286,9 @@
 			dateDiff(sDate1, sDate2) {
 				var aDate, oDate1, oDate2, iDays;
 				aDate = sDate1.split("-");
-				oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]); //转换为yyyy-MM-dd格式
+				oDate1 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]); //转换为yyyy-MM-dd格式
 				aDate = sDate2.split("-");
-				oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);
+				oDate2 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]);
 				iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24); //把相差的毫秒数转换为天数
 				return iDays; //返回相差天数
 			},
@@ -254,6 +298,16 @@
 </script>
 
 <style lang="scss">
+	.setMealBox{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.sNum{
+			font-size: 28rpx;
+			color: #333333;
+			position: relative;top: 10rpx;
+		}
+	}
 	.priceBox {
 		margin-top: 20rpx;
 	
@@ -336,7 +390,7 @@
 			font-weight: 600;
 			color: #333333;
 			font-size: 32rpx;
-			margin-bottom: 28rpx;
+			margin-bottom: 16rpx;
 		}
 
 		.tag {

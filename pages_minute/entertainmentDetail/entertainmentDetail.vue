@@ -23,7 +23,8 @@
 			<view class="mouduleBox">
 				<view class="title">图片介绍</view>
 				<scroll-view class="imgBox" scroll-x="true">
-					<image :src="item" v-for="(item,index) in detail.photoExplanation" :key="index"></image>
+					<image :src="item" v-for="(item,index) in detail.photoExplanation" :key="index"
+						@click="preViewImg(index)"></image>
 					<view class="imgNum" v-show="detail.photoExplanation.length>4">{{detail.photoExplanation.length}}图
 					</view>
 				</scroll-view>
@@ -52,7 +53,8 @@
 
 <script>
 	import {
-		getAmusementDetail,getAmusementPackage
+		getAmusementDetail,
+		getAmusementPackage
 	} from '@/api/index.js'
 	export default {
 		data() {
@@ -60,7 +62,7 @@
 				barHightTop: '',
 				id: '',
 				detail: '',
-				list:[]
+				list: []
 			}
 		},
 		onLoad(options) {
@@ -70,6 +72,12 @@
 			this.getList()
 		},
 		methods: {
+			preViewImg(index) {
+				uni.previewImage({
+					current: index,
+					urls: this.detail.photoExplanation
+				})
+			},
 			// 导航
 			navigationTap() {
 				const that = this
@@ -91,13 +99,19 @@
 				})
 				this.detail = data
 			},
-			async getList(){
-				const {data}=await getAmusementPackage({page:1,pageSize:100,amusementId:this.id})
-				this.list=data.records
+			async getList() {
+				const {
+					data
+				} = await getAmusementPackage({
+					page: 1,
+					pageSize: 100,
+					amusementId: this.id
+				})
+				this.list = data.records
 			},
 			toDetail(id) {
 				uni.navigateTo({
-					url:`/pages_minute/entertainmentSetMeal/entertainmentSetMeal?id=${id}`
+					url: `/pages_minute/entertainmentSetMeal/entertainmentSetMeal?id=${id}`
 				})
 			},
 			backTap() {

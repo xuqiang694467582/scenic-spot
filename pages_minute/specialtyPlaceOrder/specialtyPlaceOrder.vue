@@ -33,13 +33,13 @@
 								<text>《自提自取服务协议》</text>
 							</view>
 						</view>
-						<view class="distanceBox">
+						<!-- <view class="distanceBox">
 							<image src="../../static/order/shop.png" class="shopImg"></image>
-							<!-- 	<view class="distance">
+								<view class="distance">
 								<image src="../../static/order/distance.png"></image>
 								<view class="dText">距您1.3km</view>
-							</view> -->
-						</view>
+							</view>
+						</view> -->
 					</view>
 				</view>
 			</view>
@@ -183,7 +183,7 @@
 				if(this.type==='cart'){
 					await delCart({shoppingCartIds:listId})
 				}
-				
+			
 				uni.requestPayment({
 					timeStamp: data.orderResult.timeStamp,
 					nonceStr: data.orderResult.nonceStr,

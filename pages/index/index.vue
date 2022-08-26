@@ -44,7 +44,7 @@
 			</view>
 			<!-- 园区特产 -->
 			<view class="specialty">
-				<view class="specialty-title">园区特产</view>
+				<view class="specialty-title"><view class="titleSu"></view>园区特产</view>
 				<u-scroll-list indicatorActiveColor="#A8A1A1" indicatorColor="#ABABAB">
 					<view class="specialty-list">
 						<view class="specialty-list-con" v-for="(item,index) in specialtyList" :key="index"
@@ -53,7 +53,7 @@
 							<view class="specialty-list-con-text">{{item.name}}</view>
 							<view class="specialty-list-con-price">
 								<text style="color: #333;font-size: 30rpx;">￥{{item.price}}</text>
-								<text style="color: #999;font-size: 26rpx;">￥{{item.originalPrice}}</text>
+								<text style="color: #999;font-size: 26rpx;text-decoration: line-through;">￥{{item.originalPrice}}</text>
 							</view>
 						</view>
 					</view>
@@ -68,13 +68,13 @@
 			<!-- 特色餐饮 -->
 			<view class="food" id="foodBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title">特色餐厅</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList(0)">更多></view>
+					<view class="food-title"> <view class="titleSu"></view>特色餐厅</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index" @click="toFood(item.id)">
 						<image :src="item.coverImg"></image>
-						<view class="food-block-l-text">{{item.name}}</view>
+						<view class="shopName">{{item.name}}</view>
 						<!-- <u-icon name="home" :label="item.name"></u-icon> -->
 						<!-- <view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
@@ -86,13 +86,13 @@
 			<!-- 旅游住宿 -->
 			<view class="food" id="hotelBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title">旅游住宿</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList(1)">更多></view>
+					<view class="food-title"> <view class="titleSu"></view>旅游住宿</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(1)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index" @click="toHotel(item.id)">
 						<image :src="item.coverImg"></image>
-						<view class="food-block-l-text">{{item.name}}</view>
+						<view class="shopName">{{item.name}}</view>
 						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon>
 						<view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
@@ -104,14 +104,14 @@
 			<!-- 休闲娱乐 -->
 			<view class="food" id="amusementBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title">休闲娱乐</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList(2)">更多></view>
+					<view class="food-title"> <view class="titleSu"></view>休闲娱乐</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(2)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in amusementList" :key="index"
 						@click="toAmusementDetail(item.id)">
 						<image :src="item.coverImg"></image>
-						<view class="food-block-l-text">{{item.name}}</view>
+						<view class="shopName">{{item.name}}</view>
 						<!-- <u-icon name="home" label="七虹餐饮中心"></u-icon> -->
 						<!-- <view class="food-block-l-price">
 							<text style="color: #333;font-size: 30rpx;color: #FF1616;font-weight: bold;">￥30.6</text>
@@ -425,7 +425,23 @@
 	page {
 		background-color: #f4f4f4;
 	}
-
+	.shopName{
+		font-weight: 500;
+		color: #333333;
+		margin-top: 14rpx;
+		font-size: 32rpx;
+		overflow: hidden; 
+		text-overflow: ellipsis; 
+		display: -webkit-box;	
+		-webkit-line-clamp: 2; 
+		-webkit-box-orient: vertical;
+	}
+	.titleSu{
+		width: 6rpx;
+		height: 30rpx;
+		background: linear-gradient(180deg, #BDE1CF 0%, #03B85F 100%);
+		margin-right: 12rpx;
+	}
 	.kfBox {
 		margin: 0;
 		padding: 0;
@@ -519,16 +535,19 @@
 
 				&__item {
 					margin-right: 15px;
-
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
 					&__image {
-						width: 48px;
-						height: 48px;
+						width: 76rpx;
+						height: 76rpx;
 					}
 
 					&__text {
-						margin-top: 5px;
-						color: $u-menuText-color;
-						font-size: 12px;
+						margin-top: 12rpx;
+						color: #333;
+						font-size: 28rpx;
 						text-align: center;
 					}
 
@@ -544,11 +563,14 @@
 		padding: 20rpx;
 		background-color: #fff;
 		border-radius: 0 0 20rpx 20rpx;
-
+		
 		&-title {
-			padding-left: 10rpx;
-			border-left: 6rpx solid #03B85F;
 			margin-bottom: 20rpx;
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			color: #333333;
+			font-size: 32rpx;
 		}
 
 		.specialty-list {
@@ -562,6 +584,7 @@
 			image {
 				width: 180rpx;
 				height: 180rpx;
+				border-radius: 12rpx;
 			}
 
 			.specialty-list-con-text {
@@ -572,6 +595,7 @@
 				display: -webkit-box;
 				-webkit-line-clamp: 2;
 				-webkit-box-orient: vertical;
+				height: 68rpx;
 			}
 
 			.specialty-list-con-price {
@@ -599,7 +623,11 @@
 
 		&-title {
 			padding-left: 10rpx;
-			border-left: 6rpx solid #03B85F;
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			color: #333333;
+			font-size: 32rpx;
 			margin-bottom: 20rpx;
 		}
 
@@ -610,10 +638,12 @@
 
 			&-l {
 				width: 48%;
+				margin-bottom: 32rpx;
 
 				image {
 					width: 100%;
-					height: 270rpx;
+					height: 254rpx;
+					border-radius: 24rpx;
 				}
 
 				&-price {
