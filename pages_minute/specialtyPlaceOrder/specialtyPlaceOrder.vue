@@ -98,7 +98,8 @@
 				time: '',
 				isAgree: true,
 				remark: '',
-				phone: ''
+				phone: '',
+				type:''
 			}
 		},
 		computed: {
@@ -110,6 +111,9 @@
 				})
 				return price
 			}
+		},
+		onLoad(options){
+			this.type=options.type
 		},
 		onShow() {
 			this.startTime = getDateTime.timeStr('y-m-d h:i:s');
@@ -176,7 +180,10 @@
 				} = await addOrderPay({
 					orderSn: orderSn
 				})
-				// await delCart({shoppingCartIds:listId})
+				if(this.type==='cart'){
+					await delCart({shoppingCartIds:listId})
+				}
+				
 				uni.requestPayment({
 					timeStamp: data.orderResult.timeStamp,
 					nonceStr: data.orderResult.nonceStr,

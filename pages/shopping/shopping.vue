@@ -109,7 +109,7 @@
 				}
 				this.SET_ORDERDATA(list)
 				uni.navigateTo({
-					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
+					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder?type=cart'
 				})
 			},
 			// 删除
