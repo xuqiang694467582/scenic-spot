@@ -104,9 +104,14 @@
 							</view>
 						</view>
 					</view>
-					<view class="combo-list-btn" @click="getReserve(item)">
-						预定
-					</view>
+					<veiw>
+						<veiw style="font-size: 24rpx;color: #999;margin-bottom: 20rpx;">
+							剩余房间:{{ item.remainingRoomNumber }}
+						</veiw>
+						<view>
+							<u-button :disabled="item.remainingRoomNumber === 0 ? true : false" :text="item.remainingRoomNumber === 0 ? '已售罄' : '预定'" color="linear-gradient(180deg, #9AD7B8 0%, #14BB69 100%)" @click="getReserve(item)"></u-button>
+						</view>
+					</veiw>
 				</view>
 			</view>
 		</view>
@@ -124,7 +129,7 @@
 						<text style="font-size: 26rpx;color: #333;">明天</text>
 					</view>
 					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-					<text style="font-size: 40rpx;font-weight: bold;">1间·1人</text>	
+					<text style="font-size: 40rpx;font-weight: bold;">1间·1人</text>
 				</view>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view style="display: flex;align-items: center;">
@@ -136,7 +141,8 @@
 					</view>
 					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
 					<view style="width: 150rpx;">
-						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
+						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini"
+							@click="show = true"></u-button>
 					</view>
 				</view>
 				<u-divider></u-divider>
@@ -154,7 +160,7 @@
 					<text>价格</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag2" :key="index">
-							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" 
+							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success"
 								@click="checkClick2">
 							</u-tag>
 						</view>
@@ -169,7 +175,7 @@
 							</u-tag>
 						</view>
 					</view>
-				</view> 
+				</view>
 				<view>
 					<text>Wifi</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
@@ -195,7 +201,8 @@
 <script>
 	import {
 		hotelDetail,
-		hotelRecoType
+		hotelRecoType,
+		hotelRecoList
 	} from '@/api/parktour.js';
 	export default {
 		data() {
@@ -228,8 +235,7 @@
 						checked: false
 					}
 				],
-				tag1:[
-					{
+				tag1: [{
 						text: '大床房',
 						checked: false
 					},
@@ -238,8 +244,7 @@
 						checked: false
 					}
 				],
-				tag2:[
-					{
+				tag2: [{
 						text: '￥0-150',
 						checked: false
 					},
@@ -256,8 +261,7 @@
 						checked: false
 					}
 				],
-				tag3:[
-					{
+				tag3: [{
 						text: '含早餐',
 						checked: false
 					},
@@ -266,8 +270,7 @@
 						checked: false
 					}
 				],
-				tag4:[
-					{
+				tag4: [{
 						text: '有Wifi',
 						checked: false
 					},
@@ -291,11 +294,16 @@
 					})
 					this.formData = data;
 					this.urls = data.photoExplanation;
-					const res = await hotelRecoType({
-						hotelId: id
+					// 当前时间
+					let startTime = uni.$u.timeFormat(new Date(), 'yyyy-mm-dd hh:MM:ss');
+					// 结束时间
+					let endTime = uni.$u.timeFormat(+new Date() + 24 * 60 * 60 * 1000, 'yyyy-mm-dd hh:MM:ss');
+					const res = await hotelRecoList({
+						hotelId: id,
+						checkInStartTime: startTime,
+						checkOutEndTime: endTime
 					})
-					console.log(res);
-					this.recommend = res.data;
+					this.recommend = res.data.records;
 				} catch (e) {}
 			},
 			clickLeft() {
@@ -329,20 +337,20 @@
 				this.tag4[name].checked = !this.tag4[name].checked
 			},
 			// 清空所选
-			clearItem(){
-				
+			clearItem() {
+
 			},
-			getAss(val){
+			getAss(val) {
 				uni.getLocation({
 					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
-					success: function (res) {
+					success: function(res) {
 						console.log(res);
 						const latitude = res.latitude;
 						const longitude = res.longitude;
 						uni.openLocation({
 							latitude: latitude,
 							longitude: longitude,
-							success: function () {
+							success: function() {
 								console.log('success');
 							}
 						});
@@ -463,20 +471,7 @@
 			.combo-list {
 				margin: 20rpx 0;
 				display: flex;
-				align-items: center;
 				justify-content: space-between;
-
-				&-btn {
-					width: 90rpx;
-					height: 52rpx;
-					background: linear-gradient(180deg, #9AD7B8 0%, #14BB69 100%);
-					display: flex;
-					color: #fff;
-					align-items: center;
-					justify-content: center;
-					border-radius: 10rpx;
-					padding: 10rpx;
-				}
 			}
 		}
 	}

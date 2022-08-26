@@ -55,6 +55,12 @@ export const hotelRecoType = (params) => {
 	  params
 	})
 }
+// 酒店房型
+export const hotelRecoList = (params) => {
+	return http.get('/wx/hotel-type/list', {
+	  params
+	})
+}
 // 酒店房型详情
 export const hotelRecoDetail = (params) => {
 	return http.get('/wx/hotel-type/detail', {
