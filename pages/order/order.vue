@@ -11,7 +11,7 @@
 			:inactiveStyle="{ color: 'rgba(51, 51, 51, 1)' }" :itemStyle="{width:'14%',height:'80rpx'}"
 			lineColor="rgba(8, 183, 97, 1)" :current="curt"></u-tabs>
 
-		<view class="content">
+		<view class="content" v-if="list.length>0">
 			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
 				<view class="topBox">
 					<view>{{item.placeTimeStr}}</view>
@@ -32,18 +32,20 @@
 					<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4"></image>
 					<view class="infoR">
 						<view class="priceBox">
-						<text class="num">共{{item.number}}件</text>
+							<text class="num">共{{item.number}}件</text>
 						</view>
 					</view>
 				</view>
-				<view class="btnBox"> 
+				<view class="btnBox">
 					<view class="cancel" v-show="item.status==='0'" @click.stop="cancelOrder(item.id)">取消订单</view>
-					<view v-show="item.status==='0'">支付</view>
-					<view v-show="item.status==='1'">取货码</view>
+					<view v-show="item.status==='0'" @click.stop="payTap(item.orderSn)">支付</view>
+					<view v-show="item.status==='1'">核销码</view>
 					<!-- <view v-show="item.status==='1'">确认收货</view> -->
 				</view>
 			</view>
 		</view>
+		<u-empty mode="order" icon="http://cdn.uviewui.com/uview/empty/order.png" text="暂无订单" v-else>
+		</u-empty>
 		<!-- 取货码 -->
 		<!-- <u-popup :show="show" mode="top"  @close="close"  bgColor="transparent">
 		    <view class="codeBox">
@@ -61,7 +63,9 @@
 
 <script>
 	import {
-		getOrderList,addOrderCancel
+		getOrderList,
+		addOrderCancel,
+		addOrderPay
 	} from '@/api/order.js'
 	export default {
 		data() {
@@ -84,12 +88,12 @@
 				}, {
 					name: '已取消'
 				}],
-				show:false,
-				curt:0
+				show: false,
+				curt: 0
 			}
 		},
 		onLoad(options) {
-			this.curt=options.type?options.type:0
+			this.curt = options.type ? options.type : 0
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -104,61 +108,101 @@
 			this.getList()
 		},
 		methods: {
-			// 取消订单
-			cancelOrder(id){
-				uni.showModal({
-					title: '提示',
-					content: '确定取消',
-					success: async (res)=> {
-						if (res.confirm) {
-							await addOrderCancel({id:id})
-							uni.showToast({
-								title:'取消成功'
-							})
-							this.list = []
-							this.listQuery.page = 1
-							this.getList()
-						} else if (res.cancel) {
-							console.log('用户点击取消');
-						}
-					}
-				});
-				
-			},
-			async getList() {
-				this.listQuery.status=this.curt==0?'':this.curt-1
+			// 支付
+			async payTap(orderSn) {
+				const that = this
 				const {
 					data
-				} = await getOrderList(this.listQuery)
-				uni.stopPullDownRefresh()
-				this.list = this.list.concat(data.records)
-			},
-			toDetail(id) {
-				uni.navigateTo({
-					url: `/pages_minute/orderDetail/orderDetail?id=${id}`
+				} = await addOrderPay({
+					orderSn: orderSn
 				})
-			},
-			changeType(item) {
-				this.curt = item.index
-				this.list = []
-				this.listQuery.page = 1
-				this.getList()
-			}
+
+				uni.requestPayment({
+					timeStamp: data.orderResult.timeStamp,
+					nonceStr: data.orderResult.nonceStr,
+					package: data.orderResult.packageValue,
+					signType: data.orderResult.signType,
+					paySign: data.orderResult.paySign,
+					// 支付成功的回调
+					success(result) {
+						console.log(result)
+						uni.showToast({
+							title: '支付成功'
+						})
+						setTimeout(() => {
+							that.list = []
+							that.listQuery.page = 1
+							that.getList()
+						}, 1000)
+
+					},
+					// 支付失败回调
+					fail(err) {
+
+					}
+				})
+
+
+		},
+		// 取消订单
+		cancelOrder(id) {
+			uni.showModal({
+				title: '提示',
+				content: '确定取消',
+				success: async (res) => {
+					if (res.confirm) {
+						await addOrderCancel({
+							id: id
+						})
+						uni.showToast({
+							title: '取消成功'
+						})
+						this.list = []
+						this.listQuery.page = 1
+						this.getList()
+					} else if (res.cancel) {
+						console.log('用户点击取消');
+					}
+				}
+			});
+
+		},
+		async getList() {
+			this.listQuery.status = this.curt == 0 ? '' : this.curt - 1
+			const {
+				data
+			} = await getOrderList(this.listQuery)
+			uni.stopPullDownRefresh()
+			this.list = this.list.concat(data.records)
+		},
+		toDetail(id) {
+			uni.navigateTo({
+				url: `/pages_minute/orderDetail/orderDetail?id=${id}`
+			})
+		},
+		changeType(item) {
+			this.curt = item.index
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
 		}
+	}
 	}
 </script>
 
 <style lang="scss">
-	.codeBox{
+	.codeBox {
 		width: 596rpx;
 		height: 390rpx;
 		margin: 50% auto 0 auto;
 		position: relative;
-		.codeBg{
+
+		.codeBg {
 			width: 100%;
 			height: 100%;
-		}		
-		.codeContent{
+		}
+
+		.codeContent {
 			position: absolute;
 			width: 100%;
 			height: 100%;
@@ -168,19 +212,22 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-			.tip{
+
+			.tip {
 				margin-top: 26rpx;
 				font-weight: 400;
 				color: #999999;
 				font-size: 24rpx;
 			}
-			.code{
+
+			.code {
 				font-size: 72rpx;
 				font-weight: bold;
 				color: #333333;
 				margin-top: 38rpx;
 			}
-			.title{
+
+			.title {
 				width: 526rpx;
 				height: 136rpx;
 				line-height: 156rpx;
@@ -192,6 +239,7 @@
 			}
 		}
 	}
+
 	.content {
 		padding: 24rpx;
 		box-sizing: border-box;
@@ -222,7 +270,7 @@
 				.cancel {
 					border: 1px solid #999;
 					color: #999999;
-					
+
 				}
 			}
 

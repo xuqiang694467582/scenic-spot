@@ -28,10 +28,10 @@
 				<view>预留手机尾号</view>
 				<input placeholder="填写手机尾号" type="number" v-model="phone" />
 			</view>
-			<view class="telBox">
+			<!-- <view class="telBox">
 				<view>备注</view>
 				<input placeholder="填写备注" v-model="remark" />
-			</view>
+			</view> -->
 		</view>
 		<view class="botBox">
 			<view>
@@ -117,6 +117,7 @@
 			async payOrder(orderSn){
 				const {data}=await addOrderPay({orderSn:orderSn})
 				uni.requestPayment({
+					provider: 'wxpay',
 					timeStamp: data.orderResult.timeStamp,
 					nonceStr: data.orderResult.nonceStr,
 					package: data.orderResult.packageValue,

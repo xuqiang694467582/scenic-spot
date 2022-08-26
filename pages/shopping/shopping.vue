@@ -1,8 +1,9 @@
 <template>
 	<view>
-		<view class="content" >
-			<u-swipe-action >
-				<u-swipe-action-item :options="item.options" v-for="(item,index) in list" :key="index" @click="delTap(index)" :autoClose="true">
+		<view class="content" v-if="list.length>0">
+			<u-swipe-action>
+				<u-swipe-action-item :options="item.options" v-for="(item,index) in list" :key="index"
+					@click="delTap(index)" :autoClose="true">
 					<view class="list">
 						<view class="selectBox" @click="selectTap(index)">
 							<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
@@ -29,6 +30,9 @@
 				</u-swipe-action-item>
 			</u-swipe-action>
 		</view>
+
+		<u-empty mode="car" icon="http://cdn.uviewui.com/uview/empty/car.png" text="购物车空空如也" v-else>
+		</u-empty>
 		<view class="botBox">
 			<view class="allSelect" @click="allSelect">
 				<image :src="isAllSelect?'../../static/order/selectA.png':'../../static/order/select.png'"></image>
@@ -49,7 +53,9 @@
 		mapMutations
 	} from 'vuex'
 	import {
-		getCartList,updateNumber,delCart
+		getCartList,
+		updateNumber,
+		delCart
 	} from '@/api/order.js'
 	export default {
 		data() {
@@ -59,7 +65,8 @@
 			}
 		},
 		onShow() {
-			this.isAllSelect=false
+			this.isAllSelect = false
+			this.list = []
 			this.getList()
 		},
 		computed: {
@@ -85,52 +92,57 @@
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
 			// 跳转提交订单
-			payTap(){
-				const list=[]
-				this.list.forEach(item=>{
-					if(item.checked){
+			payTap() {
+				const list = []
+				this.list.forEach(item => {
+					if (item.checked) {
 						list.push({
 							...item,
-							cartId:item.id,
-							id:item.productId,
-							name:item.productName,
-							price:item.productPrice,
-							originalPrice:item.productOriginalPrice,
-							mainImage:item.productMainImage
+							cartId: item.id,
+							id: item.productId,
+							name: item.productName,
+							price: item.productPrice,
+							originalPrice: item.productOriginalPrice,
+							mainImage: item.productMainImage
 						})
 					}
 				})
-				if(list.length===0){
+				if (list.length === 0) {
 					uni.showToast({
-						title:'请选择商品',
-						icon:'none'
+						title: '请选择商品',
+						icon: 'none'
 					})
-					return 
+					return
 				}
 				this.SET_ORDERDATA(list)
 				uni.navigateTo({
-					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder?type=cart'
+					url: '/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder?type=cart'
 				})
 			},
 			// 删除
-			async delTap(index){
-				await delCart({shoppingCartIds:[this.list[index].id]})
+			async delTap(index) {
+				await delCart({
+					shoppingCartIds: [this.list[index].id]
+				})
 				this.getList()
 			},
 			// 减
-			 jiaTap(index) {
+			jiaTap(index) {
 				this.list[index].number++
-				this.chageNumber(this.list[index].id,this.list[index].number)
+				this.chageNumber(this.list[index].id, this.list[index].number)
 			},
 			// 加
 			jianTap(index) {
 				if (this.list[index].number > 1) {
 					this.list[index].number--
-					this.chageNumber(this.list[index].id,this.list[index].number)
+					this.chageNumber(this.list[index].id, this.list[index].number)
 				}
 			},
-			async chageNumber(id,number){
-				await updateNumber({id:id,number:number})
+			async chageNumber(id, number) {
+				await updateNumber({
+					id: id,
+					number: number
+				})
 			},
 			allSelect() {
 				this.isAllSelect = !this.isAllSelect
@@ -147,8 +159,8 @@
 				const {
 					data
 				} = await getCartList()
-				if(data.length===0){
-					this.list=[]
+				if (data.length === 0) {
+					this.list = []
 					return
 				}
 				const list = data[0].details
@@ -162,6 +174,7 @@
 					}]
 				})
 				this.list = list
+				console.log(list)
 			}
 		}
 	}
