@@ -27,3 +27,11 @@ export const addCart = (data) => {
 		data: data,
 	})
 }
+/**
+ * 商品规格列表-特产商品id查询
+ */
+export const getGoodList = (params) => {
+  return http.get('/wx/specialty-good-specification/good/list', {
+    params
+  })
+}

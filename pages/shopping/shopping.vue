@@ -13,6 +13,7 @@
 							<image :src="item.productMainImage" class="goodsImg"></image>
 							<view class="infoBox">
 								<view class="name">{{item.productName}}</view>
+								<view> <view class="specBox">{{item.specificationName}}</view></view>
 								<view class="priceBox">
 									<view class="price">
 										<text class="pPrice"><text>￥</text>{{item.productPrice}}</text>
@@ -269,7 +270,18 @@
 					flex: 1;
 					margin-left: 24rpx;
 					flex-direction: column;
-
+					.specBox{
+						border-radius: 12rpx;
+						background: #EBEBEB;
+						height: 50rpx;
+						padding: 0 12rpx;
+						line-height: 50rpx;
+						font-weight: 400;
+						color: #666666;
+						font-size: 24rpx;
+						margin-top: 16rpx;
+						display: inline-block;
+					}
 					.numBox {
 						display: flex;
 						align-items: center;
@@ -292,7 +304,7 @@
 						display: flex;
 						align-items: center;
 						justify-content: space-between;
-						margin-top: 50rpx;
+						margin-top: 16rpx;
 
 						.pPrice {
 							font-weight: bold;

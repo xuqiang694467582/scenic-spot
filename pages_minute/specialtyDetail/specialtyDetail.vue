@@ -8,6 +8,7 @@
 		
 		<view class="content" style="border-radius: 0px 0px 24rpx 24rpx;">
 			<view class="name">{{detail.name}}</view>
+			
 			<view class="priceBox">
 				<view>
 					<text class="unit">￥</text>
@@ -69,23 +70,23 @@
 					<image :src="detail.mainImage"></image>
 					<view class="goodsInfo">
 						<view class="goodsName">{{detail.name}}</view>
-						<view class="goodsPrice">
-							<text class="unit">￥</text>
-							<text class="price">{{detail.price}}</text>
-							<text class="oldPrice">￥{{detail.originalPrice}}</text>
+						<view class="specInfoBox">
+							<view class="goodsPrice">
+								<text class="unit">￥</text>
+								<text class="price">{{specList[sepcCurt].price}}</text>
+								<text class="oldPrice">￥{{specList[sepcCurt].originalPrice}}</text>
+							</view>
+							<view class="surplus">剩余：{{specList[sepcCurt].stock}}</view>
 						</view>
+						
 					</view>
 				</view>
-				<!-- <view class="specTitle">规格</view>
+				 <view class="specTitle">规格</view>
 				<view class="specList">
-					<view v-for="(item,index) in 4" :key="index" :class="sepcCurt===index?'active':''">30枚 1.5kg/份 一盒
+					<view v-for="(item,index) in specList" :key="index" :class="sepcCurt===index?'active':''" @click="changeSpec(index)">{{item.name}}
 					</view>
 				</view>
-				<view class="specTitle">品种</view>
-				<view class="specList">
-					<view v-for="(item,index) in 4" :key="index" :class="sepcCurt===index?'active':''">谷物蛋
-					</view>
-				</view> -->
+				
 				<view class="numBox">
 					<view>数量</view>
 					<view class="num">
@@ -107,7 +108,7 @@
 	import {
 		mapMutations
 	} from 'vuex'
-	import {getSpecialtyGoodDetail,addCart} from '@/api/specialty.js'
+	import {getSpecialtyGoodDetail,addCart,getGoodList} from '@/api/specialty.js'
 	export default {
 		data() {
 			return {
@@ -118,6 +119,7 @@
 				id:'',
 				detail:'',
 				num:1,
+				specList:[]
 			}
 		},
 		onLoad(options) {
@@ -127,6 +129,10 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
+			// 选择规格
+			changeSpec(index){
+				this.sepcCurt=index
+			},
 			toCart(){
 				uni.switchTab({
 					url:'/pages/shopping/shopping'
@@ -137,7 +143,7 @@
 			},
 			// 加入购物车
 			async addCart(){
-				await addCart({number:this.num,productId:this.id})
+				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id})
 				uni.showToast({
 					title:'添加成功'
 				})
@@ -156,6 +162,8 @@
 			async getDetail(){
 				const {data}=await getSpecialtyGoodDetail({id:this.id})
 				this.detail=data
+				const list=await getGoodList({specialtyGoodId:this.id})
+				this.specList=list.data
 			},
 			backTap(){
 				uni.navigateBack({
@@ -165,6 +173,9 @@
 			payTap(){
 				const data = this.detail
 				data.number = this.num
+				data.price=this.specList[this.sepcCurt].price
+				data.specificationName=this.specList[this.sepcCurt].name
+				data.specificationId=this.specList[this.sepcCurt].id
 				this.SET_ORDERDATA([data])
 				uni.navigateTo({
 					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
@@ -175,6 +186,7 @@
 </script>
 
 <style lang="scss">
+
 	.banner {
 		width: 100%;
 		position: relative;
@@ -289,9 +301,18 @@
 				flex: 1;
 				flex-direction: column;
 				margin-left: 12rpx;
-
-				.goodsPrice {
+				.specInfoBox{
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
 					margin-top: 30rpx;
+				}
+				.surplus{
+					font-size: 24rpx;
+					color: #999;
+				}
+				.goodsPrice {
+					
 
 					.unit {
 						font-size: 38rpx;
@@ -442,7 +463,7 @@
 				margin-right: 58rpx;
 			}
 		}
-
+		
 		.priceBox {
 			display: flex;
 			align-items: center;

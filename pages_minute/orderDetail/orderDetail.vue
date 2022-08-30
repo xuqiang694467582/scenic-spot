@@ -45,7 +45,7 @@
 					<view class="infoName" v-show="productDetail.type==='1'">{{items.productInfo.amusementPackageName}}</view>
 					<view class="infoName" v-show="productDetail.type==='2'">{{items.productInfo.hotelTypeName}}</view>
 					<view class="infoName"  v-show="productDetail.type==='3'">{{items.productInfo.productName}}</view>
-					<!-- <view class="spec">30枚 1.5kg/份</view> -->
+					<view  v-show="productDetail.type==='3'"><view class="spec">{{items.productInfo.productSpecificationName}}</view></view>
 					<view class="setMealBox" >
 						<view class="priceBox" >
 							<text class="unit">￥</text>
