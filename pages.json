@@ -168,6 +168,15 @@
                 }
                 
                 }
+                ,{
+                    "path" : "featureList/featureList",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "特色项目",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
             ]
 	}],
 	// 底部导航栏

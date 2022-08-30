@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="container">
 		<view class="banner">
 			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
 			<image :src="detail.coverImg" class="bannerImg"></image>
@@ -21,6 +21,11 @@
 				</view>
 			</view>
 			<view class="mouduleBox">
+				<u-tabs :list="navList" @click="changeNav" lineColor="#08B761"
+					:inactiveStyle="{color:'#666666',fontSize:'28rpx'}"
+					:activeStyle="{color:'#333333',fontSize:'30rpx',fontWeight:'600'}"></u-tabs>
+			</view>
+			<view class="mouduleBox" id="imgBox">
 				<view class="title">图片介绍</view>
 				<scroll-view class="imgBox" scroll-x="true">
 					<image :src="item" v-for="(item,index) in detail.photoExplanation" :key="index"
@@ -29,7 +34,7 @@
 					</view>
 				</scroll-view>
 			</view>
-			<view class="mouduleBox">
+			<view class="mouduleBox" id="setMeal">
 				<view class="title">推荐套餐</view>
 				<view class="setMeal" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
 					<image :src="item.mainImage"></image>
@@ -47,6 +52,21 @@
 					</view>
 				</view>
 			</view>
+			<view class="mouduleBox" id="feature">
+				<view class="featureTitle">
+					<view class="title" style="margin-bottom: 0;">特色项目（{{total}}）</view>
+					<view class="more" @click="moreTap">更多项目<u-icon name="arrow-right" size="10"></u-icon>
+					</view>
+				</view>
+				<scroll-view class="featureBox" scroll-x="true">
+					<view class="featureItem" v-for="(item,index) in featureList" :key="index">
+						<image :src="item.coverImg"></image>
+						<view>{{item.name}} </view>
+					</view>
+				</scroll-view>
+			</view>
+			<!-- 附近玩乐 -->
+			<NearbyPlay id="nearby"/>
 		</view>
 	</view>
 </template>
@@ -54,15 +74,31 @@
 <script>
 	import {
 		getAmusementDetail,
-		getAmusementPackage
+		getAmusementPackage,
+		getFeatureList
 	} from '@/api/index.js'
+	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
+		components:{
+			NearbyPlay
+		},
 		data() {
 			return {
 				barHightTop: '',
 				id: '',
 				detail: '',
-				list: []
+				list: [],
+				featureList:[],
+				total:0,
+				navList: [{
+					name: '图片介绍'
+				}, {
+					name: '推荐套餐'
+				}, {
+					name: '特色项目'
+				}, {
+					name: '附近玩乐'
+				}]
 			}
 		},
 		onLoad(options) {
@@ -72,6 +108,36 @@
 			this.getList()
 		},
 		methods: {
+			changeNav(e){
+				let id = ''
+				if (e.index === 0) {
+					id = '#imgBox'
+				} else if (e.index === 1) {
+					id = '#setMeal'
+				} else if (e.index === 2) {
+					id = '#feature'
+				}else if (e.index === 3) {
+					id = '#nearby'
+				}
+				uni.createSelectorQuery()
+					.select(".container") //对应外层节点
+					.boundingClientRect((container) => {
+						uni.createSelectorQuery()
+							.select(id) //目标节点
+							.boundingClientRect((target) => {
+								uni.pageScrollTo({
+									scrollTop: target.top - container.top-100,
+								});
+							})
+							.exec();
+					})
+					.exec();
+			},
+			moreTap(){
+				uni.navigateTo({
+					url:`/pages_minute/featureList/featureList?id=${this.id}`
+				})
+			},
 			preViewImg(index) {
 				uni.previewImage({
 					current: index,
@@ -98,6 +164,9 @@
 					id: this.id
 				})
 				this.detail = data
+				const list=await getFeatureList({amusementId:this.id,page: 1,pageSize: 10})
+				this.featureList=list.data.records
+				this.total=list.data.total
 			},
 			async getList() {
 				const {
@@ -124,6 +193,48 @@
 </script>
 
 <style lang="scss">
+	.featureBox {
+		width: 100%;
+		display: flex;
+		white-space: nowrap;
+
+		.featureItem {
+			display: inline-block;
+			margin-right: 12rpx;
+			width: 180rpx;
+			image {
+				width: 180rpx;
+				height: 180rpx;
+				border-radius: 12rpx;
+			}
+			view {
+				margin-top: 16rpx;
+				font-weight: 500;
+				color: #333333;
+				font-size: 24rpx;
+				overflow: hidden; 		
+				text-overflow: ellipsis; 
+				display: -webkit-box;
+				-webkit-line-clamp: 1; 
+				-webkit-box-orient: vertical;
+			}
+		}
+	}
+
+	.featureTitle {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 24rpx;
+		.more {
+			display: flex;
+			align-items: center;
+			font-weight: 400;
+			color: #999999;
+			font-size: 24rpx;
+		}
+	}
+
 	.mouduleBox {
 		width: 100%;
 		border-radius: 24rpx;

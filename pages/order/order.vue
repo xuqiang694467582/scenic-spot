@@ -21,7 +21,6 @@
 					<image :src="item.images[0]"></image>
 					<view class="infoR">
 						<view class="infoName">{{item.name}}</view>
-						
 						<view class="priceBox">
 							<text class="unit">￥</text>
 							<text class="price">{{item.payPrice}}</text>

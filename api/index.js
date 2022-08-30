@@ -88,3 +88,11 @@ export const getBannerDetail = (params) => {
     params
   })
 }
+/**
+ *娱乐特色项目列表
+ */
+export const getFeatureList = (params) => {
+  return http.get('/wx/amusement-feature/list', {
+    params
+  })
+}
