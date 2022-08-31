@@ -422,7 +422,7 @@
 		.backImg {
 			width: 60rpx;
 			height: 60rpx;
-			position: absolute;
+			position: fixed;
 			left: 28rpx;
 			z-index: 11;
 		}

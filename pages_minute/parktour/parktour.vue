@@ -278,7 +278,7 @@
 						break;
 					case 4:
 						uni.navigateTo({
-							url: `/pages_minute/mentDetail/mentDetail?id=${val.id}`
+							url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${val.id}`
 						})
 				}
 			},
