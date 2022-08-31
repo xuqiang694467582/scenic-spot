@@ -139,19 +139,6 @@
 				}
 
 			}, {
-				"path": "mentDetail/mentDetail",
-				"style": {
-					"navigationStyle": "custom"
-				}
-
-			}, {
-				"path": "mentOrder/mentOrder",
-				"style": {
-					"navigationBarTitleText": "提交订单",
-					"enablePullDownRefresh": false
-				}
-
-			}, {
 				"path": "hotelOrder/hotelOrder",
 				"style": {
 					"navigationBarTitleText": "提交订单",
