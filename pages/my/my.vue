@@ -21,13 +21,22 @@
 						<view class="scroll-list__line" v-for="(item, index) in menuArr" :key="index">
 							<view class="scroll-list__line__item" v-for="(item1, index1) in item" :key="index1"
 								:class="[(index1 === item.length - 1) && 'scroll-list__line__item--no-margin-right']"
-								 @click="toOrder(item1.type)">
+								@click="toOrder(item1.type)">
 								<image class="scroll-list__line__item__image" :src="item1.icon" mode=""></image>
 								<text class="scroll-list__line__item__text">{{ item1.name }}</text>
 							</view>
 						</view>
 					</view>
 				</u-scroll-list>
+			</view>
+			<view class="modalBox">
+				<view class="lineBox" v-for="(item,index) in list" :key="index" @click="toDetail(index)">
+					<view class="lbL">
+						<image :src="item.img"></image>
+						<view>{{item.name}}</view>
+					</view>
+					<u-icon name="arrow-right" size="12"></u-icon>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -37,7 +46,9 @@
 	import {
 		mapState
 	} from 'vuex'
-	import {editUserInfo} from '@/api/user.js'
+	import {
+		editUserInfo
+	} from '@/api/user.js'
 	export default {
 		data() {
 			return {
@@ -46,35 +57,83 @@
 					[{
 							name: '待付款',
 							icon: '../../static/my/1.png',
-							type:1
+							type: 1
 						},
 						{
 							name: '已支付',
 							icon: '../../static/my/2.png',
-							type:2
+							type: 2
 						}, {
 							name: '已完成',
 							icon: '../../static/my/3.png',
-							type:3
+							type: 3
 						}, {
 							name: '已取消',
 							icon: '../../static/my/4.png',
-							type:4
+							type: 4
 						}, {
 							name: '全部订单',
 							icon: '../../static/my/5.png',
-							type:0
+							type: 0
 						}
 					],
 				],
+				list: [{
+						name: '商家核销',
+						img: '../../static/my/sjhx.png'
+					},
+					{
+						name: '收藏管理',
+						img: '../../static/my/wdsc.png'
+					},
+					{
+						name: '我的攻略',
+						img: '../../static/my/wdgl.png'
+					},
+				]
 			}
 		},
-		computed: mapState(['userInfo','wechatUserId']),
+		computed: mapState(['userInfo', 'wechatUserId']),
 		methods: {
-			toOrder(type){
+			toDetail(index) {
+				if (this.isGetTel() === false) return
+				switch (index) {
+					case 0:
+						uni.navigateTo({
+							url: '/pages_minute/writeOffList/writeOffList'
+						})
+						break;
+					case 1:
+						uni.navigateTo({
+							url: '/pages_minute/collection/collection'
+						})
+						break;
+				}
+			},
+			toOrder(type) {
+				if (this.isGetTel() === false) return
 				uni.navigateTo({
-					url:`/pages/order/order?type=${type}`
+					url: `/pages/order/order?type=${type}`
 				})
+			},
+			//校验手机号
+			isGetTel() {
+				if (!this.userInfo.phone) {
+					uni.showModal({
+						title: '提示',
+						content: '请授权手机号',
+						success: function(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '/pages/getTel/getTel'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					return false
+				}
 			},
 			// 获取用户信息
 			getUserProfile() {
@@ -86,7 +145,7 @@
 							avatar: e.userInfo.avatarUrl,
 							nickname: e.userInfo.nickName,
 							sex: e.userInfo.gender,
-							id:that.wechatUserId
+							id: that.wechatUserId
 						})
 						this.$store.dispatch('getUserInfos')
 					}
@@ -99,6 +158,39 @@
 <style lang="scss">
 	page {
 		background-color: #F2F2F4;
+	}
+
+	.modalBox {
+		margin-top: 24rpx;
+		background: #fff;
+		border-radius: 24rpx;
+		padding: 36rpx 32rpx;
+		box-sizing: border-box;
+
+		.lbL {
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			color: #333333;
+			font-size: 28rpx;
+		}
+
+		.lineBox {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 52rpx;
+
+			image {
+				width: 44rpx;
+				height: 44rpx;
+				margin-right: 24rpx;
+			}
+		}
+
+		.lineBox:last-child {
+			margin-bottom: 0;
+		}
 	}
 
 	.back {

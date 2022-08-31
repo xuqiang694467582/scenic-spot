@@ -137,6 +137,7 @@
 			}
 		}
 	}
+
 page{
 	background: rgba(244, 244, 244, 1);
 }

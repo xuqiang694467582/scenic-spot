@@ -20,7 +20,6 @@
 				"navigationBarTitleText": "购物车",
 				"enablePullDownRefresh": false
 			}
-
 		}, {
 			"path": "pages/my/my",
 			"style": {
@@ -33,7 +32,6 @@
 				"navigationBarTitleText": "获取手机号",
 				"enablePullDownRefresh": false
 			}
-
 		}
 	],
 	"subPackages": [{
@@ -83,81 +81,98 @@
 				"style": {
 					"navigationStyle": "custom"
 				}
-
 			}, {
 				"path": "entertainmentSetMeal/entertainmentSetMeal",
 				"style": {
 					"navigationBarTitleText": "套餐详情",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "entertainmentPlaceOrder/entertainmentPlaceOrder",
 				"style": {
 					"navigationBarTitleText": "提交订单",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "productList/productList",
 				"style": {
 					"navigationStyle": "custom",
 					"enablePullDownRefresh": true
 				}
-
 			}, {
 				"path": "diningDetail/diningDetail",
 				"style": {
 					"navigationStyle": "custom"
 				}
-
 			}, {
 				"path": "reserve/reserve",
 				"style": {
 					"navigationBarTitleText": "",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "submitorder/submitorder",
 				"style": {
 					"navigationBarTitleText": "提交订单",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "diningOrder/diningOrder",
 				"style": {
 					"navigationStyle": "custom"
 				}
-
 			}, {
 				"path": "hotelDetail/hotelDetail",
 				"style": {
 					"navigationStyle": "custom"
 				}
-
 			}, {
 				"path": "hotelOrder/hotelOrder",
 				"style": {
 					"navigationBarTitleText": "提交订单",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "bannerDetail/bannerDetail",
 				"style": {
 					"navigationBarTitleText": "详情",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "featureList/featureList",
 				"style": {
 					"navigationBarTitleText": "特色项目",
 					"enablePullDownRefresh": true
 				}
-
+			}, {
+				"path": "writeOffList/writeOffList",
+				"style": {
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "writeOffDetail/cwdetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+			}
+			, {
+				"path": "writeOffDetail/hotelDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "writeOffDetail/specialtyDetail",
+				"style": {
+					"navigationBarTitleText": "核销详情",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "collection/collection",
+				"style": {
+					"navigationBarTitleText": "我的收藏",
+					"enablePullDownRefresh": true,
+					"navigationBarBackgroundColor": "#ffffff"
+				}
 			}
 		]
 	}],
