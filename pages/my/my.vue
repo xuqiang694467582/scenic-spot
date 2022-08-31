@@ -35,7 +35,7 @@
 						<image :src="item.img"></image>
 						<view>{{item.name}}</view>
 					</view>
-					<u-icon name="arrow-right" size="10"></u-icon>
+					<u-icon name="arrow-right" size="12"></u-icon>
 				</view>
 			</view>
 		</view>
@@ -78,8 +78,8 @@
 						}
 					],
 				],
-				list: [
-					{name: '商家核销',
+				list: [{
+						name: '商家核销',
 						img: '../../static/my/sjhx.png'
 					},
 					{
@@ -97,13 +97,18 @@
 		methods: {
 			toDetail(index) {
 				if (this.isGetTel() === false) return
-				// switch (index) {
-				// 	// case 0:
-				// 	// 	uni.navigateTo({
-				// 	// 		url: '/pages_minute/parktour/parktour'
-				// 	// 	})
-				// 	// 	break;
-				// }
+				switch (index) {
+					case 0:
+						uni.navigateTo({
+							url: '/pages_minute/writeOffList/writeOffList'
+						})
+						break;
+					case 1:
+						uni.navigateTo({
+							url: '/pages_minute/collection/collection'
+						})
+						break;
+				}
 			},
 			toOrder(type) {
 				if (this.isGetTel() === false) return

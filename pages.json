@@ -164,6 +164,50 @@
                 }
                 
                 }
+                ,{
+                    "path" : "writeOffList/writeOffList",
+                    "style" :                                                                                    
+                {
+                   "navigationStyle": "custom"
+                }
+                
+                }             
+                ,{
+                    "path" : "writeOffDetail/cwdetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
+                
+                ,{
+                    "path" : "writeOffDetail/hotelDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
+                ,{
+                    "path" : "writeOffDetail/specialtyDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "核销详情",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "collection/collection",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "我的收藏",
+                    "enablePullDownRefresh": true,
+					"navigationBarBackgroundColor": "#ffffff"
+                }
+                
+                }
             ]
 	}],
 	// 底部导航栏
