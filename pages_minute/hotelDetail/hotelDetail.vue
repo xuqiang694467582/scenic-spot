@@ -1,12 +1,9 @@
 <template>
 	<view class="pages">
-		<view class="back">
-			<image :src="formData.coverImg"></image>
+		<view class="banner">
+			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
+			<image :src="formData.coverImg" class="bannerImg"></image>
 		</view>
-		<!-- 导航栏 -->
-
-		<uni-nav-bar :statusBar="true" :border="false" leftIcon="left" color="#fff" backgroundColor="transparent"
-			@clickLeft="clickLeft"></uni-nav-bar>
 		<view class="content">
 			<view class="content-title">
 				<text>{{ formData.name }}</text>
@@ -127,6 +124,14 @@
 					</veiw>
 				</view>
 			</view>
+			<view class="content-combo" id="policy">
+				<view class="content-combo-title">
+					<view>政策与设施</view>
+				</view>
+				
+			</view>
+			<!-- 附近玩乐 -->
+			<NearbyPlay id="nearby" />
 		</view>
 		<!-- 日期 -->
 		<u-calendar :show="showTime" mode="range" @confirm="confirm" @close="showTime = false" startText="住店"
@@ -220,9 +225,14 @@
 		hotelRecoType,
 		hotelRecoList
 	} from '@/api/parktour.js';
+	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
+		components: {
+			NearbyPlay
+		},
 		data() {
 			return {
+				barHightTop: '',
 				id: '',
 				show: false,
 				showTime: false,
@@ -230,11 +240,18 @@
 				urls: [],
 				num: 1,
 				recommend: [],
-				Tablist: [{
+				Tablist: [
+					{
 						name: '图片介绍',
 					},
 					{
 						name: '优选房型',
+					},
+					{
+						name: '酒店设施',
+					},
+					{
+						name: '附近推荐',
 					}
 				],
 				checkboxs: [{
@@ -303,6 +320,7 @@
 			}
 		},
 		onLoad(option) {
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.load(option.id)
 			this.id = option.id;
 		},
@@ -333,7 +351,7 @@
 					this.recommend = res.data.records;
 				}catch(e){}
 			},
-			clickLeft() {
+			backTap() {
 				uni.navigateBack({
 					delta: -1
 				})
@@ -354,6 +372,10 @@
 					id = '#foodBox'
 				} else if (e.index === 1) {
 					id = '#hotelBox'
+				} else if (e.index === 2) {
+					id = '#policy'
+				} else if (e.index === 3) {
+					id = '#nearby'
 				}
 				uni.createSelectorQuery()
 					.select(".pages") //对应外层节点
@@ -435,21 +457,31 @@
 		background-color: #f4f4f4;
 	}
 
-	.back {
+	.banner {
 		width: 100%;
 		height: 448rpx;
-		position: fixed;
-		top: 0;
-		z-index: -1;
-
-		image {
+		position: relative;
+	
+		.backImg {
+			width: 60rpx;
+			height: 60rpx;
+			position: fixed;
+			left: 28rpx;
+			z-index: 11;
+		}
+	
+		.bannerImg {
 			width: 100%;
+			height: 100%;
 		}
 	}
 
 	.content {
-		padding: 20rpx;
-		margin-top: 8rem;
+		padding: 0 24rpx;
+		box-sizing: border-box;
+		top: -54rpx;
+		position: relative;
+		
 
 		.content-title {
 			background-color: #fff;
@@ -466,15 +498,15 @@
 					display: flex;
 
 					&-t {
-						width: 100rpx;
-						border-radius: 10rpx 0 10rpx 0;
-						background: linear-gradient(180deg, rgba(243, 152, 43, 1) 50%, rgba(255, 83, 62, 1) 85%);
-						display: flex;
-						color: #fff;
+						width: 92rpx;
+						height: 44rpx;
+						background: linear-gradient(180deg, #F3982B 0%, #FF543E 100%);
+						border-radius: 12rpx 0px 12rpx 0px;
 						font-size: 24rpx;
-						align-items: center;
-						justify-content: center;
-						margin-right: 20rpx;
+						font-weight: 500;
+						color: #FFFFFF;
+						text-align: center;
+						line-height: 44rpx;
 					}
 
 					&-l {
@@ -526,7 +558,7 @@
 			background-color: #fff;
 			border-radius: 24rpx;
 			padding: 20rpx;
-			margin-top: 20rpx;
+			margin: 20rpx 0;
 
 			.text {
 				margin-bottom: 20rpx;

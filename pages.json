@@ -78,7 +78,6 @@
 					"navigationBarTextStyle": "white",
 					"navigationBarBackgroundColor": "#03B85F"
 				}
-
 			}, {
 				"path": "entertainmentDetail/entertainmentDetail",
 				"style": {
@@ -139,45 +138,28 @@
 				}
 
 			}, {
-				"path": "mentDetail/mentDetail",
-				"style": {
-					"navigationStyle": "custom"
-				}
-
-			}, {
-				"path": "mentOrder/mentOrder",
-				"style": {
-					"navigationBarTitleText": "提交订单",
-					"enablePullDownRefresh": false
-				}
-
-			}, {
 				"path": "hotelOrder/hotelOrder",
 				"style": {
 					"navigationBarTitleText": "提交订单",
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "bannerDetail/bannerDetail",
+				"style": {
+					"navigationBarTitleText": "详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "featureList/featureList",
+				"style": {
+					"navigationBarTitleText": "特色项目",
+					"enablePullDownRefresh": true
+				}
+
 			}
-		    ,{
-                    "path" : "bannerDetail/bannerDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "详情",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "featureList/featureList",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "特色项目",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-            ]
+		]
 	}],
 	// 底部导航栏
 	"tabBar": {

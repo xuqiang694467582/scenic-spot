@@ -9,6 +9,14 @@ export const getDiningRoom = (params) => {
     params
   })
 }
+/**
+ * 公告信息列表
+ */
+export const getAnnouncementList = (params) => {
+  return http.get('/wx/announcement/list', {
+    params
+  })
+}
 /**酒店信息列表
  */
 export const getHotel = (params) => {

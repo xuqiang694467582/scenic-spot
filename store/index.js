@@ -52,7 +52,6 @@ const store = new Vuex.Store({
 					client_secret: 'CFtxxnK9LU0B8m0eQ/A6FYiR8T4rJd9w4hlIf08SKdL6agvLitIG179f6B1lkmS5WZcKqDyini2t↵aBVKHwbXAxwmYC2kQoiLpkp56X6Wrg2esk/4QtsySDqsMqKOpf0Zm0dB3LIloOALSKwOhZpY7MhI↵bYYpMnMXMzT/ovrk2tVGwd5IfMkm9w+shlSN9G+U2zE4FTt1RCPy8eE6e8qwTgq5a3tHV4sbM5CR↵oN5ToB0p468e2H0dhUxuMaUcZtt9OJc4+5HPoOScYFRVLesoG83ljZ+ed1pi7Ntpvu9wVv1lcvn1↵xrkEpqmY7LztgTxg7N6Xg6vF4x4/PtjYIef5lw=='
 				}
 				addToken(params).then(async (response) => {
-					console.log(response)
 					const {
 						data
 					} = response

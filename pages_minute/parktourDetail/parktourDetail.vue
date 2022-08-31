@@ -1,10 +1,9 @@
 <template>
 	<view class="pages">
-		<view class="back">
-			<image :src="formData.coverImg"></image>
+		<view class="banner">
+			<image src="../../static/back.png" :style="{top:barHightTop+'px'}" class="backImg" @click="backTap"></image>
+			<image :src="formData.coverImg" class="bannerImg"></image>
 		</view>
-		<!-- 导航栏 -->
-		<uni-nav-bar :statusBar="true" :border="false" leftIcon="left" color="#fff" backgroundColor="transparent" @clickLeft="clickLeft"></uni-nav-bar>
 		<view class="content">
 			<view class="content-title">
 				<text>{{ formData.name }}</text>
@@ -21,56 +20,70 @@
 				</view>
 				<view class="content-title-tag">
 					<view class="content-title-tag-c" v-for="(item,index) in formData.label" :key="index">
-						<u-tag :text="item" :plain="true" borderColor="#08B761" color="#08B761" bgColor="#EDF8EF"></u-tag>
+						<u-tag :text="item" :plain="true" borderColor="#08B761" color="#08B761" bgColor="#EDF8EF">
+						</u-tag>
 					</view>
 				</view>
 				<u-read-more showHeight="50" closeText="展开" :toggle="true">
-				    <rich-text :nodes="formData.introduction"></rich-text>
+					<rich-text :nodes="formData.introduction"></rich-text>
 				</u-read-more>
 			</view>
 			<view class="content-image">
 				<view class="text">图片介绍</view>
-				<u-album :maxCount="3" :space="10" :singleSize="210" :multipleSize="100" :urls="formData.photoExplanation"></u-album>
+				<u-album :maxCount="3" :space="10" :singleSize="210" :multipleSize="100"
+					:urls="formData.photoExplanation"></u-album>
 			</view>
+			<!-- 附近玩乐 -->
+			<NearbyPlay id="nearby" />
 		</view>
 	</view>
-</template>	
+</template>
 
 <script>
-	import { soptDetail } from '@/api/parktour.js';
+	import {
+		soptDetail
+	} from '@/api/parktour.js';
+	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
+		components: {
+			NearbyPlay
+		},
 		data() {
 			return {
+				barHightTop: '',
 				formData: {},
 			}
 		},
 		onLoad(option) {
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.load(option.id)
 		},
 		methods: {
-			async load(id){
-				try{
-					const { data } = await soptDetail({
+			async load(id) {
+				try {
+					const {
+						data
+					} = await soptDetail({
 						id: id
 					})
 					this.formData = data;
-				}catch(e){}
+				} catch (e) {}
 			},
-			clickLeft(){
+			backTap() {
 				uni.navigateBack({
 					delta: -1
 				})
 			},
-			getAddress(){
+			getAddress() {
 				uni.getLocation({
 					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
-					success: function (res) {
+					success: function(res) {
 						const latitude = res.latitude;
 						const longitude = res.longitude;
 						uni.openLocation({
 							latitude: latitude,
 							longitude: longitude,
-							success: function () {
+							success: function() {
 								console.log('success');
 							}
 						});
@@ -82,76 +95,89 @@
 </script>
 
 <style lang="scss">
-page{
-	background-color: #f4f4f4;
-}
-.back{
-	width: 100%;
-	height: 448rpx;
-	position: fixed;
-	top: 0;
-	z-index: -1;
-	
-	image{
-		width: 100%;
+	page {
+		background-color: #f4f4f4;
 	}
-}
 
-.content{
-	padding: 20rpx;
-	margin-top: 8rem;
-	
-	.content-title{
-		background-color: #fff;
-		border-radius: 24rpx;
-		padding: 20rpx;
-		
-		.content-title-one{
-			margin: 30rpx 0;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			&-left {
+	.banner {
+		width: 100%;
+		height: 448rpx;
+		position: relative;
+
+		.backImg {
+			width: 60rpx;
+			height: 60rpx;
+			position: fixed;
+			left: 28rpx;
+			z-index: 11;
+		}
+
+		.bannerImg {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	.content {
+		padding: 0 24rpx;
+		box-sizing: border-box;
+		top: -54rpx;
+		position: relative;
+
+		.content-title {
+			background-color: #fff;
+			border-radius: 24rpx;
+			padding: 20rpx;
+
+			.content-title-one {
+				margin: 30rpx 0;
 				display: flex;
-				&-t {
-					width: 100rpx;
-					border-radius: 10rpx 0 10rpx 0;
-					background: linear-gradient(180deg, rgba(243,152,43,1) 50%, rgba(255,83,62,1) 85%);
+				justify-content: space-between;
+				align-items: center;
+
+				&-left {
 					display: flex;
-					color: #fff;
-					font-size: 24rpx;
-					align-items: center;
-					justify-content: center;
-					margin-right: 20rpx;
+
+					&-t {
+						width: 92rpx;
+						height: 44rpx;
+						background: linear-gradient(180deg, #F3982B 0%, #FF543E 100%);
+						border-radius: 12rpx 0px 12rpx 0px;
+						font-size: 24rpx;
+						font-weight: 500;
+						color: #FFFFFF;
+						text-align: center;
+						line-height: 44rpx;
+					}
+				}
+
+				image {
+					width: 58rpx;
+					height: 58rpx;
 				}
 			}
-			
-			image{
-				width: 58rpx;
-				height: 58rpx;
+
+			.content-title-tag {
+				display: flex;
+				flex-wrap: wrap;
+				margin-bottom: 20rpx;
+
+				.content-title-tag-c {
+					margin-right: 10rpx;
+					margin-bottom: 10rpx;
+				}
 			}
 		}
-		.content-title-tag{
-			display: flex;
-			flex-wrap: wrap;
-			margin-bottom: 20rpx;
-			
-			.content-title-tag-c{
-				margin-right: 10rpx;
-				margin-bottom: 10rpx;
+
+		.content-image {
+			background-color: #fff;
+			border-radius: 24rpx;
+			padding: 20rpx;
+			margin: 20rpx 0;
+
+			.text {
+				margin-bottom: 20rpx;
 			}
 		}
 	}
-	
-	.content-image{
-		background-color: #fff;
-		border-radius: 24rpx;
-		padding: 20rpx;
-		margin-top: 20rpx;
-		
-		.text{
-			margin-bottom: 20rpx;
-		}
-	}
-}
 </style>

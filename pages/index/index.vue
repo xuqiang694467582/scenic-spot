@@ -19,9 +19,9 @@
 				</view>
 			</uni-nav-bar>
 			<!-- 滚动通知 -->
-			<!-- <view class="notice">
+			<view class="notice">
 				<u-notice-bar bgColor="transparent" color="#E4E4E4" :text="text"></u-notice-bar>
-			</view> -->
+			</view>
 			<!-- 轮播图 -->
 			<view class="swiperBanner">
 				<u-swiper :list="bannerList" bgColor="transparent" radius="12" height="150" keyName="img"
@@ -121,7 +121,6 @@
 				</view>
 			</view>
 		</view>
-
 	</view>
 </template>
 
@@ -134,7 +133,8 @@
 		getDiningRoom,
 		getHotel,
 		getAmusement,
-		getBanner
+		getBanner,
+		getAnnouncementList
 	} from '@/api/index.js'
 	import {
 		getSpecialtyGood
@@ -143,7 +143,7 @@
 		data() {
 			return {
 				keyword: '',
-				text: 'uView UI众多组件覆盖开发过程的各个需求，组件功能丰富，多端兼容。让您快速集成，开箱即用',
+				text: [],
 				list: [
 					'https://cdn.uviewui.com/uview/swiper/swiper1.png',
 					'https://cdn.uviewui.com/uview/swiper/swiper2.png',
@@ -197,13 +197,13 @@
 					})
 				}
 			});
-			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45
-
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45;
 		},
 		onShow() {
 			this.keyword = ''
 			this.getLocation()
 			this.getBannerList()
+			this.getNoticebar()
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
@@ -224,11 +224,23 @@
 					url: `/pages_minute/bannerDetail/bannerDetail?id=${this.bannerList[e].id}`
 				})
 			},
+			// 获取banner
 			async getBannerList() {
 				const {
 					data
 				} = await getBanner()
 				this.bannerList = data
+			},
+			// 获取公告
+			async getNoticebar() {
+				const {
+					data
+				} = await getAnnouncementList()
+				let newList = [];
+				data.map((val) => {
+					newList.push(val.context)
+				})
+				this.text = newList;
 			},
 			// 搜索
 			searchTap() {
@@ -347,7 +359,6 @@
 
 			//校验手机号
 			isGetTel() {
-				console.log(this.userInfo)
 				if (!this.userInfo.phone) {
 					uni.showModal({
 						title: '提示',
