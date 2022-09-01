@@ -6,7 +6,7 @@
 			 </u-sticky>
 		</view>
 		<Product v-show="curt===0" ref="product"/>
-		<Strategy v-show="curt===1"/>
+		<Strategy v-show="curt===1" ref="strategy"/>
 	</view>
 </template>
 
@@ -40,20 +40,19 @@
 		onPullDownRefresh() {
 			if(this.curt==0){
 				this.$refs.product.pullDownRefresh()
+			}else{
+				this.$refs.strategy.pullDownRefresh()
 			}
 		},
 		onReachBottom() {
 			if(this.curt==0){
 				this.$refs.product.reachBottom()
+			}else{
+				this.$refs.strategy.reachBottom()
 			}
 		},
 		methods: {
-			getList(){
-				if(this.curt==0){
-					this.$refs.product.getList(this.listQueryP)
-				}
-				
-			},
+			
 			changeType(e){
 				this.curt=e.index
 			}

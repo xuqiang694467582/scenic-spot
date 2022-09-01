@@ -38,7 +38,7 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "景区攻略",
-                "enablePullDownRefresh": false,
+                "enablePullDownRefresh": true,
 				"navigationBarBackgroundColor": "#ffffff"
             }
             
@@ -200,7 +200,8 @@
                     "path" : "strategyDetail/strategyDetail",
                     "style" :                                                                                    
                 {
-                    "navigationStyle": "custom"
+                    "navigationStyle": "custom",
+					"enablePullDownRefresh": true
                 }
                 
                 }
@@ -209,7 +210,7 @@
                     "style" :                                                                                    
                 {
                     "navigationBarTitleText": "我的攻略",
-                    "enablePullDownRefresh": false,
+                    "enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff"
                 }
                 

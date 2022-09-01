@@ -2,27 +2,31 @@
 	<view>
 		<view class="topBox">
 			<view :style="{paddingTop:barHightTop+'px'}" class="backImg">
-				<u-icon name="arrow-left" size="16" color="#ffffff"></u-icon>
+				<u-icon name="arrow-left" size="16" color="#ffffff" @click="backTap"></u-icon>
 			</view>
-			<view class="tipBox">
+			<view class="tipBox" v-if="detail.status=='1'">
 				<image src="../../static/order/time.png"></image>
 				<view>待核销<text>待用户消费后请及时核销</text></view>
 			</view>
+			<view class="tipBox" v-else>
+				<image src="../../static/order/success.png"></image>
+				<view>已核销<text>已对用户该次消费进行核销</text></view>
+			</view>
 		</view>
-		<view class="codeBox">
+		<view class="codeBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
 			<image src="../../static/order/detailBg.png" class="bgImg"></image>
 			<view class="codeInfo">
 				<view class="goodsInfo">
-					<image src="../../static/index/menu_4.png" class="goodsImg"></image>
+					<image :src="productDetail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage" class="goodsImg"></image>
 					<view class="giR">
-						<view class="gName">【双人】全天全场通玩</view>
-						<view class="gInfo">随时退·过期退</view>
-						<view class="gPrice"><text>￥</text>298</view>
+						<view class="gName">{{productDetail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}</view>
+						<!-- <view class="gInfo">随时退·过期退</view> -->
+						<view class="gPrice"><text>￥</text>{{item.productInfo.price}}</view>
 					</view>
 				</view>
 				<view>
 					<view class="codeText">券码信息</view>
-					<view class="codeNum useCode">1489-0089</view>
+					<view class="codeNum" :class="detail.status==='2'?'useCode':''">{{productDetail.couponInfo.couponNumber}}</view>
 				</view>
 			</view>
 		</view>
@@ -31,49 +35,98 @@
 				<view class="title">订单信息</view>
 				<view class="lineBox">
 					<view class="lTitle">实付金额：</view>
-					<view class="price">￥128</view>
+					<view class="price">￥{{detail.payPrice}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">数 量：</view>
-					<view>1</view>
+					<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">订单号：</view>
-					<view>165989897845698878458994</view>
+					<view>{{detail.orderSn}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">预留号码：</view>
-					<view>136****3689s</view>
+					<view>{{productDetail.otherInfo.tel}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">付款时间：</view>
-					<view>136****3689s</view>
+					<view>{{detail.payTimeStr}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">下单时间：</view>
-					<view>136****3689s</view>
+					<view>{{detail.placeTimeStr}}</view>
 				</view>
 			</view>
-			<view class="btnBox">确认核销</view>
+			<view class="btnBox" @click="writeOffTap" v-show="detail.status==='1'">确认核销</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		getOrderDetail,
+	} from '@/api/order.js'
+	import {
+		addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
+				detail:'',
+				productDetail:'',
+				id:'',
+				lId:'',
 				barHightTop: ''
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 20
+			this.id=options.id
+			this.lId=options.lId
+			this.getDetail()
 		},
 		methods: {
-
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
+			async writeOffTap(){
+				uni.showModal({
+					title: '提示',
+					content: '确定核销？',
+					success: async (res)=> {
+						if (res.confirm) {
+							await addWriteOffVoucher({id:this.lId})
+							uni.showToast({
+								title:'核销成功'
+							})
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async getDetail() {
+				const {
+					data
+				} = await getOrderDetail({
+					id: this.id
+				})
+				this.detail = data
+				const productDetail = data.childrenOrder[0]
+				this.productDetail = productDetail
+			},
 		}
 	}
 </script>
+
 
 <style lang="scss">
 	.codeBox {
@@ -123,7 +176,7 @@
 					.gPrice {
 						font-weight: bold;
 						color: #FE5A3D;
-						margin-top: 18rpx;
+						margin-top: 32rpx;
 						font-size: 36rpx;
 
 						text {

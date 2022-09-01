@@ -18,15 +18,15 @@
 				{{detail.context}}
 			</view>
 			<view class="replyTitle">评论回复<text>共13.5w条评论</text></view>
-			<view class="list" v-for="(item,index) in 4" :key="index">
-				<image src="../../static/index/menu_4.png" class="avaImg"></image>
+			<view class="list" v-for="(item,index) in list" :key="index">
+				<image :src="item.userAvatar" class="avaImg"></image>
 				<view class="tR">
 					<view class="topBox">
-						<view>youke131983hhj</view>
-						<view>06-14</view>
+						<view>{{item.userName}}<text class="author" v-show="item.identityFlag=='0'">作者</text></view>
+						<view>{{item.commentDateStr}}</view>
 					</view>
-					<view class="replyText">想了解一下具体的费用情况</view>
-					<view class="replyUser">
+					<view class="replyText">{{item.commentDetails}}</view>
+					<!-- <view class="replyUser">
 						<image src="../../static/index/menu_4.png" class="avaImg"></image>
 						<view class="tR">
 							<view class="topBox">
@@ -35,7 +35,7 @@
 							</view>
 							<view class="replyText">想了解一下具体的费用情况</view>
 						</view>
-					</view>
+					</view> -->
 				</view>
 
 			</view>
@@ -43,14 +43,14 @@
 		<view class="botBox">
 			<view class="commentBox">
 				<image src="../../static/strategy/edit.png"></image>
-				<input placeholder="评论一下吧~" />
+				<input placeholder="评论一下吧~" @focus="focusTap" v-model="temp.commentDetails" @confirm="confirmTap"/>
 			</view>
-			<view class="operateBox">
+			<view class="operateBox" v-if="!isFocus">
 				<view class="operate">
 					<image src="../../static/strategy/zan.png"></image>5.6w
 				</view>
-				<view class="operate">
-					<image src="../../static/my/star.png"></image>5.6w
+				<view class="operate" @click="collectTap">
+					<image :src="detail.isKeep?'':'../../static/my/star.png'"></image>5.6w
 				</view>
 				<view class="operate">
 					<image src="../../static/strategy/comment.png"></image>5.6w
@@ -64,24 +64,83 @@
 </template>
 
 <script>
-	import {getRaiderDetail} from '@/api/strategy.js'
+	import {getRaiderDetail,addComment,getReplyList} from '@/api/strategy.js'
+	import {addFavorite} from '@/api/product.js'
 	export default {
 		data() {
 			return {
-				bannerList: [
-					'https://cdn.uviewui.com/uview/swiper/swiper3.png',
-					'https://cdn.uviewui.com/uview/swiper/swiper2.png',
-					'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-				],
+				bannerList: [],
 				id:'',
-				detail:''
+				detail:'',
+				isFocus:false,
+				temp:{
+					commentDetails:'',
+					raiderId:''
+				},
+				list:[],
+				listQuery: {
+					raiderId:'',
+					page: 1,
+					pageSize: 10,
+				}
 			}
 		},
 		onLoad(options){
 			this.id=options.id
+			this.temp.raiderId=this.id
+			this.listQuery.raiderId=this.id
 			this.getDetail()
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
 		},
 		methods: {
+			// 收藏
+			 async collectTap(){
+				 if(this.detail.isKeep){
+					// await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
+					// this.getDetail()
+				 }else{
+					 await addFavorite({type:1,raiderKeep:{raiderId:this.id}})
+					 this.getDetail()
+				 }
+				
+			},
+			async getList(){
+				const {
+					data
+				} = await getReplyList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
+			// 评论
+			async confirmTap(){
+				if(!this.temp.commentDetails){
+					uni.$u.toast('请输入内容')
+					return
+				}
+				await addComment(this.temp)
+				uni.showToast({
+					title: '评论成功'
+				})
+				this.temp.commentDetails=''
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			focusTap(){
+				console.log('1')
+				this.isFocus=true
+			},
 			async getDetail(){
 				const {data}=await getRaiderDetail({id:this.id})
 				this.detail=data
@@ -109,6 +168,7 @@
 		.operateBox{
 			display: flex;
 			align-items: center;
+			
 		}
 		.operate {
 			display: flex;
@@ -126,7 +186,8 @@
 
 		.commentBox {
 			margin-left: 34rpx;
-			width: 264rpx;
+			display: flex;
+			flex: 1;
 			height: 64rpx;
 			background: #F6F6F6;
 			border-radius: 100rpx;
@@ -134,7 +195,7 @@
 			align-items: center;
 			padding-left: 32rpx;
 			font-size: 28rpx;
-
+			margin-right: 18rpx;
 			image {
 				width: 24rpx;
 				height: 24rpx;
@@ -180,7 +241,6 @@
 
 			.replyUser {
 				display: flex;
-				margin-top: 28rpx;
 				padding-bottom: 24rpx;
 				border-bottom: 1px solid #F7F7F7;
 
@@ -191,6 +251,7 @@
 				color: #333333;
 				font-size: 30rpx;
 				margin-top: 10rpx;
+				margin-bottom: 28rpx;
 			}
 
 			.topBox {

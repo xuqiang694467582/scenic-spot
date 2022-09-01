@@ -83,7 +83,7 @@
 				detail:'',
 				productDetail:'',
 				id:'',
-				lId:''
+				lId:'',
 			}
 		},
 		onLoad(options) {
@@ -92,6 +92,11 @@
 			this.getDetail()
 		},
 		methods: {
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
 			async writeOffTap(){
 				uni.showModal({
 					title: '提示',
