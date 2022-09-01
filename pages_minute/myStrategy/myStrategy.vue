@@ -1,21 +1,21 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in 4" :key="index" @click="toDetail">
+		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
 			<view class="infoBox">
-				<view class="title">旅游攻略丨景点打卡 3天2晚人均300攻略</view>
-				<view class="info">宽窄巷子位于四川省成都市青羊区长顺街附近，由宽巷子、窄巷子、井巷子平行排列组成，全为青黛砖瓦的仿古四合院落院落院落院落院落</view>
+				<view class="title">{{item.title}}</view>
+				<view class="info">{{item.context}}</view>
 				<view class="imgBox">
-					<image src="../../static/index/menu_4.png" v-for="(item,index) in 4" :key="index"></image>
-					<view class="imgNum">9图</view>
+					<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4"></image>
+					<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图</view>
 				</view>
 			</view>
 			<view class="botBox">
-				<view class="time">2天前</view>
+				<view class="time">{{item.createTimeStr}}</view>
 				<view class="operate">
-					<view class="operateBox">
+					<view class="operateBox" @click.stop="editTap(item.id)">
 						<image src="../../static/strategy/editor.png"></image>
 					</view>
-					<view class="operateBox">
+					<view class="operateBox" @click.stop="delTap(item.id)">
 						<image src="../../static/strategy/del.png"></image>
 					</view>
 				</view>
@@ -26,16 +26,66 @@
 </template>
 
 <script>
+	import {getRaiderMyself,delRaider} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
-
+				listQuery: {
+					page: 1,
+					pageSize: 10,
+				},
+				list: [],
 			}
 		},
+		onShow() {		
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
+		},
 		methods: {
-			toDetail(){
+			editTap(id){
 				uni.navigateTo({
-					url: '/pages_minute/strategyDetail/strategyDetail'
+					url: `/pages_minute/releaseStrategy/releaseStrategy?id=${id}`
+				})
+			},
+			delTap(id){
+				uni.showModal({
+					title: '提示',
+					content: '确定删除',
+					success: async (res)=> {
+						if (res.confirm) {
+							await delRaider({id:id})
+							uni.showToast({
+								title:'删除成功'
+							})
+							this.list = []
+							this.listQuery.page = 1
+							this.getList()
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async getList() {
+				const {
+					data
+				} = await getRaiderMyself(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
+			toDetail(id) {
+				uni.navigateTo({
+					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
 				})
 			},
 			

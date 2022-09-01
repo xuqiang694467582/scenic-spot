@@ -34,7 +34,7 @@
 		mapState
 	} from 'vuex'
 	import {
-		addRaider
+		addRaider,getRaiderDetail,updateRaider
 	} from '@/api/strategy.js'
 	export default {
 		data() {
@@ -42,10 +42,10 @@
 				temp: {
 					title: '',
 					context: '',
-					// address: '',
-					// introductionImg: [],
-					// latitude: '',
-					// longitude: ''
+					address: '',
+					introductionImg: [],
+					latitude: '',
+					longitude: ''
 				},
 				fileList1: [],
 				rules: {
@@ -62,10 +62,30 @@
 						trigger: ['blur', 'change']
 					},
 				},
+				id:'',
 			}
 		},
 		computed: mapState(['uploadUrl', 'token']),
+		onLoad(options) {
+			if(options.id){
+				this.id=options.id
+				this.getDetail()
+			}
+			
+		},
 		methods: {
+			// 详情
+			async getDetail(){
+				const {data}=await getRaiderDetail({id:this.id})
+				for (let key in data) {
+				 this.temp[key]=data[key]
+				}
+				if(data.introductionImg.length>0){
+					this.fileList1=data.introductionImg.map(item=>{
+						return {url:item}
+					})
+				}
+			},
 			// 选择位置
 			selectAddress() {
 				const that = this
@@ -78,6 +98,7 @@
 				});
 			},
 			releaseTap() {
+				const that=this
 				this.$refs.form.validate().then(async (res) => {
 					if (this.fileList1.length > 0) {
 						this.temp.introductionImg = this.fileList1.map(item => {
@@ -85,15 +106,30 @@
 						})
 					}
 					try{
-						await addRaider(this.temp)
-						uni.showToast({
-							title: '发布成功'
-						})
-						setTimeout(() => {
-							uni.navigateBack({
-								delta: 1
+						if(that.id){
+							that.temp.id=that.id
+							await updateRaider(this.temp)
+							uni.showToast({
+								title: '发布成功'
 							})
-						}, 1000)
+							setTimeout(() => {
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 1000)
+							
+						}else{
+							await addRaider(this.temp)
+							uni.showToast({
+								title: '发布成功'
+							})
+							setTimeout(() => {
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 1000)
+						}
+						
 					}catch(res){
 						uni.$u.toast(res.data.msg)
 					}

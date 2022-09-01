@@ -2,18 +2,20 @@
 	<view>
 		<uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
 			<view slot="left" class="navBox">
-				<image src="../../static/jtL.png" class="backImg"></image>
-				<image src="../../static/index/menu_4.png" class="avaBox"></image>
-				<view class="navTitle">旅行攻略分享</view>
+				<image src="../../static/jtL.png" class="backImg" @click="backTap"></image>
+				<image :src="detail.wechatUserAvatar" class="avaBox"></image>
+				<view class="navTitle">{{detail.wechatUserName}}</view>
 			</view>
 		</uni-nav-bar>
-		<u-swiper :list="bannerList" height="261" radius="12" autoplay="false" indicator></u-swiper>
+		<u-swiper :list="detail.introductionImg" height="261" radius="12" :autoplay="false" indicator></u-swiper>
 		<view class="content">
-			<view class="title">旅游攻略丨景点打卡 3天2晚人均300攻略</view>
-			<view class="time">2022-06-25 · 已有125.9w人浏览</view>
+			<view class="title">{{detail.title}}</view>
+			<view class="time">{{detail.createTimeStr}} 
+			<!-- · 
+			已有125.9w人浏览 -->
+			</view>
 			<view class="text">
-				宽窄巷子位于四川省成都市青羊区长顺街附近，由宽巷子、窄巷子、井巷子平行排列组成，全为青黛砖瓦的仿古四合院落，这里也是成都遗留下来的较成规模的清朝古街道，与大慈寺、文殊院一起并称为成都三大历史文化名城保护街区。.
-				宽窄巷子是成都休闲都市、市井生活的最佳体现。你可以感受到
+				{{detail.context}}
 			</view>
 			<view class="replyTitle">评论回复<text>共13.5w条评论</text></view>
 			<view class="list" v-for="(item,index) in 4" :key="index">
@@ -62,6 +64,7 @@
 </template>
 
 <script>
+	import {getRaiderDetail} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
@@ -69,11 +72,25 @@
 					'https://cdn.uviewui.com/uview/swiper/swiper3.png',
 					'https://cdn.uviewui.com/uview/swiper/swiper2.png',
 					'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-				]
+				],
+				id:'',
+				detail:''
 			}
 		},
+		onLoad(options){
+			this.id=options.id
+			this.getDetail()
+		},
 		methods: {
-
+			async getDetail(){
+				const {data}=await getRaiderDetail({id:this.id})
+				this.detail=data
+			},
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			}
 		}
 	}
 </script>
@@ -246,6 +263,7 @@
 			width: 64rpx;
 			height: 64rpx;
 			margin-left: 24rpx;
+			border-radius: 64rpx;
 		}
 
 		.navTitle {
