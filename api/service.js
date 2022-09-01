@@ -24,7 +24,7 @@ http.setConfig((config) => {
 	/* 设置全局配置 */
 
 	// config.baseURL = "https://newqiye.huiyunbh.com/" /* 正式 */
-	config.baseURL = "https://qianfengtestapi.huiyunbh.com//"
+	config.baseURL = "https://qianfengtestapi.huiyunbh.com/"
 	// config.baseURL = "http://192.168.0.202:8777"
 
 	config.header = {

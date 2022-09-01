@@ -5,8 +5,8 @@
 				<u--textarea v-model="temp.title" placeholder="输入一个符合您攻略的标题吧~" fontSize="30rpx" count maxlength="50"
 					border="none" height="40rpx"></u--textarea>
 			</u-form-item>
-			<u-form-item label="正文" prop="info">
-				<u--textarea v-model="temp.info" placeholder="添加正文~" fontSize="30rpx" border="none" autoHeight>
+			<u-form-item label="正文" prop="context">
+				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" autoHeight>
 				</u--textarea>
 			</u-form-item>
 		</u--form>
@@ -18,29 +18,90 @@
 				</view>
 			</u-upload>
 		</view>
-		<view class="addressBox">
+		<view class="addressBox" @click="selectAddress">
 			<view class="address">
 				<image src="../../static/strategy/address.png"></image>
-				<view>简阳市·桃花村</view>
+				<view>{{temp.address?temp.address:'所在位置'}}</view>
 			</view>
 			<u-icon name="arrow-right" color="#333" size="14"></u-icon>
 		</view>
-		<view class="release">发布攻略</view>
+		<view class="release" @click="releaseTap">发布攻略</view>
 	</view>
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
+	import {
+		addRaider
+	} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
 				temp: {
 					title: '',
-					info: ''
+					context: '',
+					// address: '',
+					// introductionImg: [],
+					// latitude: '',
+					// longitude: ''
 				},
-				fileList1: []
+				fileList1: [],
+				rules: {
+					title: {
+						type: 'string',
+						required: true,
+						message: '请填写标题',
+						trigger: ['blur', 'change']
+					},
+					context: {
+						type: 'string',
+						required: true,
+						message: '请添加正文',
+						trigger: ['blur', 'change']
+					},
+				},
 			}
 		},
+		computed: mapState(['uploadUrl', 'token']),
 		methods: {
+			// 选择位置
+			selectAddress() {
+				const that = this
+				uni.chooseLocation({
+					success: function(res) {
+						that.temp.address = res.name
+						that.temp.latitude = res.latitude
+						that.temp.longitude = res.longitude
+					}
+				});
+			},
+			releaseTap() {
+				this.$refs.form.validate().then(async (res) => {
+					if (this.fileList1.length > 0) {
+						this.temp.introductionImg = this.fileList1.map(item => {
+							return item.url
+						})
+					}
+					try{
+						await addRaider(this.temp)
+						uni.showToast({
+							title: '发布成功'
+						})
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							})
+						}, 1000)
+					}catch(res){
+						uni.$u.toast(res.data.msg)
+					}
+					
+				}).catch(errors => {
+					uni.$u.toast('请填写完整')
+				})
+			},
 			// 删除图片
 			deletePic(event) {
 				this[`fileList${event.name}`].splice(event.index, 1)
@@ -71,15 +132,18 @@
 			uploadFilePromise(url) {
 				return new Promise((resolve, reject) => {
 					let a = uni.uploadFile({
-						url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
+						url: this.uploadUrl,
 						filePath: url,
 						name: 'file',
+						header: {
+							Authorization: "Bearer " + this.token
+						},
 						formData: {
-							user: 'test'
+							type: 'img'
 						},
 						success: (res) => {
 							setTimeout(() => {
-								resolve(res.data.data)
+								resolve(JSON.parse(res.data).data.url)
 							}, 1000)
 						}
 					});
@@ -90,6 +154,9 @@
 </script>
 
 <style lang="scss">
+	page{
+		padding-bottom: 150rpx;
+	}
 	.release {
 		width: 642rpx;
 		height: 94rpx;

@@ -14,7 +14,8 @@ const store = new Vuex.Store({
 		token: uni.getStorageSync("token") ? uni.getStorageSync("token") : "", //token
 		location: uni.getStorageSync("location") ? uni.getStorageSync("location") : "", //当前位置
 		wechatUserId:uni.getStorageSync("wechatUserId") ?uni.getStorageSync("wechatUserId") : "",
-		orderData:''
+		orderData:'',
+		uploadUrl: 'https://qianfengtestapi.huiyunbh.com/sys/storage/upload'
 	},
 	mutations: {
 		SET_USERINFO(state, data) {

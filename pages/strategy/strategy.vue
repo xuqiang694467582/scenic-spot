@@ -1,23 +1,23 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in 4" :key="index" @click="toDetail">
+		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail">
 			<view class="topBox">
 				<view class="avaBox">
-					<image src="../../static/index/menu_4.png"></image>
-					<view>旅行攻略分享UP</view>
+					<image :src="item.wechatUserAvatar"></image>
+					<view>{{item.wechatUserName}}</view>
 				</view>
 				<image src="../../static/my/starA.png" class="star"></image>
 			</view>
 			<view class="infoBox">
-				<view class="title">旅游攻略丨景点打卡 3天2晚人均300攻略</view>
-				<view class="info">宽窄巷子位于四川省成都市青羊区长顺街附近，由宽巷子、窄巷子、井巷子平行排列组成，全为青黛砖瓦的仿古四合院落院落院落院落院落</view>
+				<view class="title">{{item.title}}</view>
+				<view class="info">{{item.context}}</view>
 				<view class="imgBox">
-					<image src="../../static/index/menu_4.png" v-for="(item,index) in 4" :key="index"></image>
-					<view class="imgNum">9图</view>
+					<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4"></image>
+					<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图</view>
 				</view>
 			</view>
 			<view class="botBox">
-				<view class="time">2天前</view>
+				<view class="time">{{item.createTimeStr}}</view>
 				<view class="operate">
 					<view class="operateBox">
 						<image src="../../static/strategy/zan.png"></image>25.6w
@@ -33,14 +33,45 @@
 </template>
 
 <script>
+	import {
+		getRaider
+	} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
+				listQuery: {
 
+					page: 1,
+					pageSize: 10,
+
+				},
+				list: [],
 			}
 		},
+		onShow() {
+
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
+		},
 		methods: {
-			toDetail(){
+			async getList() {
+				const {
+					data
+				} = await getRaider(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
+			toDetail() {
 				uni.navigateTo({
 					url: '/pages_minute/strategyDetail/strategyDetail'
 				})

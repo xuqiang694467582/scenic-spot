@@ -29,7 +29,7 @@
 		<!-- 特产显示 -->
 		<view class="orderBox" :key="index" v-show="productDetail.type!='2'">
 			<view class="titleBox">
-				<view>{{productDetail.merchantName==0?'园区农产品自提点':productDetail.merchantName}}</view>
+				<view>{{productDetail.merchantName}}</view>
 				<view>
 					<image src="../../static/order/navigation.png" @click="navigationTap()"></image>
 					<!-- <image src="../../static/order/tel.png"></image> -->

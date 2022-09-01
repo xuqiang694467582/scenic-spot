@@ -157,7 +157,8 @@
 			}, {
 				"path": "writeOffList/writeOffList",
 				"style": {
-					"navigationStyle": "custom"
+					"navigationStyle": "custom",
+					"enablePullDownRefresh": true
 				}
 			}, {
 				"path": "writeOffDetail/cwdetail",

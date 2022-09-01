@@ -3,38 +3,43 @@
 		<uni-nav-bar :statusBar="true" :border="false" leftWidth="460rpx" backgroundColor="#F2F2F4">
 			<view slot="left" class="topBox">
 				<image src="../../static/jtL.png" class="back" @click="backTap"></image>
-				<u-search v-model="listQuery.name" :showAction="false" clearabled placeholder="搜索订单" bgColor="#fff"
+				<u-search v-model="listQuery.orderSn" :showAction="false" clearabled placeholder="搜索订单号" bgColor="#fff"
 					height="28" @search="searchTap"></u-search>
 			</view>
 		</uni-nav-bar>
 		<view>
-			<u-tabs :list="typeList" @click="click" lineColor="#08B761"
+			<u-tabs :list="typeList" @click="changeType" lineColor="#08B761"
 				:activeStyle="{color:'#08B761',fontSize:'28rpx'}" :inactiveStyle="{color:'#333333',fontSize:'28rpx'}"
 				:itemStyle="{width:'25%',height: '42px'}"></u-tabs>
 		</view>
 		<view class="listBox">
-			<view class="list" @click="toDetail(index)" v-for="(item,index) in 3" :key="index">
+			<view class="list" @click="toDetail(item.type,item.orderParentId,item.id)" v-for="(item,index) in list" :key="index">
 				<view class="topBox">
-					<view class="codeBox">核销码：<text>0089</text></view>
-					<view>待核销</view>
+					<view class="codeBox" :style="item.couponStatus==='2'?'color:#999999':''">核销码：<text :style="item.couponStatus==='2'?'color:#999999':''">{{item.couponInfo.couponNumber}}</text></view>
+					<view>{{item.couponStatus==='1'?'待核销':'已核销'}}</view>
 				</view>
-				<view class="listInfo">
-					<image src="../../static/index/menu_4.png"></image>
+				<view class="listInfo" v-if="item.name">
+					<image :src="item.images[0]"></image>
 					<view class="infoR">
-						<view class="infoName">【营养均衡】园区江粮谷物蛋自培农户有机土鸡蛋30枚净重（1.5kg/份）</view>
-						<view>
-							<view class="specBox">20kg</view>
-						</view>
+						<view class="infoName">{{item.name}}</view>
 						<view class="priceBox">
 							<text class="unit">￥</text>
-							<text class="price">11</text>
-							<text class="num">共2件</text>
+							<text class="price">{{item.payPrice}}</text>
+							<text class="num">共{{item.number}}件</text>
+						</view>
+					</view>
+				</view>
+				<view class="listInfo" v-else>
+					<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4"></image>
+					<view class="infoR">
+						<view class="priceBox">
+							<text class="num">共{{item.number}}件</text>
 						</view>
 					</view>
 				</view>
 				<view class="botBox">
-					<view class="tel">预留号码：13198568974</view>
-					<view class="btnBox">确认核销</view>
+					<view class="tel">预留号码：{{item.merchantTel}}</view>
+					<view class="btnBox" v-show="item.couponStatus==='1'" @click.stop="writeOffTap(item.id)">确认核销</view>
 				</view>
 			</view>
 		</view>
@@ -42,9 +47,23 @@
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
+	import {
+		getWriteOfList,addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
+				listQuery: {
+					tel:'',
+					orderSn: '',
+					page: 1,
+					pageSize: 10,
+					couponStatus: ''
+				},
+				list:[],
 				typeList: [{
 						name: '全部'
 					},
@@ -57,8 +76,67 @@
 				]
 			}
 		},
+		computed: mapState(['userInfo']),
+		onShow(options) {
+			this.listQuery.tel=this.userInfo.phone
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
+		},
 		methods: {
-			toDetail(index) {
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
+			searchTap(){
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			async writeOffTap(id){
+				uni.showModal({
+					title: '提示',
+					content: '确定核销？',
+					success: async (res)=> {
+						if (res.confirm) {
+							await addWriteOffVoucher({id:id})
+							uni.showToast({
+								title:'核销成功'
+							})
+							this.list = []
+							this.listQuery.page = 1
+							this.getList()
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async getList() {
+				this.listQuery.couponStatus = this.curt
+				const {
+					data
+				} = await getWriteOfList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
+			changeType(item) {
+				this.curt = item.index
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			toDetail(index,id,lId) {
 				switch (index) {
 					case 0:
 						uni.navigateTo({
@@ -70,11 +148,11 @@
 							url: '/pages_minute/writeOffDetail/hotelDetail'
 						})
 						break;
-						case 2:
-							uni.navigateTo({
-								url: '/pages_minute/writeOffDetail/specialtyDetail'
-							})
-							break;
+					case '3':
+						uni.navigateTo({
+							url: `/pages_minute/writeOffDetail/specialtyDetail?id=${id}&lId=${lId}`
+						})
+						break;
 
 				}
 
@@ -178,7 +256,7 @@
 						overflow: hidden;
 						text-overflow: ellipsis;
 						display: -webkit-box;
-						-webkit-line-clamp: 1;
+						-webkit-line-clamp: 2;
 						-webkit-box-orient: vertical;
 					}
 				}
