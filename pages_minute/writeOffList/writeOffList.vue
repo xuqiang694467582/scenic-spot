@@ -13,9 +13,12 @@
 				:itemStyle="{width:'25%',height: '42px'}"></u-tabs>
 		</view>
 		<view class="listBox">
-			<view class="list" @click="toDetail(item.type,item.orderParentId,item.id)" v-for="(item,index) in list" :key="index">
+			<view class="list" @click="toDetail(item.type,item.orderParentId,item.id)" v-for="(item,index) in list"
+				:key="index">
 				<view class="topBox">
-					<view class="codeBox" :style="item.couponStatus==='2'?'color:#999999':''">核销码：<text :style="item.couponStatus==='2'?'color:#999999':''">{{item.couponInfo.couponNumber}}</text></view>
+					<view class="codeBox" :style="item.couponStatus==='2'?'color:#999999':''">核销码：<text
+							:style="item.couponStatus==='2'?'color:#999999':''">{{item.couponInfo.couponNumber}}</text>
+					</view>
 					<view>{{item.couponStatus==='1'?'待核销':'已核销'}}</view>
 				</view>
 				<view class="listInfo" v-if="item.name">
@@ -51,19 +54,20 @@
 		mapState
 	} from 'vuex'
 	import {
-		getWriteOfList,addWriteOffVoucher
+		getWriteOfList,
+		addWriteOffVoucher
 	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
 				listQuery: {
-					tel:'',
+					tel: '',
 					orderSn: '',
 					page: 1,
 					pageSize: 10,
 					couponStatus: ''
 				},
-				list:[],
+				list: [],
 				typeList: [{
 						name: '全部'
 					},
@@ -78,7 +82,7 @@
 		},
 		computed: mapState(['userInfo']),
 		onShow(options) {
-			this.listQuery.tel=this.userInfo.phone
+			this.listQuery.tel = this.userInfo.phone
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -93,25 +97,27 @@
 			this.getList()
 		},
 		methods: {
-			backTap(){
+			backTap() {
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
 			},
-			searchTap(){
+			searchTap() {
 				this.list = []
 				this.listQuery.page = 1
 				this.getList()
 			},
-			async writeOffTap(id){
+			async writeOffTap(id) {
 				uni.showModal({
 					title: '提示',
 					content: '确定核销？',
-					success: async (res)=> {
+					success: async (res) => {
 						if (res.confirm) {
-							await addWriteOffVoucher({id:id})
+							await addWriteOffVoucher({
+								id: id
+							})
 							uni.showToast({
-								title:'核销成功'
+								title: '核销成功'
 							})
 							this.list = []
 							this.listQuery.page = 1
@@ -123,7 +129,7 @@
 				});
 			},
 			async getList() {
-				this.listQuery.couponStatus = this.curt
+				this.listQuery.couponStatus = this.curt == 0 ? '' : this.curt
 				const {
 					data
 				} = await getWriteOfList(this.listQuery)
@@ -136,16 +142,21 @@
 				this.listQuery.page = 1
 				this.getList()
 			},
-			toDetail(index,id,lId) {
+			toDetail(index, id, lId) {
 				switch (index) {
-					case 0:
+					case '0':
 						uni.navigateTo({
-							url: '/pages_minute/writeOffDetail/cwdetail'
+							url: `/pages_minute/writeOffDetail/cwdetail?id=${id}&lId=${lId}`
 						})
 						break;
-					case 1:
+					case '1':
 						uni.navigateTo({
-							url: '/pages_minute/writeOffDetail/hotelDetail'
+							url: `/pages_minute/writeOffDetail/cwdetail?id=${id}&lId=${lId}`
+						})
+						break;
+					case '2':
+						uni.navigateTo({
+							url: `/pages_minute/writeOffDetail/hotelDetail?id=${id}&lId=${lId}`
 						})
 						break;
 					case '3':

@@ -2,11 +2,15 @@
 	<view>
 		<view class="topBox">
 			<view :style="{paddingTop:barHightTop+'px'}" class="backImg">
-				<u-icon name="arrow-left" size="16" color="#ffffff"></u-icon>
+				<u-icon name="arrow-left" size="16" color="#ffffff" @click="backTap"></u-icon>
 			</view>
-			<view class="tipBox">
+			<view class="tipBox"  v-if="detail.status=='1'">
 				<image src="../../static/order/time.png"></image>
 				<view>待核销<text>待用户消费后请及时核销</text></view>
+			</view>
+			<view class="tipBox" v-else>
+				<image src="../../static/order/success.png"></image>
+				<view>已核销<text>已对用户该次消费进行核销</text></view>
 			</view>
 		</view>
 		<view class="content">
@@ -14,82 +18,156 @@
 				<view class="pTitle">费用信息</view>
 				<view class="pBox">
 					在线支付
-					<view class="price"><text>￥</text>133</view>
+					<view class="price"><text>￥</text>{{detail.payPrice}}</view>
 				</view>
 				<view class="ruleBox">
 					取消规则
 					<view class="">预订成功后30分钟内<text>免费取消</text></view>
 				</view>
 			</view>
-			<view class="modalBox">
+			<view class="modalBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
 				<view class="dateBox">
-					<view class="dateText">06月20日(周五)</view>
-					<view class="dateNum">4晚</view>
-					<view class="dateText">06月20日(周五)</view>
+					<view class="dateText">{{item.startDate}}({{item.startWeek}})</view>
+					<view class="dateNum">{{item.day}}晚</view>
+					<view class="dateText">{{item.endDate}}({{item.endWeek}})</view>
 				</view>
 				<view class="setMeal">
-					<view class="sName">豪华大床房-含餐食</view>
-					<view class="tag">大床·含早餐·1人入住·30-38m²</view>
+					<view class="sName">{{item.productInfo.hotelTypeName}}</view>
+					<view class="tag">{{item.productInfo.meal}}·{{item.productInfo.roomType}}</view>
 				</view>
 				<view class="otherInfo">
 					<view>
 						<text>住客姓名</text>
-						<text class="otherText">住客姓名</text>
+						<text class="otherText">{{productDetail.otherInfo.name}}</text>
 					</view>
 					<view>
 						<text>联系电话</text>
-						<text class="otherText">16358974561</text>
+						<text class="otherText">{{productDetail.otherInfo.tel}}</text>
 					</view>
 				</view>
 			</view>
-			<view class="modalBox">
+				<view class="modalBox">
 					<view class="title">订单信息</view>
 					<view class="lineBox">
 						<view class="lTitle">实付金额：</view>
-						<view class="price">￥128</view>
+						<view class="price">￥{{detail.payPrice}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">数 量：</view>
-						<view>1</view>
+						<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">订单号：</view>
-						<view>165989897845698878458994</view>
+						<view>{{detail.orderSn}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">预留号码：</view>
-						<view>136****3689s</view>
+						<view>{{productDetail.otherInfo.tel}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">付款时间：</view>
-						<view>136****3689s</view>
+						<view>{{detail.payTimeStr}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">下单时间：</view>
-						<view>136****3689s</view>
+						<view>{{detail.placeTimeStr}}</view>
 					</view>
 				</view>
-				<view class="btnBox">确认核销</view>
-			</view>
+				<view class="btnBox" @click="writeOffTap" v-show="detail.status==='1'">确认核销</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		getOrderDetail,
+	} from '@/api/order.js'
+	import {
+		addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
+				detail:'',
+				productDetail:'',
+				id:'',
+				lId:'',
 				barHightTop: ''
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 20
+			this.id=options.id
+			this.lId=options.lId
+			this.getDetail()
 		},
 		methods: {
-
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
+			async writeOffTap(){
+				uni.showModal({
+					title: '提示',
+					content: '确定核销？',
+					success: async (res)=> {
+						if (res.confirm) {
+							await addWriteOffVoucher({id:this.lId})
+							uni.showToast({
+								title:'核销成功'
+							})
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async getDetail() {
+				const {
+					data
+				} = await getOrderDetail({
+					id: this.id
+				})
+				this.detail = data
+				const productDetail = data.childrenOrder[0]
+				productDetail.orderItemDetailVoList.forEach(item => {
+					item.day = this.dateDiff(item.productInfo.reserveStartTime, item.productInfo
+						.reserveEndTime)
+					item.startWeek = this.getWeek(item.productInfo.reserveStartTime)
+					item.endWeek = this.getWeek(item.productInfo.reserveEndTime)
+					const startList=item.productInfo.reserveStartTime.split('-')
+					item.startDate=`${startList[1]}月${startList[2]}日`
+					const endList=item.productInfo.reserveEndTime.split('-')
+					item.endDate=`${endList[1]}月${endList[2]}日`
+				})
+				this.productDetail = productDetail
+			},
+			getWeek(date) {
+				let myDate = new Date(date)
+				let wk = myDate.getDay()
+				let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+				let week = weeks[wk]
+				return week
+			},
+			dateDiff(sDate1, sDate2) {
+				var aDate, oDate1, oDate2, iDays;
+				aDate = sDate1.split("-");
+				oDate1 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]); //转换为yyyy-MM-dd格式
+				aDate = sDate2.split("-");
+				oDate2 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]);
+				iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24); //把相差的毫秒数转换为天数
+				return iDays; //返回相差天数
+			},
 		}
 	}
 </script>
+
 
 <style lang="scss">
 	.content {

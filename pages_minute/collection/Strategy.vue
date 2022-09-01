@@ -1,19 +1,19 @@
 <template>
 	<view class="content">
-		<view class="listBox">
+		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepRaider.id)">
 			<view class="topBox">
 				<view class="avaBox">
-					<image src="../../static/index/menu_4.png"></image>
-					<view>旅行攻略分享UP</view>
+					<image :src="item.keepRaider.wechatUserAvatar"></image>
+					<view>{{item.keepRaider.wechatUserName}}</view>
 				</view>
-				<image src="../../static/my/starA.png" class="star"></image>
+				<image src="../../static/my/starA.png" class="star" @click="cancelTap(item.id)"></image>
 			</view>
 			<view>
-				<view class="title">旅游攻略丨景点打卡 3天2晚人均300攻略</view>
-				<view class="info">宽窄巷子位于四川省成都市青羊区长顺街附近，由宽巷子、窄巷子、井巷子平行排列组成，全为青黛砖瓦的仿古四合院落院落院落院落院落</view>
+				<view class="title">{{item.keepRaider.title}}</view>
+				<view class="info">{{item.keepRaider.context}}</view>
 				<view class="imgBox">
-					<image src="../../static/index/menu_4.png" v-for="(item,index) in 4" :key="index"></image>
-					<view class="imgNum">9图</view>
+					<image :src="items" v-for="(items,indexs) in item.keepRaider.introductionImg" :key="indexs" v-show="indexs<4"></image>
+					<view class="imgNum" v-show="item.keepRaider.introductionImg.length>4">{{item.keepRaider.introductionImg.length}}图</view>
 				</view>
 			</view>
 		</view>
@@ -21,7 +21,88 @@
 </template>
 
 <script>
+	import {
+		getKeepList,
+		addFavoriteCancel
+	} from '@/api/product.js'
+	export default {
+		data() {
+			return {
+				isEdit: false,
+				listQuery: {
+					type: 1,
+					page: 1,
+					pageSize: 10
+				},
+				list: [],
+				total: 0,
+				isAllSelect: false
+			}
+		},
+		created() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		methods: {
+			toDetail(id){
+				uni.navigateTo({
+					url:`/pages_minute/strategyDetail/strategyDetail?id=${id}`
+				})
+			},
+			pullDownRefresh() {
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			reachBottom() {
+				this.listQuery.page++
+				this.getList()
+			},
+			// 取消收藏
+			async cancelTap(id) {				
+				await addFavoriteCancel({
+					ids: [id]
+				})
+				uni.showToast({
+					title: '取消成功'
+				})
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			allSelect() {
+				this.isAllSelect = !this.isAllSelect
+				this.list.forEach(item => {
+					item.checked = this.isAllSelect
+				})
+			},
+			// 选择
+			selectTap(index) {
+				this.list[index].checked = !this.list[index].checked
+				this.$forceUpdate()
+				console.log(this.list)
+			},
+			// 编辑
+			editTap() {
+				this.isAllSelect = false
+				this.isEdit = true
+				this.list.forEach((item) => {
+					item.checked = false
+				})
+			},
+			async getList() {
+				const {
+					data
+				} = await getKeepList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+				this.total = data.total
+			},
+		}
+	}
 </script>
+
 
 <style scoped lang="scss">
 	.listBox {

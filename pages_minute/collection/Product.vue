@@ -7,7 +7,7 @@
 				<view @click="isEdit=false" v-show="isEdit" style="color: #08B761;">完成</view>
 			</view>
 			<view class="listBox">
-				<view class="list" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+				<view class="list" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepSpecialtyGood.id)">
 					<view class="selectBox" @click="selectTap(index)" v-if="isEdit">
 						<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
 						</image>

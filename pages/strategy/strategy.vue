@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail">
+		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
 			<view class="topBox">
 				<view class="avaBox">
 					<image :src="item.wechatUserAvatar"></image>
@@ -40,10 +40,8 @@
 		data() {
 			return {
 				listQuery: {
-
 					page: 1,
 					pageSize: 10,
-
 				},
 				list: [],
 			}
@@ -71,9 +69,9 @@
 				uni.stopPullDownRefresh()
 				this.list = this.list.concat(data.records)
 			},
-			toDetail() {
+			toDetail(id) {
 				uni.navigateTo({
-					url: '/pages_minute/strategyDetail/strategyDetail'
+					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
 				})
 			},
 			releaseTap() {
