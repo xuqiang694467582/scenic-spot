@@ -38,49 +38,40 @@
 				</view>
 			</view>
 			<!-- 吸顶 筛选 -->
+			<!-- <u-sticky> -->
 			<view class="filter">
-				<u-sticky>
-					<view style="display: flex;align-items: center;justify-content: space-between;" @click="showTime = true">
-						<view>
-							<text style="font-weight: bold;margin-right: 12rpx;">{{ startTime }}</text>
-							<!-- <text style="font-size: 24rpx;color: #333;">今天</text> -->
-						</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
+					<view style="display: flex;align-items: center;" @click="showTime = true">
+						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ startTime }}</text>
 						<view style="margin: 0 20rpx;">
-							<u-tag :text="num +'晚'" shape="circle" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
+							<u-tag :text="num +'晚'" shape="circle" bgColor="#fff" borderColor="#08B761" color="#08B761" size="mini"></u-tag>
 						</view>
-						<view>
-							<text style="font-weight: bold;margin-right: 12rpx;">{{ endTime }}</text>
-							<!-- <text style="font-size: 24rpx;color: #333;">明天</text> -->
+						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ endTime }}</text>
+					</view>
+					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
+					<view style="display: flex;align-items: center;">
+						<text style="font-size: 40rpx;font-weight: bold;">1</text>
+						<text style="font-size: 26rpx;color: #333;">间</text>
+						<text style="font-size: 40rpx;">·</text>
+						<text style="font-size: 40rpx;font-weight: bold;">1</text>
+						<text style="font-size: 26rpx;color: #333;">人</text>
+					</view>
+				</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;">
+					<view style="display: flex;align-items: center;">
+						<view style="margin-right: 10rpx;" v-for="(item, index) in checkboxs" :key="index">
+							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" size="mini"
+								@click="checkboxClick">
+							</u-tag>
 						</view>
-					</view>	
-					<!-- <view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
-						<view style="display: flex;align-items: center;">
-							<text style="font-size: 40rpx;font-weight: bold;margin-right: 12rpx;">6-20</text>
-							<text style="font-size: 26rpx;color: #333;">今天</text>
-							<view style="margin: 0 20rpx;">
-								<u-tag text="1晚" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
-							</view>
-							<text style="font-size: 40rpx;font-weight: bold;margin-right: 12rpx;">6-21</text>
-							<text style="font-size: 26rpx;color: #333;">明天</text>
-						</view>
-						<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-						<text style="font-size: 40rpx;font-weight: bold;">1间·1人</text>	
-					</view> -->
-					<!-- <view style="display: flex;align-items: center;justify-content: space-between;">
-						<view style="display: flex;align-items: center;">
-							<view style="margin-right: 10rpx;" v-for="(item, index) in checkboxs" :key="index">
-								<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" size="mini"
-									@click="checkboxClick">
-								</u-tag>
-							</view>
-						</view>
-						<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-						<view style="width: 150rpx;">
-							<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
-						</view>
-					</view> -->
-				</u-sticky>
+					</view>
+					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
+					<view style="width: 150rpx;">
+						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
+					</view>
+				</view>
 			</view>
+			<!-- </u-sticky> -->
 			<!-- tab -->
 			<view class="tab">
 				<u-tabs :list="Tablist" activeStyle="{ color: '#0CB662' }" lineColor="#0CB662" :scrollable="false" @click="changeType">
@@ -140,17 +131,21 @@
 		<u-popup :show="show" mode="top" round="20" closeOnClickOverlay @close="show = false">
 			<view style="padding: 20rpx;margin-top: 3rem;">
 				<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
-					<view style="display: flex;align-items: center;">
-						<text style="font-size: 40rpx;font-weight: bold;margin-right: 12rpx;">6-20</text>
-						<text style="font-size: 26rpx;color: #333;">今天</text>
+					<view style="display: flex;align-items: center;" @click="showTime = true">
+						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ startTime }}</text>
 						<view style="margin: 0 20rpx;">
-							<u-tag text="1晚" bgColor="#fff" borderColor="#08B761" color="#08B761"></u-tag>
+							<u-tag :text="num +'晚'" shape="circle" bgColor="#fff" borderColor="#08B761" color="#08B761" size="mini"></u-tag>
 						</view>
-						<text style="font-size: 40rpx;font-weight: bold;margin-right: 12rpx;">6-21</text>
-						<text style="font-size: 26rpx;color: #333;">明天</text>
+						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ endTime }}</text>
 					</view>
 					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-					<text style="font-size: 40rpx;font-weight: bold;">1间·1人</text>
+					<view style="display: flex;align-items: center;">
+						<text style="font-size: 40rpx;font-weight: bold;">1</text>
+						<text style="font-size: 26rpx;color: #333;">间</text>
+						<text style="font-size: 40rpx;">·</text>
+						<text style="font-size: 40rpx;font-weight: bold;">1</text>
+						<text style="font-size: 26rpx;color: #333;">人</text>
+					</view>
 				</view>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view style="display: flex;align-items: center;">

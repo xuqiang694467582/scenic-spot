@@ -56,7 +56,7 @@
 					<view style="color: #999;font-size: 26rpx;" @click="toProductList()">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
-					<view style="display: flex;align-items: center;">
+					<view style="display: flex;align-items: center;" @click="gotoRese(item.id)">
 						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" :src="item.mainImage"></image>
 						<view>
 							<text>{{ item.name }}</text>
@@ -83,29 +83,16 @@
 			<view class="content-combo" id="dishes">
 				<view class="content-combo-title">
 					<view>商家菜品</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList()">查看全部></view>
+					<!-- <view style="color: #999;font-size: 26rpx;">查看全部></view> -->
 				</view>
 				<view class="combo-list" v-for="(item, index) in dishesList" :key="index">
-					<view style="display: flex;align-items: center;">
-						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" :src="item.mainImage"></image>
+					<view style="display: flex;">
+						<image style="width: 152rpx;height: 152rpx;margin-right: 20rpx;" :src="item.coverImg"></image>
 						<view>
-							<text>{{ item.name }}</text>
-							<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
-								<view v-for="(item1,index1) in item.label" :key="index1"
-									style="margin-right: 10rpx;margin-bottom: 10rpx;">
-									<u-tag size="mini" :text="item1" bgColor="#E1E1E1" borderColor="#E1E1E1"
-										color="#666"></u-tag>
-								</view>
-							</view>
-							<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
-								<text
-									style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
-								<text style="font-size: 24rpx;color: #999;">￥{{ item.originalPrice }}</text>
-							</view>
+							<view style="font-size: 30rpx;font-weight: bold;color: #333;">{{ item.name }}</view>
+							<view style="font-size: 24rpx;color: #666;margin: 15rpx 0;">{{ item.description }}</view>
+							<view style="font-size: 34rpx;color: #FE5A3D;font-weight: bold;">￥{{ item.price }}</view>
 						</view>
-					</view>
-					<view class="combo-list-btn" @click="getReserve(item)">
-						预定
 					</view>
 				</view>
 			</view>
@@ -118,7 +105,8 @@
 <script>
 	import {
 		diningDetail,
-		diningRecoDetail
+		diningRecoDetail,
+		diningRoomDish
 	} from '@/api/parktour.js';
 	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
@@ -132,8 +120,7 @@
 				urls: [],
 				recommend: [],
 				dishesList: [],
-				Tablist: [
-					{
+				Tablist: [{
 						name: '图片介绍',
 					},
 					{
@@ -151,6 +138,7 @@
 		onLoad(option) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.load(option.id)
+			this.roomDish(option.id)
 		},
 		methods: {
 			async load(id) {
@@ -168,6 +156,15 @@
 					this.recommend = res.data;
 				} catch (e) {}
 			},
+			// 获取商家菜品
+			async roomDish(id) {
+				const {
+					data
+				} = await diningRoomDish({
+					diningRoomId: id
+				});
+				this.dishesList = data.records;
+			},
 			backTap() {
 				uni.navigateBack({
 					delta: -1
@@ -176,6 +173,11 @@
 			gotoPage() {
 				uni.navigateTo({
 					url: '/pages_minute/reserve/reserve'
+				})
+			},
+			gotoRese(id) {
+				uni.navigateTo({
+					url: `/pages_minute/reserve/reserve?id=${id}`
 				})
 			},
 			// 切换商品类型
@@ -189,7 +191,7 @@
 					id = '#dishes'
 				} else if (e.index === 3) {
 					id = '#nearby'
-				} 
+				}
 				uni.createSelectorQuery()
 					.select(".pages") //对应外层节点
 					.boundingClientRect((pages) => {
@@ -310,13 +312,13 @@
 				}
 			}
 		}
-		
+
 		.shopDate {
 			display: flex;
 			font-weight: 500;
 			color: #333333;
 			font-size: 26rpx;
-		
+
 			image {
 				width: 30rpx;
 				height: 30rpx;
@@ -324,7 +326,7 @@
 				position: relative;
 				top: 5rpx;
 			}
-		
+
 			view {
 				display: flex;
 				flex: 1;

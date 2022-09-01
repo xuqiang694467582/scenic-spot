@@ -37,6 +37,12 @@ export const diningPackDetail = (params) => {
 	  params
 	})
 }
+// 商家菜品
+export const diningRoomDish = (params) => {
+	return http.get('/wx/dining-room-dish/list', {
+	  params
+	})
+}
 // 酒店
 export const hotelList = (params) => {
 	return http.get('/wx/hotel/list', {

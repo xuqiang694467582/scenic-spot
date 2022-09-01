@@ -3,16 +3,16 @@
 		<view class="reserve-title">
 			<!-- 图片 -->
 			<view class="reserve-title-image">
-				<image src="../../static/parktour/back_image.png"></image>
+				<image :src="formData.mainImage"></image>
 			</view>
 			<!-- 介绍 -->
-			<view>
-				<text>双人餐，提供免费饮品</text>
+			<view class="content">
+				<text>{{ formData.name }}</text>
 				<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
 					<view style="display: flex;align-items: center;">
-						<text style="color: #FE5A3D;font-size: 28rpx;margin-right: 10rpx;">￥128</text>
-						<text style="color: #999;font-size: 24rpx;margin-right: 10rpx;">￥128</text>
-						<text style="color: #999;font-size: 24rpx;">已售1000+</text>
+						<text style="color: #FE5A3D;font-size: 30rpx;font-weight: bold;margin-right: 10rpx;">￥{{ formData.price }}</text>
+						<text style="color: #999;font-size: 24rpx;margin-right: 15rpx;text-decoration: line-through;">￥{{ formData.originalPrice }}</text>
+						<!-- <text style="color: #999;font-size: 24rpx;">已售1000+</text> -->
 					</view>
 					<view class="btn" @click="gotoPage()">
 						预定
@@ -59,7 +59,7 @@
 			<view style="display: flex;align-items: center;margin-top: 20rpx;">
 				<image style="width: 160rpx;height: 160rpx;margin-right: 20rpx;" src="../../static/logo.png"></image>
 				<view>
-					<text>荣廷花园餐厅</text>
+					<text>{{ formData.diningRoomName }}</text>
 					<view style="display: flex;align-items: center;">
 						<view class="tag1">4.8分</view>
 						<view class="tag2">108/人</view>
@@ -85,13 +85,26 @@
 </template>
 
 <script>
+	import {
+		diningPackDetail
+	} from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
-				
+				formData: {}
 			}
 		},
+		onLoad(option) {
+			this.load(option.id)
+		},
 		methods: {
+			async load(id){
+				const { data } = await diningPackDetail({
+					id: id
+				})
+				console.log(data);
+				this.formData = data;
+			},
 			gotoPage(){
 				uni.navigateTo({
 					url: '/pages_minute/submitorder/submitorder'
@@ -113,8 +126,7 @@ page{
 .reserve-title{
 	background-color: #fff;
 	border-radius: 24rpx;
-	padding: 20rpx;
-	
+
 	.reserve-title-image{
 		width: 100%;
 		height: 364rpx;
@@ -128,16 +140,20 @@ page{
 	
 }
 
+.content{
+	padding: 20rpx;
+}
+
 .btn{
-	width: 90rpx;
-	height: 52rpx;
+	width: 120rpx;
+	height: 60rpx;
 	background: linear-gradient(180deg, #9AD7B8 0%, #14BB69 100%);
 	display: flex;
+	font-size: 28rpx;
 	color: #fff;
 	align-items: center;
 	justify-content: center;
 	border-radius: 10rpx;
-	padding: 10rpx;
 }
 
 .block{
