@@ -50,7 +50,7 @@
 					<image src="../../static/strategy/zan.png"></image>5.6w
 				</view>
 				<view class="operate" @click="collectTap">
-					<image :src="detail.isKeep?'':'../../static/my/star.png'"></image>5.6w
+					<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/my/star.png'"></image>5.6w
 				</view>
 				<view class="operate">
 					<image src="../../static/strategy/comment.png"></image>5.6w

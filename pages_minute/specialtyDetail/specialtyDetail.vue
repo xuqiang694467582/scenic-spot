@@ -55,7 +55,7 @@
 		</view>
 		<view class="footerBox">
 			<view class="cartBox" @click="collectTap">
-				<image :src="detail.isKeep?'':'../../static/collect.png'"></image>
+				<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/collect.png'"></image>
 				<view>收藏</view>
 			</view>
 			<view class="cartBox" @click="toCart">
