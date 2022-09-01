@@ -54,6 +54,10 @@
 			<image :src="item" class="goodsInfo" mode="widthFix" v-for="(item,index) in detail.detailsImg" :key="index"></image>
 		</view>
 		<view class="footerBox">
+			<view class="cartBox" @click="collectTap">
+				<image :src="detail.isKeep?'':'../../static/collect.png'"></image>
+				<view>收藏</view>
+			</view>
 			<view class="cartBox" @click="toCart">
 				<image src="../../static/order/cart.png"></image>
 				<view>购物车</view>
@@ -109,6 +113,7 @@
 		mapMutations
 	} from 'vuex'
 	import {getSpecialtyGoodDetail,addCart,getGoodList} from '@/api/specialty.js'
+	import {addFavorite} from '@/api/product.js'
 	export default {
 		data() {
 			return {
@@ -129,6 +134,17 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
+			// 收藏
+			 async collectTap(){
+				 if(this.detail.isKeep){
+					// await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
+					// this.getDetail()
+				 }else{
+					 await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
+					 this.getDetail()
+				 }
+				
+			},
 			// 选择规格
 			changeSpec(index){
 				this.sepcCurt=index
@@ -143,7 +159,7 @@
 			},
 			// 加入购物车
 			async addCart(){
-				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id})
+				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id,merchantId:this.detail.specialtyId})
 				uni.showToast({
 					title:'添加成功'
 				})

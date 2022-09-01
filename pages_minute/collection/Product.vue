@@ -2,25 +2,27 @@
 	<view>
 		<view class="contentBox">
 			<view class="topBox">
-				<view class="numBox">共<text>3</text> 件商品</view>
-				<view @click="isEdit=true" v-show="!isEdit">编辑</view>
+				<view class="numBox">共<text>{{total}}</text> 件商品</view>
+				<view @click="editTap" v-show="!isEdit">编辑</view>
 				<view @click="isEdit=false" v-show="isEdit" style="color: #08B761;">完成</view>
 			</view>
 			<view class="listBox">
-				<view class="list">
+				<view class="list" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
 					<view class="selectBox" @click="selectTap(index)" v-if="isEdit">
 						<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
 						</image>
 					</view>
 					<view class="listR">
-						<image src="../../static/index/menu_4.png" class="goodsImg"></image>
+						<image :src="item.keepSpecialtyGood.specialtyGoodMainImage" class="goodsImg"></image>
 						<view class="infoBox">
-							<view class="name">【营养均衡】园区江粮谷物蛋自培农户有机土鸡蛋30枚净重（1.5kg/份）</view>
+							<view class="name">{{item.keepSpecialtyGood.specialtyGoodName}}</view>
 							<view class="priceBox">
 								<view class="price">
-									<text class="pPrice"><text>￥</text>30</text>
-									<text class="oldPrice">￥60</text>
+									<text
+										class="pPrice"><text>￥</text>{{item.keepSpecialtyGood.specialtyGoodPrice}}</text>
+									<text class="oldPrice">￥{{item.keepSpecialtyGood.specialtyGoodOriginalPrice}}</text>
 								</view>
+								<image src="../../static/my/cart.png" class="cartImg"></image>
 							</view>
 						</view>
 					</view>
@@ -28,7 +30,7 @@
 			</view>
 
 		</view>
-		<view class="newBox">
+		<!-- 	<view class="newBox">
 			<view class="nl"></view>
 			<view>探索新品</view>
 			<view class="nr"></view>
@@ -40,11 +42,10 @@
 					<view class="name">园区自培农户有机土鸡蛋</view>
 					<view class="priceBox">
 						<view class="price"><text>￥</text>20</view>
-						<!-- <view class="sale">已售1000+</view> -->
 					</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 
 		<view class="botBox" v-if="isEdit">
 			<view class="allSelect" @click="allSelect">
@@ -52,21 +53,104 @@
 				全选
 			</view>
 			<view class="botR">
-				<view class="payTap" @click="payTap">取消收藏</view>
+				<view class="payTap" @click="cancelTap">取消收藏</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		getKeepList,
+		addFavoriteCancel
+	} from '@/api/product.js'
 	export default {
 		data() {
 			return {
-				isEdit: false
+				isEdit: false,
+				listQuery: {
+					type: 0,
+					page: 1,
+					pageSize: 10
+				},
+				list: [],
+				total: 0,
+				isAllSelect: false
 			}
 		},
+		created() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
 		methods: {
-
+			toDetail(id){
+				uni.navigateTo({
+					url:`/pages_minute/specialtyDetail/specialtyDetail?id=${id}`
+				})
+			},
+			pullDownRefresh() {
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			reachBottom() {
+				this.listQuery.page++
+				this.getList()
+			},
+			// 取消收藏
+			async cancelTap() {
+				const list = []
+				this.list.forEach(item => {
+					if (item.checked) {
+						list.push(item.id)
+					}
+				})
+				if (list.length === 0) {
+					uni.showToast({
+						title: '请选择商品',
+						icon: 'none'
+					})
+					return
+				}
+				await addFavoriteCancel({
+					ids: list
+				})
+				uni.showToast({
+					title: '取消成功'
+				})
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			allSelect() {
+				this.isAllSelect = !this.isAllSelect
+				this.list.forEach(item => {
+					item.checked = this.isAllSelect
+				})
+			},
+			// 选择
+			selectTap(index) {
+				this.list[index].checked = !this.list[index].checked
+				this.$forceUpdate()
+				console.log(this.list)
+			},
+			// 编辑
+			editTap() {
+				this.isAllSelect = false
+				this.isEdit = true
+				this.list.forEach((item) => {
+					item.checked = false
+				})
+			},
+			async getList() {
+				const {
+					data
+				} = await getKeepList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+				this.total = data.total
+			},
 		}
 	}
 </script>
@@ -79,7 +163,7 @@
 		position: fixed;
 		bottom: 0;
 		left: 0;
-		background-color:rgba(255, 255, 255, 0.8100);
+		background-color: rgba(255, 255, 255, 0.8100);
 		padding: 0 12rpx 0 30rpx;
 		box-sizing: border-box;
 		height: 124rpx;
@@ -93,7 +177,7 @@
 			.payTap {
 				width: 220rpx;
 				height: 80rpx;
-				border-radius:24rpx;
+				border-radius: 24rpx;
 				background-color: rgba(8, 183, 97, 1);
 				font-size: 28rpx;
 				font-weight: 500;
@@ -143,7 +227,7 @@
 					align-items: center;
 					justify-content: space-between;
 					margin-top: 22rpx;
-
+					
 					.sale {
 						font-weight: 400;
 						color: #999999;
@@ -244,7 +328,10 @@
 							align-items: center;
 							justify-content: space-between;
 							margin-top: 40rpx;
-
+							.cartImg{
+								width: 50rpx;
+								height: 50rpx;
+							}
 							.pPrice {
 								font-weight: bold;
 								color: #333333;

@@ -1,36 +1,41 @@
 <template>
 	<view class="content">
-		<view class="topBox">
+		<view class="topBox" v-show="detail.status==='1'">
 			<view>
 				<view class="status">订单待核销</view>
 				<view class="statusInfo">待用户取货后请及时核销</view>
 			</view>
-			<view class="btn">确认核销</view>
+			<view class="btn" @click.stop="writeOffTap">确认核销</view>
+		</view>
+		<view class="topBox" v-show="detail.status==='2'">
+			<view>
+				<view class="status">订单已核销</view>
+				<view class="statusInfo">已对用户该次消费进行核销</view>
+			</view>
+			<view class="btn over" >确认核销</view>
 		</view>
 		<view class="orderBox">
-			<view class="listInfo" v-for="(item,index) in 2" :key="index">
-
-				<image src="../../static/index/menu_4.png"></image>
+			<view class="listInfo" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
+				<image :src="item.productInfo.productImage"></image>
 				<view class="infoR">
-
-					<view class="infoName">【营养均衡】园区江粮谷物蛋自培农户有机土鸡蛋30枚净重（1.5kg/份）</view>
+					<view class="infoName">{{item.productInfo.productName}}</view>
 					<view>
-						<view class="spec">30枚 1.5kg/份</view>
+						<view class="spec">{{item.productInfo.productSpecificationName}}</view>
 					</view>
 					<view class="setMealBox">
 						<view class="priceBox">
 							<text class="unit">￥</text>
-							<text class="price">30</text>
-							<text class="oldPrice">￥40</text>
+							<text class="price">{{item.productInfo.price}}</text>
+							<!-- <text class="oldPrice">￥40</text> -->
 						</view>
-						<view class="sNum">×1</view>
+						<view class="sNum">×{{item.productInfo.number}}</view>
 					</view>
 				</view>
 			</view>
 
 			<view class="totalPriceBox">
 				<view class="text">合计</view>
-				<view class="totalPrice"><text>￥</text>30</view>
+				<view class="totalPrice"><text>￥</text>{{productDetail.payPrice}}</view>
 			</view>
 		</view>
 		<view class="orderBox">
@@ -40,23 +45,23 @@
 			<view class="orderInfoBox">
 				<view class="orderInfo">
 					<view>订单号：</view>
-					<view>--</view>
+					<view>{{detail.orderSn}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>下单时间：</view>
-					<view>--</view>
+					<view>{{detail.placeTimeStr}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>支付时间：</view>
-					<view>--</view>
+					<view>{{detail.payTimeStr}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>核销码：</view>
-					<view>--</view>
+					<view>{{productDetail.couponInfo.couponNumber}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>备注：</view>
-					<view>--</view>
+					<view>{{productDetail.otherInfo.remakes}}</view>
 				</view>
 			</view>
 		</view>
@@ -66,14 +71,58 @@
 </template>
 
 <script>
+	import {
+		getOrderDetail,
+	} from '@/api/order.js'
+	import {
+		addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
-
+				detail:'',
+				productDetail:'',
+				id:'',
+				lId:''
 			}
 		},
+		onLoad(options) {
+			this.id=options.id
+			this.lId=options.lId
+			this.getDetail()
+		},
 		methods: {
-
+			async writeOffTap(){
+				uni.showModal({
+					title: '提示',
+					content: '确定核销？',
+					success: async (res)=> {
+						if (res.confirm) {
+							await addWriteOffVoucher({id:this.lId})
+							uni.showToast({
+								title:'核销成功'
+							})
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async getDetail() {
+				const {
+					data
+				} = await getOrderDetail({
+					id: this.id
+				})
+				this.detail = data
+				const productDetail = data.childrenOrder[0]
+				this.productDetail = productDetail
+			},
 		}
 	}
 </script>
@@ -81,7 +130,7 @@
 <style lang="scss">
 	.orderBox {
 		margin-top: 20rpx;
-		padding: 0 26rpx;
+		padding: 1rpx 26rpx;
 		box-sizing: border-box;
 		background-color: #fff;
 		box-shadow: 0px 0px 20rpx 2rpx rgba(204, 204, 204, 0.1);
@@ -257,6 +306,9 @@
 			font-size: 26rpx;
 			text-align: center;
 			line-height: 60rpx;
+		}
+		.over{
+			background: #999999;
 		}
 	}
 

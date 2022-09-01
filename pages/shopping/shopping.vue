@@ -63,6 +63,8 @@
 			return {
 				list: [],
 				isAllSelect: false,
+				merchantId:'',
+				merchantName:''
 			}
 		},
 		onShow() {
@@ -95,6 +97,7 @@
 			// 跳转提交订单
 			payTap() {
 				const list = []
+				const that=this
 				this.list.forEach(item => {
 					if (item.checked) {
 						list.push({
@@ -104,7 +107,9 @@
 							name: item.productName,
 							price: item.productPrice,
 							originalPrice: item.productOriginalPrice,
-							mainImage: item.productMainImage
+							mainImage: item.productMainImage,
+							specialtyId:that.merchantId,
+							specialtyName:that.merchantName
 						})
 					}
 				})
@@ -175,6 +180,8 @@
 					}]
 				})
 				this.list = list
+				this.merchantName=data[0].merchantName
+				this.merchantId=data[0].merchantId
 				console.log(list)
 			}
 		}

@@ -108,6 +108,11 @@
 							url: '/pages_minute/collection/collection'
 						})
 						break;
+					case 2:
+						uni.navigateTo({
+							url: '/pages_minute/myStrategy/myStrategy'
+						})
+						break;
 				}
 			},
 			toOrder(type) {
