@@ -47,7 +47,7 @@
 			<!-- 图片介绍 -->
 			<view class="content-image" id="foodBox">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" singleSize="100" multipleSize="100" :urls="urls"></u-album>
+				<u-album maxCount="3" space="10" :singleSize="100" multipleSize="100" :urls="urls"></u-album>
 			</view>
 			<!-- 推荐套餐 -->
 			<view class="content-combo" id="hotelBox">

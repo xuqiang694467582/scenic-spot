@@ -13,7 +13,7 @@ export default {
         // 单图时，图片长边的长度
         singleSize: {
             type: [String, Number],
-            default: uni.$u.props.album.singleSize
+            default: uni.$u.props.album.singleSize,
         },
         // 多图时，图片边长
         multipleSize: {

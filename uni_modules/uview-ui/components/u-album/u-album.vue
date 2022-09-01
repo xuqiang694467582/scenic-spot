@@ -17,18 +17,14 @@
                 <image
                     :src="getSrc(item)"
                     :mode="
-                        urls.length === 1
-                            ? imageHeight > 0
-                                ? singleMode
-                                : 'widthFix'
-                            : multipleMode
+                        urls.length === 1 ? imageHeight > 0 ? singleMode : 'widthFix' : multipleMode
                     "
-                    :style="[
-                        {
-                            width: imageWidth,
-                            height: imageHeight
-                        }
-                    ]"
+					:style="[
+					    {
+					        width: imageWidth,
+					        height: imageHeight
+					    }
+					]"
                 ></image>
                 <view
                     v-if="

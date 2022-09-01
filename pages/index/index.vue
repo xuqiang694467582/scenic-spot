@@ -42,6 +42,50 @@
 					</view>
 				</u-scroll-list>
 			</view>
+			<!-- 网红景点 -->
+			<view class="cele">
+				<view style="display: flex;justify-content: space-between;">
+					<view class="food-title"> <view class="titleSu"></view>景点网红打卡榜</view>
+					<!-- <view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">查看榜单<u-icon name="arrow-right" size="12"></u-icon></view> -->
+				</view>
+				<view class="cele-c">
+					<view class="cele-c-l" @click="gotoCele(0)">
+						<image :src="celebrity && celebrity[0].coverImg"></image>
+						<view class="cele-c-tag">TOP1</view>
+						<view class="cele-c-text">
+							<view class="cele-c-text-t">
+								<view class="cele-c-text-t-l">{{ celebrity && celebrity[0].name }}</view>
+								<image src="../../static/index/right.png"></image>
+							</view>
+							<!-- <view class="cele-c-text-b">13698人打卡</view> -->
+						</view>
+					</view>
+					<view class="cele-c-r">
+						<view class="cele-c-r-t" @click="gotoCele(1)">
+							<image class="cele-c-r-t-image" :src="celebrity && celebrity[1].coverImg"></image>
+							<view class="cele-c-tag">TOP2</view>
+							<view class="cele-c-text">
+								<view class="cele-c-text-t">
+									<view class="cele-c-text-t-l">{{ celebrity && celebrity[1].name }}</view>
+									<image src="../../static/index/right.png"></image>
+								</view>
+								<!-- <view class="cele-c-text-b">11543人打卡</view> -->
+							</view>
+						</view>
+						<view class="cele-c-r-t" @click="gotoCele(2)">
+							<image class="cele-c-r-t-image" :src="celebrity && celebrity[2].coverImg"></image>
+							<view class="cele-c-tag">TOP3</view>
+							<view class="cele-c-text">
+								<view class="cele-c-text-t">
+									<view class="cele-c-text-t-l">{{ celebrity && celebrity[2].name }}</view>
+									<image src="../../static/index/right.png"></image>
+								</view>
+								<!-- <view class="cele-c-text-b">10146人打卡</view> -->
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
 			<!-- 园区特产 -->
 			<view class="specialty">
 				<view class="specialty-title"><view class="titleSu"></view>园区特产</view>
@@ -134,7 +178,8 @@
 		getHotel,
 		getAmusement,
 		getBanner,
-		getAnnouncementList
+		getAnnouncementList,
+		getCeleList
 	} from '@/api/index.js'
 	import {
 		getSpecialtyGood
@@ -183,7 +228,8 @@
 				hotelList: [],
 				amusementList: [],
 				specialtyList: [],
-				bannerList: []
+				bannerList: [],
+				celebrity: [],
 			}
 		},
 		computed: mapState(['token', 'userInfo', 'location']),
@@ -204,6 +250,7 @@
 			this.getLocation()
 			this.getBannerList()
 			this.getNoticebar()
+			this.getCelebrity()
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION']),
@@ -241,6 +288,19 @@
 					newList.push(val.context)
 				})
 				this.text = newList;
+			},
+			// 获取网红景点
+			async getCelebrity() {
+				const {
+					data
+				} = await getCeleList()
+				this.celebrity = data.slice(0,3)
+			},
+			// 查看景点
+			gotoCele(index){
+				uni.navigateTo({
+					url: `/pages_minute/parktourDetail/parktourDetail?id=${this.celebrity[index].id}`
+				})
 			},
 			// 搜索
 			searchTap() {
@@ -569,11 +629,99 @@
 			}
 		}
 	}
+	
+	.cele{
+		padding: 20rpx;
+		background-color: #fff;
+		margin-bottom: 20rpx;
+		border-radius: 0 0 20rpx 20rpx;
+		
+		&-c{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			
+			&-l{
+				width: 48%;
+				height: 380rpx;
+				position: relative;
+				
+				image{
+					width: 100%;
+					height: 100%;
+					border-radius: 24rpx;
+				}
+			}
+			
+			&-tag{
+				width: 110rpx;
+				height: 60rpx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #fff;
+				font-size: 30rpx;
+				background: linear-gradient(180deg, #A1D8BC 0%, #0DB964 100%);
+				position: absolute;
+				top: 0;
+				border-radius: 24rpx 0 30rpx 0;
+			}
+			
+			&-text{
+				position: absolute;
+				bottom: 25rpx;
+				left: 25rpx;
+				right: 0;
+				
+				&-t{
+					display: flex;
+					align-items: center;
+					
+					&-l{
+						font-size: 30rpx;
+						color: #fff;
+						white-space:nowrap;
+					}
+					
+					image{
+						width: 28rpx;
+						height: 28rpx;
+						margin-left: 10rpx;
+					}
+				}
+				
+				&-b{
+					color: #C0C0C0;
+					font-size: 24rpx;
+				}
+			}
+			
+			&-r{
+				width: 48%;
+				height: 380rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				
+				&-t{
+					width: 100%;
+					height: 180rpx;
+					position: relative;
+					
+					&-image{
+						width: 100%;
+						height: 100%;
+						border-radius: 24rpx;
+					}
+				}
+			}
+		}
+	}
 
 	.specialty {
 		padding: 20rpx;
 		background-color: #fff;
-		border-radius: 0 0 20rpx 20rpx;
+		border-radius: 20rpx;
 		
 		&-title {
 			margin-bottom: 20rpx;

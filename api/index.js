@@ -17,6 +17,14 @@ export const getAnnouncementList = (params) => {
     params
   })
 }
+/**
+ * 网红景点列表
+ */
+export const getCeleList = (params) => {
+  return http.get('/wx/index/internet-celebrity-attractions', {
+    params
+  })
+}
 /**酒店信息列表
  */
 export const getHotel = (params) => {
