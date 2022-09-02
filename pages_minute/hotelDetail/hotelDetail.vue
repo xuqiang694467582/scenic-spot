@@ -70,7 +70,7 @@
 					</view>
 					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view> -->
 					<view style="width: 150rpx;">
-						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
+						<u-button type="info" icon="arrow-down" plain hairline text="更多筛选" size="mini" @click="show = true"></u-button>
 					</view>
 				</view>
 			</view>
@@ -109,7 +109,7 @@
 							<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
 								<text
 									style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
-								<text style="font-size: 24rpx;color: #999;">￥{{ item.originalPrice }}</text>
+								<text style="font-size: 24rpx;color: #999;margin-left: 20rpx;">￥{{ item.originalPrice }}</text>
 							</view>
 						</view>
 					</view>
@@ -123,12 +123,12 @@
 					</veiw>
 				</view>
 			</view>
-			<view class="content-combo" id="policy">
+			<!-- <view class="content-combo" id="policy">
 				<view class="content-combo-title">
 					<view>政策与设施</view>
 				</view>
 				
-			</view>
+			</view> -->
 			<!-- 附近玩乐 -->
 			<NearbyPlay id="nearby" />
 		</view>
@@ -258,7 +258,7 @@
 				showResident: false,
 				formData: {},
 				columns: [
-					['1', '2', '3', '4']
+					['1', '2', '3', '4','5','6','7','8']
 				],
 				urls: [],
 				num: 1,
@@ -269,9 +269,6 @@
 					},
 					{
 						name: '优选房型',
-					},
-					{
-						name: '酒店设施',
 					},
 					{
 						name: '附近推荐',
@@ -318,7 +315,7 @@
 				// 筛选参数
 				startTime: '',
 				endTime: '',
-				residentNumber: '2',
+				residentNumber: '',
 				roomType: '',
 				wifi: '',
 				meal: '',
@@ -418,7 +415,6 @@
 				// 结束时间
 				this.endTime = e[e.length - 1];
 				this.showTime = false;
-				this.show = true;
 				this.loadReco(this.id);
 			},
 			confirmRes(e){
@@ -434,8 +430,6 @@
 				} else if (e.index === 1) {
 					id = '#hotelBox'
 				} else if (e.index === 2) {
-					id = '#policy'
-				} else if (e.index === 3) {
 					id = '#nearby'
 				}
 				uni.createSelectorQuery()

@@ -71,7 +71,7 @@
 			<u-divider></u-divider> -->
 			<text style="font-weight: bold;">本店套餐</text>
 			<view style="display: flex;flex-wrap: wrap;justify-content: space-between;">
-				<view style="width: 49%;margin-top: 20rpx;" v-for="(item,index1) in packageList" :key="index1">
+				<view style="width: 49%;margin-top: 20rpx;" v-for="(item,index1) in packageList" :key="index1" @click="goPage(item.id)">
 					<image style="width: 100%;height: 236rpx;border-radius: 20rpx;" :src="item.mainImage"></image>
 					<view style="font-size: 30rpx;margin: 20rpx;">{{ item.name }}</view>
 					<view style="display: flex;align-items: center;justify-content: space-between;width: 70%;">
@@ -116,6 +116,11 @@
 			gotoPage(){
 				uni.navigateTo({
 					url: `/pages_minute/submitorder/submitorder?id=${this.formData.id}`
+				})
+			},
+			goPage(id) {
+				uni.navigateTo({
+					url: `/pages_minute/reserve/reserve?id=${id}`
 				})
 			}
 		}
