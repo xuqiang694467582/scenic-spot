@@ -115,7 +115,7 @@
 			},
 			gotoPage(){
 				uni.navigateTo({
-					url: '/pages_minute/submitorder/submitorder'
+					url: `/pages_minute/submitorder/submitorder?id=${this.formData.id}`
 				})
 			}
 		}

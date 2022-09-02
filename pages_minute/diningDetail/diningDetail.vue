@@ -180,11 +180,6 @@
 					delta: -1
 				})
 			},
-			gotoPage() {
-				uni.navigateTo({
-					url: '/pages_minute/reserve/reserve'
-				})
-			},
 			gotoRese(id) {
 				uni.navigateTo({
 					url: `/pages_minute/reserve/reserve?id=${id}`
