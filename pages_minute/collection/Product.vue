@@ -1,12 +1,12 @@
 <template>
 	<view>
-		<view class="contentBox">
+		<view class="contentBox" >
 			<view class="topBox">
 				<view class="numBox">共<text>{{total}}</text> 件商品</view>
 				<view @click="editTap" v-show="!isEdit">编辑</view>
 				<view @click="isEdit=false" v-show="isEdit" style="color: #08B761;">完成</view>
 			</view>
-			<view class="listBox">
+			<view class="listBox" v-if="list.length>0">
 				<view class="list" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepSpecialtyGood.id)">
 					<view class="selectBox" @click="selectTap(index)" v-if="isEdit">
 						<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
@@ -28,8 +28,10 @@
 					</view>
 				</view>
 			</view>
-
+			<u-empty mode="list" icon="http://cdn.uviewui.com/uview/empty/list.png" text="暂无数据" v-else>
+			</u-empty>
 		</view>
+		
 		<!-- 	<view class="newBox">
 			<view class="nl"></view>
 			<view>探索新品</view>

@@ -19,7 +19,7 @@ export const getKeepList= (params) => {
 	})
 }
 /**
- * 添加购物车
+ * 取消收藏
  */
 export const addFavoriteCancel = (data) => {	
 	return http.middleware({

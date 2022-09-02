@@ -3,7 +3,7 @@
 		<u--form labelPosition="top" :model="temp" :rules="rules" ref="form">
 			<u-form-item label="标题" prop="title" borderBottom>
 				<u--textarea v-model="temp.title" placeholder="输入一个符合您攻略的标题吧~" fontSize="30rpx" count maxlength="50"
-					border="none" height="40rpx"></u--textarea>
+					border="none" height="40rpx" autoHeight></u--textarea>
 			</u-form-item>
 			<u-form-item label="正文" prop="context">
 				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" autoHeight>
@@ -124,9 +124,13 @@
 								title: '发布成功'
 							})
 							setTimeout(() => {
+								let pages = getCurrentPages(); // 当前页面
+								let beforePage = pages[pages.length - 2]; // 上一页
 								uni.navigateBack({
-									delta: 1
-								})
+								    success: function() {
+								        beforePage.onLoad(); // 执行上一页的onLoad方法
+								    }
+								});
 							}, 1000)
 						}
 						

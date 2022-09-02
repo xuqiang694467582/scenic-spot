@@ -41,8 +41,7 @@ export const getRaiderMyself = (params) => {
 export const delRaider = (data) => {	
 	return http.middleware({
 		method: 'DELETE', // 必须大写
-		url: '/wx/raider/delete',
-		data: data,
+		url: `/wx/raider/delete?id=${data}`,
 	})
 }
 /**
@@ -70,6 +69,24 @@ export const addComment = (data) => {
  */
 export const getReplyList = (params) => {
   return http.get('/wx/comment-reply/list', {
+    params
+  })
+}
+/**
+ * 回复
+ */
+export const addReply = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/comment-reply/reply',
+		data: data,
+	})
+}
+/**
+ * 我的攻略列表
+ */
+export const getReply = (params) => {
+  return http.get('/wx/comment-reply/reply-list', {
     params
   })
 }

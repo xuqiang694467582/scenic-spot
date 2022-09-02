@@ -30,7 +30,14 @@
 				</u-scroll-list>
 			</view>
 			<view class="modalBox">
-				<view class="lineBox" v-for="(item,index) in list" :key="index" @click="toDetail(index)">
+				<view class="lineBox"  @click="toDetail(0)" v-if="userInfo.isMerchant">
+					<view class="lbL">
+						<image src="../../static/my/sjhx.png"></image>
+						<view>商家核销</view>
+					</view>
+					<u-icon name="arrow-right" size="12"></u-icon>
+				</view>
+				<view class="lineBox" v-for="(item,index) in list" :key="index" @click="toDetail(index+1)" >
 					<view class="lbL">
 						<image :src="item.img"></image>
 						<view>{{item.name}}</view>
@@ -79,10 +86,6 @@
 					],
 				],
 				list: [{
-						name: '商家核销',
-						img: '../../static/my/sjhx.png'
-					},
-					{
 						name: '收藏管理',
 						img: '../../static/my/wdsc.png'
 					},
@@ -94,6 +97,9 @@
 			}
 		},
 		computed: mapState(['userInfo', 'wechatUserId']),
+		onShow() {
+			
+		},
 		methods: {
 			toDetail(index) {
 				if (this.isGetTel() === false) return

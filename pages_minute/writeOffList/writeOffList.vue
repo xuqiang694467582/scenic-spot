@@ -12,7 +12,7 @@
 				:activeStyle="{color:'#08B761',fontSize:'28rpx'}" :inactiveStyle="{color:'#333333',fontSize:'28rpx'}"
 				:itemStyle="{width:'25%',height: '42px'}"></u-tabs>
 		</view>
-		<view class="listBox">
+		<view class="listBox" v-if="list.length>0">
 			<view class="list" @click="toDetail(item.type,item.orderParentId,item.id)" v-for="(item,index) in list"
 				:key="index">
 				<view class="topBox">
@@ -46,6 +46,8 @@
 				</view>
 			</view>
 		</view>
+		<u-empty mode="order" icon="http://cdn.uviewui.com/uview/empty/order.png" text="暂无订单" v-else>
+		</u-empty>
 	</view>
 </template>
 

@@ -1,32 +1,41 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
-			<view class="infoBox">
-				<view class="title">{{item.title}}</view>
-				<view class="info">{{item.context}}</view>
-				<view class="imgBox">
-					<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4"></image>
-					<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图</view>
-				</view>
-			</view>
-			<view class="botBox">
-				<view class="time">{{item.createTimeStr}}</view>
-				<view class="operate">
-					<view class="operateBox" @click.stop="editTap(item.id)">
-						<image src="../../static/strategy/editor.png"></image>
+		<view v-if="list.length>0">
+			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+				<view class="infoBox">
+					<view class="title">{{item.title}}</view>
+					<view class="info">{{item.context}}</view>
+					<view class="imgBox">
+						<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index"
+							v-show="indexs<4"></image>
+						<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图
+						</view>
 					</view>
-					<view class="operateBox" @click.stop="delTap(item.id)">
-						<image src="../../static/strategy/del.png"></image>
+				</view>
+				<view class="botBox">
+					<view class="time">{{item.createTimeStr}}</view>
+					<view class="operate">
+						<view class="operateBox" @click.stop="editTap(item.id)">
+							<image src="../../static/strategy/editor.png"></image>
+						</view>
+						<view class="operateBox" @click.stop="delTap(item.id)">
+							<image src="../../static/strategy/del.png"></image>
+						</view>
 					</view>
 				</view>
 			</view>
 		</view>
-	
+		<u-empty mode="list" icon="http://cdn.uviewui.com/uview/empty/list.png" text="暂无数据" v-else>
+		</u-empty>
+
 	</view>
 </template>
 
 <script>
-	import {getRaiderMyself,delRaider} from '@/api/strategy.js'
+	import {
+		getRaiderMyself,
+		delRaider
+	} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
@@ -37,7 +46,7 @@
 				list: [],
 			}
 		},
-		onShow() {		
+		onShow() {
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -52,20 +61,20 @@
 			this.getList()
 		},
 		methods: {
-			editTap(id){
+			editTap(id) {
 				uni.navigateTo({
 					url: `/pages_minute/releaseStrategy/releaseStrategy?id=${id}`
 				})
 			},
-			delTap(id){
+			delTap(id) {
 				uni.showModal({
 					title: '提示',
 					content: '确定删除',
-					success: async (res)=> {
+					success: async (res) => {
 						if (res.confirm) {
-							await delRaider({id:id})
+							await delRaider(id)
 							uni.showToast({
-								title:'删除成功'
+								title: '删除成功'
 							})
 							this.list = []
 							this.listQuery.page = 1
@@ -88,14 +97,12 @@
 					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
 				})
 			},
-			
+
 		}
 	}
 </script>
 
 <style lang="scss">
-
-
 	.listBox {
 		margin-top: 24rpx;
 		border-radius: 24rpx;
@@ -112,7 +119,7 @@
 			.operate {
 				display: flex;
 				align-items: center;
-				
+
 				.operateBox {
 					display: flex;
 					align-items: center;

@@ -6,24 +6,25 @@
 					<image :src="item.wechatUserAvatar"></image>
 					<view>{{item.wechatUserName}}</view>
 				</view>
-				<image src="../../static/my/starA.png" class="star"></image>
+				<!-- <image src="../../static/my/starA.png" class="star"></image> -->
 			</view>
 			<view class="infoBox">
 				<view class="title">{{item.title}}</view>
 				<view class="info">{{item.context}}</view>
 				<view class="imgBox">
-					<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4"></image>
+					<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4">
+					</image>
 					<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图</view>
 				</view>
 			</view>
 			<view class="botBox">
 				<view class="time">{{item.createTimeStr}}</view>
 				<view class="operate">
-					<view class="operateBox">
+					<!-- <view class="operateBox">
 						<image src="../../static/strategy/zan.png"></image>25.6w
-					</view>
+					</view> -->
 					<view class="operateBox">
-						<image src="../../static/strategy/comment.png"></image>25.6w
+						<image src="../../static/strategy/comment.png"></image>{{item.commentReplyCount}}
 					</view>
 				</view>
 			</view>
@@ -33,6 +34,9 @@
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
 	import {
 		getRaider
 	} from '@/api/strategy.js'
@@ -46,12 +50,13 @@
 				list: [],
 			}
 		},
-		onShow() {
+		onLoad() {
 
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
 		},
+		
 		onPullDownRefresh() {
 			this.list = []
 			this.listQuery.page = 1
@@ -61,7 +66,27 @@
 			this.listQuery.page++
 			this.getList()
 		},
+		computed: mapState(['userInfo']),
 		methods: {
+			//校验是否授权用户信息
+			isUser() {
+				if (!this.userInfo.nickname) {
+					uni.showModal({
+						title: '提示',
+						content: '请授权用户信息',
+						success: function(res) {
+							if (res.confirm) {
+								uni.switchTab({
+									url:'/pages/my/my'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					return false
+				}
+			},
 			async getList() {
 				const {
 					data
@@ -70,11 +95,13 @@
 				this.list = this.list.concat(data.records)
 			},
 			toDetail(id) {
+				if (this.isUser() === false) return
 				uni.navigateTo({
 					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
 				})
 			},
 			releaseTap() {
+				if (this.isUser() === false) return
 				uni.navigateTo({
 					url: '/pages_minute/releaseStrategy/releaseStrategy'
 				})

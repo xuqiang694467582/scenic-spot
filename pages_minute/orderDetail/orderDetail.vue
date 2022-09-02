@@ -39,20 +39,24 @@
 				<image :src="items.productInfo.diningRoomPackageImage" v-show="productDetail.type==='0'"></image>
 				<image :src="items.productInfo.amusementPackageImage" v-show="productDetail.type==='1'"></image>
 				<image :src="items.productInfo.hotelTypeImage" v-show="productDetail.type==='2'"></image>
-				<image :src="items.productInfo.productImage"  v-show="productDetail.type==='3'"></image>
+				<image :src="items.productInfo.productImage" v-show="productDetail.type==='3'"></image>
 				<view class="infoR">
-					<view class="infoName" v-show="productDetail.type==='0'">{{items.productInfo.diningRoomPackageName}}</view>
-					<view class="infoName" v-show="productDetail.type==='1'">{{items.productInfo.amusementPackageName}}</view>
+					<view class="infoName" v-show="productDetail.type==='0'">{{items.productInfo.diningRoomPackageName}}
+					</view>
+					<view class="infoName" v-show="productDetail.type==='1'">{{items.productInfo.amusementPackageName}}
+					</view>
 					<view class="infoName" v-show="productDetail.type==='2'">{{items.productInfo.hotelTypeName}}</view>
-					<view class="infoName"  v-show="productDetail.type==='3'">{{items.productInfo.productName}}</view>
-					<view  v-show="productDetail.type==='3'"><view class="spec">{{items.productInfo.productSpecificationName}}</view></view>
-					<view class="setMealBox" >
-						<view class="priceBox" >
+					<view class="infoName" v-show="productDetail.type==='3'">{{items.productInfo.productName}}</view>
+					<view v-show="productDetail.type==='3'">
+						<view class="spec">{{items.productInfo.productSpecificationName}}</view>
+					</view>
+					<view class="setMealBox">
+						<view class="priceBox">
 							<text class="unit">￥</text>
 							<text class="price">{{items.productInfo.price}}</text>
 							<text class="oldPrice">￥{{items.productInfo.totalPrice}}</text>
 						</view>
-						<view class="sNum" >×{{items.productInfo.number}}</view>
+						<view class="sNum">×{{items.productInfo.number}}</view>
 					</view>
 				</view>
 			</view>
@@ -62,15 +66,28 @@
 				<view class="totalPrice"><text>￥</text>{{detail.payPrice}}</view>
 			</view>
 		</view>
+		<!-- 餐厅 -->
+		<view class="orderBox foodBox" v-show="productDetail.type==='0'">
+			<view class="foodTitle">
+				<view>套餐菜品</view>
+			</view>
+			<view class="foodLine" v-for="(item,index) in productDetail.orderItemDetailVoList[0].productInfo.dishList" :key="index">
+				<view class="foodName">
+					<view></view>{{item.dishName}}（{{item.number}}份）
+				</view>
+				<view class="foodPrice"><text>￥</text>{{item.price}}</view>
+			</view>
+		</view>
 		<!-- 酒店显示 -->
-		<view class="orderBox otherBox"  v-show="productDetail.type=='2'">
+		<view class="orderBox otherBox" v-show="productDetail.type=='2'">
 			<image :src="productDetail.merchantMainImg" class="shopImg"></image>
 			<view class="shopBox">
 				<view>{{productDetail.merchantName}}</view>
 			</view>
 			<image src="../../static/order/navigation.png" class="shopNav" @click="navigationTap()"></image>
 		</view>
-		<view class="orderBox" v-for="(item,index) in productDetail.orderItemDetailVoList" v-show="productDetail.type=='2'">
+		<view class="orderBox" v-for="(item,index) in productDetail.orderItemDetailVoList"
+			v-show="productDetail.type=='2'">
 			<view class="dateBox">
 				<view class="dateText">{{item.startDate}}({{item.startWeek}})</view>
 				<view class="dateNum">{{item.day}}晚</view>
@@ -79,14 +96,14 @@
 			<view class="setMeal">
 				<view class="sName">{{item.productInfo.hotelTypeName}}</view>
 				<view class="setMealBox" style="margin-bottom: 16rpx;">
-					<view class="priceBox" >
+					<view class="priceBox">
 						<text class="unit">￥</text>
 						<text class="price">{{item.productInfo.price}}</text>
 						<text class="oldPrice">￥{{item.productInfo.totalPrice}}</text>
 					</view>
 					<view class="sNum">×{{item.productInfo.number}}</view>
 				</view>
-				
+
 				<view class="tag">{{item.productInfo.meal}}·{{item.productInfo.roomType}}</view>
 			</view>
 			<view class="otherInfo">
@@ -172,40 +189,40 @@
 		},
 		methods: {
 			// 支付
-				async payTap() {
-					const that = this
-					const {
-						data
-					} = await addOrderPay({
-						orderSn: this.detail.orderSn
-					})
-			
-					uni.requestPayment({
-						timeStamp: data.orderResult.timeStamp,
-						nonceStr: data.orderResult.nonceStr,
-						package: data.orderResult.packageValue,
-						signType: data.orderResult.signType,
-						paySign: data.orderResult.paySign,
-						// 支付成功的回调
-						success(result) {
-							console.log(result)
-							uni.showToast({
-								title: '支付成功'
+			async payTap() {
+				const that = this
+				const {
+					data
+				} = await addOrderPay({
+					orderSn: this.detail.orderSn
+				})
+
+				uni.requestPayment({
+					timeStamp: data.orderResult.timeStamp,
+					nonceStr: data.orderResult.nonceStr,
+					package: data.orderResult.packageValue,
+					signType: data.orderResult.signType,
+					paySign: data.orderResult.paySign,
+					// 支付成功的回调
+					success(result) {
+						console.log(result)
+						uni.showToast({
+							title: '支付成功'
+						})
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
 							})
-							setTimeout(() => {
-								uni.navigateBack({
-									delta: 1
-								})
-							}, 1000)
-			
-						},
-						// 支付失败回调
-						fail(err) {
-			
-						}
-					})
-			
-			
+						}, 1000)
+
+					},
+					// 支付失败回调
+					fail(err) {
+
+					}
+				})
+
+
 			},
 			navigationTap() {
 				if (!this.productDetail.latitude) {
@@ -259,16 +276,16 @@
 				})
 				this.detail = data
 				const productDetail = data.childrenOrder[0]
-				if(productDetail.type==='2'){//酒店处理
+				if (productDetail.type === '2') { //酒店处理
 					productDetail.orderItemDetailVoList.forEach(item => {
 						item.day = this.dateDiff(item.productInfo.reserveStartTime, item.productInfo
 							.reserveEndTime)
 						item.startWeek = this.getWeek(item.productInfo.reserveStartTime)
 						item.endWeek = this.getWeek(item.productInfo.reserveEndTime)
-						const startList=item.productInfo.reserveStartTime.split('-')
-						item.startDate=`${startList[1]}月${startList[2]}日`
-						const endList=item.productInfo.reserveEndTime.split('-')
-						item.endDate=`${endList[1]}月${endList[2]}日`
+						const startList = item.productInfo.reserveStartTime.split('-')
+						item.startDate = `${startList[1]}月${startList[2]}日`
+						const endList = item.productInfo.reserveEndTime.split('-')
+						item.endDate = `${endList[1]}月${endList[2]}日`
 					})
 				}
 				this.productDetail = productDetail
@@ -298,19 +315,67 @@
 </script>
 
 <style lang="scss">
-	.setMealBox{
+	.foodBox{
+		padding-bottom:1rpx!important;
+		.foodTitle {
+			font-weight: 500;
+			color: #333333;
+			font-size: 30rpx;
+			padding-top: 26rpx;
+			margin-bottom: 32rpx;
+		}
+		
+		.foodLine {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 32rpx;
+		
+			.foodName {
+				font-weight: 400;
+				color: #333333;
+				font-size: 28rpx;
+				display: flex;
+				align-items: center;
+		
+				view {
+					width: 8rpx;
+					height: 8rpx;
+					background: #08B761;
+					border-radius: 50%;
+					margin-right: 12rpx;
+				}
+			}
+	}
+
+
+		.foodPrice {
+			font-weight: bold;
+			color: #333333;
+			font-size: 34rpx;
+
+			text {
+				font-size: 24rpx;
+			}
+		}
+	}
+
+	.setMealBox {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		.sNum{
+
+		.sNum {
 			font-size: 28rpx;
 			color: #333333;
-			position: relative;top: 10rpx;
+			position: relative;
+			top: 10rpx;
 		}
 	}
+
 	.priceBox {
 		margin-top: 20rpx;
-	
+
 		.oldPrice {
 			font-weight: 400;
 			color: #999999;
@@ -318,23 +383,24 @@
 			text-decoration: line-through;
 			margin-left: 22rpx;
 		}
-	
+
 		.unit {
 			font-size: 30rpx;
 			font-weight: bold;
 		}
-	
+
 		.price {
 			font-size: 40rpx;
 			font-weight: bold;
 		}
-	
+
 		.num {
 			margin-left: 22rpx;
 			font-size: 24rpx;
 			color: #666666;
 		}
 	}
+
 	.otherBox {
 		display: flex;
 		align-items: center;
@@ -567,7 +633,7 @@
 					line-height: 50rpx;
 				}
 
-	
+
 
 				.infoName {
 					font-weight: 500;

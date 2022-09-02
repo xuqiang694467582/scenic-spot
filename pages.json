@@ -229,8 +229,8 @@
 			{
 				"pagePath": "pages/strategy/strategy",
 				"text": "攻略",
-				"iconPath": "./static/tabbarIcon/tabIcon_2.png",
-				"selectedIconPath": "./static/tabbarIcon/tabIcon2.png"
+				"iconPath": "./static/tabbarIcon/strategy.png",
+				"selectedIconPath": "./static/tabbarIcon/strategyA.png"
 			},
 			{
 				"pagePath": "pages/shopping/shopping",

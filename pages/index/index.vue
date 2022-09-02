@@ -239,7 +239,6 @@
 				provider: 'weixin',
 				success: async (loginRes) => {
 					this.$store.dispatch('login', loginRes.code).then(() => {
-						this.getList()
 					})
 				}
 			});
@@ -248,6 +247,7 @@
 		onShow() {
 			this.keyword = ''
 			this.getLocation()
+			this.getList()
 			this.getBannerList()
 			this.getNoticebar()
 			this.getCelebrity()

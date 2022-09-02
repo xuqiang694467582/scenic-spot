@@ -113,7 +113,7 @@
 		mapMutations
 	} from 'vuex'
 	import {getSpecialtyGoodDetail,addCart,getGoodList} from '@/api/specialty.js'
-	import {addFavorite} from '@/api/product.js'
+	import {addFavorite,addFavoriteCancel} from '@/api/product.js'
 	export default {
 		data() {
 			return {
@@ -137,8 +137,8 @@
 			// 收藏
 			 async collectTap(){
 				 if(this.detail.isKeep){
-					// await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
-					// this.getDetail()
+					await addFavoriteCancel({ids:[this.detail.keepId]})
+					this.getDetail()
 				 }else{
 					 await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
 					 this.getDetail()

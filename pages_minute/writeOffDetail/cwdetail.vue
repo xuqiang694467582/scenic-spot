@@ -30,7 +30,20 @@
 				</view>
 			</view>
 		</view>
+		
 		<view class="content">
+			<!-- 餐厅 -->
+			<view class=" foodBox" v-show="productDetail.type==='0'">
+				<view class="foodTitle">
+					<view>套餐菜品</view>
+				</view>
+				<view class="foodLine" v-for="(item,index) in productDetail.orderItemDetailVoList[0].productInfo.dishList" :key="index">
+					<view class="foodName">
+						<view></view>{{item.dishName}}（{{item.number}}份）
+					</view>
+					<view class="foodPrice"><text>￥</text>{{item.price}}</view>
+				</view>
+			</view>
 			<view class="modalBox">
 				<view class="title">订单信息</view>
 				<view class="lineBox">
@@ -129,6 +142,43 @@
 
 
 <style lang="scss">
+	.foodBox{
+		padding: 0 26rpx 26rpx 26rpx;
+		box-sizing: border-box;
+		background-color: #fff;
+		box-shadow: 0px 0px 20rpx 2rpx rgba(204, 204, 204, 0.1);
+		border-radius: 24rpx;
+		.foodTitle {
+			font-weight: 500;
+			color: #333333;
+			font-size: 30rpx;
+			padding-top: 26rpx;
+			margin-bottom: 32rpx;
+		}
+		
+		.foodLine {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 32rpx;
+		
+			.foodName {
+				font-weight: 400;
+				color: #333333;
+				font-size: 28rpx;
+				display: flex;
+				align-items: center;
+		
+				view {
+					width: 8rpx;
+					height: 8rpx;
+					background: #08B761;
+					border-radius: 50%;
+					margin-right: 12rpx;
+				}
+			}
+	}
+	}
 	.codeBox {
 		position: relative;
 		top: -142rpx;
@@ -236,6 +286,7 @@
 			border-radius: 24rpx;
 			padding: 26rpx 28rpx;
 			box-sizing: border-box;
+			margin-top: 20rpx;
 
 			.lineBox {
 				display: flex;

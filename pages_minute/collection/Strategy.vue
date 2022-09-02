@@ -1,22 +1,29 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepRaider.id)">
-			<view class="topBox">
-				<view class="avaBox">
-					<image :src="item.keepRaider.wechatUserAvatar"></image>
-					<view>{{item.keepRaider.wechatUserName}}</view>
+		<view v-if="list.length>0">
+			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepRaider.id)">
+				<view class="topBox">
+					<view class="avaBox">
+						<image :src="item.keepRaider.wechatUserAvatar"></image>
+						<view>{{item.keepRaider.wechatUserName}}</view>
+					</view>
+					<image src="../../static/my/starA.png" class="star" @click.stop="cancelTap(item.id)"></image>
 				</view>
-				<image src="../../static/my/starA.png" class="star" @click="cancelTap(item.id)"></image>
-			</view>
-			<view>
-				<view class="title">{{item.keepRaider.title}}</view>
-				<view class="info">{{item.keepRaider.context}}</view>
-				<view class="imgBox">
-					<image :src="items" v-for="(items,indexs) in item.keepRaider.introductionImg" :key="indexs" v-show="indexs<4"></image>
-					<view class="imgNum" v-show="item.keepRaider.introductionImg.length>4">{{item.keepRaider.introductionImg.length}}图</view>
+				<view>
+					<view class="title">{{item.keepRaider.title}}</view>
+					<view class="info">{{item.keepRaider.context}}</view>
+					<view class="imgBox">
+						<image :src="items" v-for="(items,indexs) in item.keepRaider.introductionImg" :key="indexs"
+							v-show="indexs<4"></image>
+						<view class="imgNum" v-show="item.keepRaider.introductionImg.length>4">
+							{{item.keepRaider.introductionImg.length}}图</view>
+					</view>
 				</view>
 			</view>
 		</view>
+
+		<u-empty mode="list" icon="http://cdn.uviewui.com/uview/empty/list.png" text="暂无数据" v-else>
+		</u-empty>
 	</view>
 </template>
 
@@ -45,9 +52,9 @@
 			this.getList()
 		},
 		methods: {
-			toDetail(id){
+			toDetail(id) {
 				uni.navigateTo({
-					url:`/pages_minute/strategyDetail/strategyDetail?id=${id}`
+					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
 				})
 			},
 			pullDownRefresh() {
@@ -60,7 +67,7 @@
 				this.getList()
 			},
 			// 取消收藏
-			async cancelTap(id) {				
+			async cancelTap(id) {
 				await addFavoriteCancel({
 					ids: [id]
 				})
