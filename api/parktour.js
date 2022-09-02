@@ -31,6 +31,12 @@ export const diningRecoDetail = (params) => {
 	  params
 	})
 }
+// 餐厅套餐
+export const diningRoomDetail = (params) => {
+	return http.get('/wx/dining-room-package/list', {
+	  params
+	})
+}
 // 餐厅套餐详情
 export const diningPackDetail = (params) => {
 	return http.get('/wx/dining-room-package/detail', {
@@ -62,9 +68,14 @@ export const hotelRecoType = (params) => {
 	})
 }
 // 酒店房型
-export const hotelRecoList = (params) => {
-	return http.get('/wx/hotel-type/list', {
-	  params
+export const hotelRecoList = (data) => {
+	return http.request({
+		method: 'GET',
+		url: '/wx/hotel-type/list',
+		data,
+		header:{
+			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+		}
 	})
 }
 // 酒店房型详情
@@ -98,4 +109,12 @@ export const mentRecoDetail = (params) => {
 	  params
 	})
 }
+
+// 娱乐套餐详情
+export const getDictCode = (params) => {
+	return http.get('/sys/dict-item/dict-code', {
+	  params
+	})
+}
+
 

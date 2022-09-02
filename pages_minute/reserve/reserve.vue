@@ -18,7 +18,7 @@
 						预定
 					</view>
 				</view>
-				<u-divider></u-divider>
+				<!-- <u-divider></u-divider>
 				<view style="display: flex;align-items: center;margin-bottom: 10rpx;">
 					<text style="font-size: 24rpx;color: #333;margin-right: 20rpx;">提示</text>
 					<text style="font-size: 24rpx;color: #999;">周一至周日11：00-13：00、17：00-21：30可用</text>
@@ -26,21 +26,21 @@
 				<view style="display: flex;align-items: center;">
 					<text style="font-size: 24rpx;color: #333;margin-right: 20rpx;">保障</text>
 					<text style="font-size: 24rpx;color: #999;">可退款，过期自动退款</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<!-- 菜品 -->
 		<view class="block">
 			<text style="font-weight: bold;">套餐菜品</text>
 			<view>
-				<view style="display: flex;justify-content: space-between;margin: 20rpx 0;" v-for="item in 5">
-					<text style="color: #333;font-size: 28rpx;">脆皮鸭（1份）</text>
-					<text style="font-weight: bold;">￥48</text>
+				<view style="display: flex;justify-content: space-between;margin: 20rpx 0;" v-for="(item,index) in formData.packageDishList" :key="index">
+					<text style="color: #333;font-size: 28rpx;">{{ item.dishName }}（{{ item.number }}份）</text>
+					<text style="font-weight: bold;">￥{{ item.price }}</text>
 				</view>
 			</view>
 		</view>
 		<!-- 购买须知 -->
-		<view class="block">
+		<!-- <view class="block">
 			<text style="font-weight: bold;">购买须知</text>
 			<view>
 				<view style="margin: 20rpx 0;display: flex;">
@@ -52,10 +52,10 @@
 				</view>
 				<text style="font-size: 26rpx;margin: 20rpx 0;">11：00-13:00、17:00-21:00</text>
 			</view>
-		</view>
+		</view> -->
 		<!-- 可用商户 -->
 		<view class="block">
-			<text style="font-weight: bold;">可用商户</text>
+			<!-- <text style="font-weight: bold;">可用商户</text>
 			<view style="display: flex;align-items: center;margin-top: 20rpx;">
 				<image style="width: 160rpx;height: 160rpx;margin-right: 20rpx;" src="../../static/logo.png"></image>
 				<view>
@@ -68,15 +68,15 @@
 					<text style="color: #333;font-size: 24rpx;">开放时间: 11:00-13:00 17:00-21:00</text>
 				</view>
 			</view>
-			<u-divider></u-divider>
+			<u-divider></u-divider> -->
 			<text style="font-weight: bold;">本店套餐</text>
 			<view style="display: flex;flex-wrap: wrap;justify-content: space-between;">
-				<view style="width: 49%;margin-top: 20rpx;" v-for="item in 6">
-					<image style="width: 100%;height: 236rpx;border-radius: 20rpx;" src="../../static/entertainment.png"></image>
-					<view style="font-size: 30rpx;margin: 20rpx;">4人餐，提供免费饮品</view>
+				<view style="width: 49%;margin-top: 20rpx;" v-for="(item,index1) in packageList" :key="index1">
+					<image style="width: 100%;height: 236rpx;border-radius: 20rpx;" :src="item.mainImage"></image>
+					<view style="font-size: 30rpx;margin: 20rpx;">{{ item.name }}</view>
 					<view style="display: flex;align-items: center;justify-content: space-between;width: 70%;">
-						<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥128</text>
-						<text style="font-size: 24rpx;color: #999;">￥209</text>
+						<text style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
+						<text style="font-size: 24rpx;color: #999;text-decoration: line-through;">￥{{ item.originalPrice }}</text>
 					</view>
 				</view>
 			</view>
@@ -86,12 +86,14 @@
 
 <script>
 	import {
-		diningPackDetail
+		diningPackDetail,
+		diningRoomDetail
 	} from '@/api/parktour.js';
 	export default {
 		data() {
 			return {
-				formData: {}
+				formData: {},
+				packageList: [],
 			}
 		},
 		onLoad(option) {
@@ -102,8 +104,14 @@
 				const { data } = await diningPackDetail({
 					id: id
 				})
-				console.log(data);
 				this.formData = data;
+				this.roomList(data.diningRoomId)
+			},
+			async roomList(id) {
+				const { data } = await diningRoomDetail({
+					diningRoomId: id
+				})
+				this.packageList = data.records;
 			},
 			gotoPage(){
 				uni.navigateTo({

@@ -47,7 +47,12 @@
 			<!-- 图片介绍 -->
 			<view class="content-image" id="foodBox">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" :singleSize="100" multipleSize="100" :urls="urls"></u-album>
+				<scroll-view class="imgBox" scroll-x="true">
+					<image :src="item" v-for="(item,index) in formData.photoExplanation" :key="index"
+						@click="preViewImg(index)"></image>
+					<view class="imgNum" v-show="formData.photoExplanation.length>4">{{formData.photoExplanation.length}}图
+					</view>
+				</scroll-view>
 			</view>
 			<!-- 推荐套餐 -->
 			<view class="content-combo" id="hotelBox">
@@ -117,7 +122,6 @@
 			return {
 				barHightTop: '',
 				formData: {},
-				urls: [],
 				recommend: [],
 				dishesList: [],
 				Tablist: [{
@@ -164,6 +168,12 @@
 					diningRoomId: id
 				});
 				this.dishesList = data.records;
+			},
+			preViewImg(index) {
+				uni.previewImage({
+					current: index,
+					urls: this.formData.photoExplanation
+				})
 			},
 			backTap() {
 				uni.navigateBack({
@@ -258,6 +268,35 @@
 		.bannerImg {
 			width: 100%;
 			height: 100%;
+		}
+	}
+	
+	.imgBox {
+		width: 100%;
+		display: flex;
+		white-space: nowrap;
+		position: relative;
+	
+		image {
+			width: 212rpx;
+			height: 170rpx;
+			border-radius: 12rpx;
+			margin-right: 8rpx;
+			display: inline-block;
+		}
+	
+		.imgNum {
+			padding: 0 6rpx;
+			height: 38rpx;
+			background: rgba(0, 0, 0, 0.6);
+			border-radius: 8rpx;
+			position: absolute;
+			right: 8rpx;
+			bottom: 50rpx;
+			z-index: 11;
+			font-weight: 400;
+			color: #FFFFFF;
+			font-size: 24rpx;
 		}
 	}
 

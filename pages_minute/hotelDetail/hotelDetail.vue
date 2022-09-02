@@ -49,23 +49,26 @@
 						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ endTime }}</text>
 					</view>
 					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-					<view style="display: flex;align-items: center;">
+					<!-- <view style="display: flex;align-items: center;" @click="showResident = true">
 						<text style="font-size: 40rpx;font-weight: bold;">1</text>
 						<text style="font-size: 26rpx;color: #333;">间</text>
 						<text style="font-size: 40rpx;">·</text>
-						<text style="font-size: 40rpx;font-weight: bold;">1</text>
+						<text style="font-size: 40rpx;font-weight: bold;">{{ residentNumber }}</text>
 						<text style="font-size: 26rpx;color: #333;">人</text>
+					</view> -->
+					<view style="font-size: 28rpx;font-weight: bold;" @click="showResident = true">
+						可住{{ residentNumber }}人
 					</view>
 				</view>
-				<view style="display: flex;align-items: center;justify-content: space-between;">
-					<view style="display: flex;align-items: center;">
+				<view style="display: flex;align-items: center;justify-content: flex-end;">
+					<!-- <view style="display: flex;align-items: center;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in checkboxs" :key="index">
 							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" size="mini"
 								@click="checkboxClick">
 							</u-tag>
 						</view>
 					</view>
-					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
+					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view> -->
 					<view style="width: 150rpx;">
 						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini" @click="show = true"></u-button>
 					</view>
@@ -79,7 +82,12 @@
 			</view>
 			<view class="content-image" id="foodBox">
 				<view class="text">图片介绍</view>
-				<u-album maxCount="3" space="10" singleSize="100" multipleSize="100" :urls="urls"></u-album>
+				<scroll-view class="imgBox" scroll-x="true">
+					<image :src="item" v-for="(item,index) in formData.photoExplanation" :key="index"
+						@click="preViewImg(index)"></image>
+					<view class="imgNum" v-show="formData.photoExplanation.length>4">{{formData.photoExplanation.length}}图
+					</view>
+				</scroll-view>
 			</view>
 			<view class="content-combo" id="hotelBox">
 				<view class="content-combo-title">
@@ -127,52 +135,57 @@
 		<!-- 日期 -->
 		<u-calendar :show="showTime" mode="range" @confirm="confirm" @close="showTime = false" startText="住店"
 			endText="离店" confirmDisabledText="请选择离店日期"></u-calendar>
+		<!-- 人数 -->
+		<u-picker :show="showResident" :columns="columns" @confirm="confirmRes" @cancel="showResident = false"></u-picker>
 		<!-- 筛选弹框 -->
 		<u-popup :show="show" mode="top" round="20" closeOnClickOverlay @close="show = false">
 			<view style="padding: 20rpx;margin-top: 3rem;">
-				<view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
-					<view style="display: flex;align-items: center;" @click="showTime = true">
+				<!-- <view style="display: flex;align-items: center;justify-content: space-between;margin: 20rpx 0;">
+					<view style="display: flex;align-items: center;" @click="show = false,showTime = true">
 						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ startTime }}</text>
 						<view style="margin: 0 20rpx;">
 							<u-tag :text="num +'晚'" shape="circle" bgColor="#fff" borderColor="#08B761" color="#08B761" size="mini"></u-tag>
 						</view>
 						<text style="font-size: 28rpx;margin-right: 12rpx;font-weight: bold;">{{ endTime }}</text>
 					</view>
-					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-					<view style="display: flex;align-items: center;">
+					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view> -->
+					<!-- <view style="display: flex;align-items: center;">
 						<text style="font-size: 40rpx;font-weight: bold;">1</text>
 						<text style="font-size: 26rpx;color: #333;">间</text>
 						<text style="font-size: 40rpx;">·</text>
 						<text style="font-size: 40rpx;font-weight: bold;">1</text>
 						<text style="font-size: 26rpx;color: #333;">人</text>
+					</view> -->
+					<!-- <view style="font-size: 28rpx;font-weight: bold;" @click="showResident = true">
+						可住{{ residentNumber }}人
 					</view>
-				</view>
-				<view style="display: flex;align-items: center;justify-content: space-between;">
-					<view style="display: flex;align-items: center;">
+				</view> -->
+				<!-- <view style="display: flex;align-items: center;justify-content: flex-end;"> -->
+					<!-- <view style="display: flex;align-items: center;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in checkboxs" :key="index">
 							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success" size="mini"
 								@click="checkboxClick">
 							</u-tag>
 						</view>
 					</view>
-					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view>
-					<view style="width: 150rpx;">
-						<u-button type="info" icon="arrow-down" plain hairline text="筛选" size="mini"
+					<view style="border-left: 2rpx solid #D2D2D2;margin: 0 20rpx;height: 40rpx;"></view> -->
+					<!-- <view style="width: 150rpx;">
+						<u-button type="info" icon="arrow-up" plain hairline text="筛选" size="mini"
 							@click="show = true"></u-button>
 					</view>
-				</view>
+				</view> -->
 				<u-divider></u-divider>
 				<view>
 					<text>房型</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag1" :key="index">
-							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success"
+							<u-tag :text="item.text" :plain="!item.checked" :name="item.text" type="success"
 								@click="checkClick1">
 							</u-tag>
 						</view>
 					</view>
 				</view>
-				<view>
+				<!-- <view>
 					<text>价格</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag2" :key="index">
@@ -181,12 +194,12 @@
 							</u-tag>
 						</view>
 					</view>
-				</view>
+				</view> -->
 				<view>
 					<text>餐食</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag3" :key="index">
-							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success"
+							<u-tag :text="item.text" :plain="!item.checked" :name="item.text" type="success"
 								@click="checkClick3">
 							</u-tag>
 						</view>
@@ -196,17 +209,27 @@
 					<text>Wifi</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag4" :key="index">
-							<u-tag :text="item.text" :plain="!item.checked" :name="index" type="success"
+							<u-tag :text="item.text" :plain="!item.checked" :name="item.text" type="success"
 								@click="checkClick4">
+							</u-tag>
+						</view>
+					</view>
+				</view>
+				<view>
+					<text>支付方式</text>
+					<view style="display: flex;align-items: center;margin: 20rpx 0;">
+						<view style="margin-right: 10rpx;" v-for="(item, index) in tag5" :key="index">
+							<u-tag :text="item.text" :plain="!item.checked" :name="item.text" type="success"
+								@click="checkClick5">
 							</u-tag>
 						</view>
 					</view>
 				</view>
 				<u-divider></u-divider>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
-					<text style="font-size: 26rpx;color: #666;margin: 0 40rpx;" @click="clearItem()">清空所选</text>
+					<text style="font-size: 26rpx;color: #666;margin: 0 40rpx;" @click="clearItem()">清空</text>
 					<view style="width: 60%;">
-						<u-button text="确认筛选" type="success" shape="circle" color="#0BB762"></u-button>
+						<u-button text="确认筛选" type="success" shape="circle" color="#0BB762" @click="ConfirmScreening"></u-button>
 					</view>
 				</view>
 			</view>
@@ -218,7 +241,8 @@
 	import {
 		hotelDetail,
 		hotelRecoType,
-		hotelRecoList
+		hotelRecoList,
+		getDictCode
 	} from '@/api/parktour.js';
 	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
@@ -231,7 +255,11 @@
 				id: '',
 				show: false,
 				showTime: false,
+				showResident: false,
 				formData: {},
+				columns: [
+					['1', '2', '3', '4']
+				],
 				urls: [],
 				num: 1,
 				recommend: [],
@@ -266,15 +294,7 @@
 						checked: false
 					}
 				],
-				tag1: [{
-						text: '大床房',
-						checked: false
-					},
-					{
-						text: '双床房',
-						checked: false
-					}
-				],
+				tag1: [],
 				tag2: [{
 						text: '￥0-150',
 						checked: false
@@ -292,32 +312,24 @@
 						checked: false
 					}
 				],
-				tag3: [{
-						text: '含早餐',
-						checked: false
-					},
-					{
-						text: '无餐食',
-						checked: false
-					}
-				],
-				tag4: [{
-						text: '有Wifi',
-						checked: false
-					},
-					{
-						text: '无Wifi',
-						checked: false
-					}
-				],
+				tag3: [],
+				tag4: [],
+				tag5: [],
+				// 筛选参数
 				startTime: '',
-				endTime: ''
+				endTime: '',
+				residentNumber: '2',
+				roomType: '',
+				wifi: '',
+				meal: '',
+				paymentMethod: ''
 			}
 		},
 		onLoad(option) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.load(option.id)
 			this.id = option.id;
+			this.dict();
 		},
 		methods: {
 			async load(id) {
@@ -341,10 +353,58 @@
 					const res = await hotelRecoList({
 						hotelId: id,
 						checkInStartTime: this.startTime,
-						checkOutEndTime: this.endTime
+						checkOutEndTime: this.endTime,
+						residentNumber: this.residentNumber,
+						roomType: this.roomType,
+						wifi: this.wifi,
+						meal: this.meal,
+						paymentMethod: this.paymentMethod
 					})
 					this.recommend = res.data.records;
 				}catch(e){}
+			},
+			// 字典数据
+			async dict() {
+				// 房型
+				const res = await getDictCode({
+					dictCode: 'roomtype'
+				})
+				res.data.map((val) => {
+					this.tag1.push({
+						text: val.name,
+						checked: false
+					})
+				})
+				// 餐食
+				const res1 = await getDictCode({
+					dictCode: 'meal'
+				})
+				res1.data.map((val) => {
+					this.tag3.push({
+						text: val.name,
+						checked: false
+					})
+				})
+				// wifi
+				const res2 = await getDictCode({
+					dictCode: 'wifi'
+				})
+				res2.data.map((val) => {
+					this.tag4.push({
+						text: val.name,
+						checked: false
+					})
+				})
+				// 支付方式
+				const res3 = await getDictCode({
+					dictCode: 'paymentMethod'
+				})
+				res3.data.map((val) => {
+					this.tag5.push({
+						text: val.name,
+						checked: false
+					})
+				})
 			},
 			backTap() {
 				uni.navigateBack({
@@ -358,7 +418,13 @@
 				// 结束时间
 				this.endTime = e[e.length - 1];
 				this.showTime = false;
+				this.show = true;
 				this.loadReco(this.id);
+			},
+			confirmRes(e){
+				this.residentNumber = e.value[0];
+				this.showResident = false;
+				this.loadReco(this.id)
 			},
 			// 切换商品类型
 			changeType(e) {
@@ -391,6 +457,12 @@
 					url: '/pages_minute/reserve/reserve'
 				})
 			},
+			preViewImg(index) {
+				uni.previewImage({
+					current: index,
+					urls: this.formData.photoExplanation
+				})
+			},
 			getReserve(val) {
 				let obj = {
 					id: val.id,
@@ -411,20 +483,50 @@
 				this.checkboxs[name].checked = !this.checkboxs[name].checked
 			},
 			checkClick1(name) {
-				this.tag1[name].checked = !this.tag1[name].checked
+				this.roomType = name;
+				this.tag1.map((item) => {
+					item.checked = item.text === name ? true : false
+				})
 			},
 			checkClick2(name) {
 				this.tag2[name].checked = !this.tag2[name].checked
 			},
 			checkClick3(name) {
-				this.tag3[name].checked = !this.tag3[name].checked
+				this.meal = name;
+				this.tag3.map((item) => {
+					item.checked = item.text === name ? true : false
+				})
 			},
 			checkClick4(name) {
-				this.tag4[name].checked = !this.tag4[name].checked
+				this.wifi = name;
+				this.tag4.map((item) => {
+					item.checked = item.text === name ? true : false
+				})
+			},
+			checkClick5(name){
+				this.paymentMethod = name;
+				this.tag5.map((item) => {
+					item.checked = item.text === name ? true : false
+				})
 			},
 			// 清空所选
 			clearItem() {
-
+				this.tag1 = [];
+				this.tag3 = [];
+				this.tag4 = [];
+				this.tag5 = [];
+				this.dict();
+				this.roomType = '';
+				this.wifi = '';
+				this.meal = '';
+				this.paymentMethod = '';
+				this.loadReco(this.id);
+				this.show = false;
+			},
+			// 确认筛选
+			ConfirmScreening(){
+				this.loadReco(this.id);
+				this.show = false;
 			},
 			getAss(val) {
 				uni.getLocation({
@@ -468,6 +570,34 @@
 		.bannerImg {
 			width: 100%;
 			height: 100%;
+		}
+	}
+	.imgBox {
+		width: 100%;
+		display: flex;
+		white-space: nowrap;
+		position: relative;
+	
+		image {
+			width: 212rpx;
+			height: 170rpx;
+			border-radius: 12rpx;
+			margin-right: 8rpx;
+			display: inline-block;
+		}
+	
+		.imgNum {
+			padding: 0 6rpx;
+			height: 38rpx;
+			background: rgba(0, 0, 0, 0.6);
+			border-radius: 8rpx;
+			position: absolute;
+			right: 8rpx;
+			bottom: 50rpx;
+			z-index: 11;
+			font-weight: 400;
+			color: #FFFFFF;
+			font-size: 24rpx;
 		}
 	}
 
