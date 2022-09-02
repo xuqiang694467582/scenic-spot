@@ -222,19 +222,13 @@
 				})
 			},
 			getAss(val) {
-				uni.getLocation({
-					type: 'gcj02', //返回可以用于uni.openLocation的经纬度
-					success: function(res) {
-						console.log(res);
-						const latitude = res.latitude;
-						const longitude = res.longitude;
-						uni.openLocation({
-							latitude: latitude,
-							longitude: longitude,
-							success: function() {
-								console.log('success');
-							}
-						});
+				uni.openLocation({
+					latitude: this.formData.latitude * 1,
+					longitude: this.formData.latitude * 1,
+					name: this.formData.name,
+					address: this.formData.address,
+					success: function() {
+						console.log('success');
 					}
 				});
 			}
