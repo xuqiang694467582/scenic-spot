@@ -43,7 +43,7 @@
 				</u-scroll-list>
 			</view>
 			<!-- 网红景点 -->
-			<view class="cele">
+			<view class="cele" v-if="celebrity.length !== 0">
 				<view style="display: flex;justify-content: space-between;">
 					<view class="food-title"> <view class="titleSu"></view>景点网红打卡榜</view>
 					<!-- <view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">查看榜单<u-icon name="arrow-right" size="12"></u-icon></view> -->

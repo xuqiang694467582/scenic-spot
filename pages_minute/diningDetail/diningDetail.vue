@@ -30,12 +30,12 @@
 						</view>
 						<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
 							<view v-for="item in formData.label" style="margin-right: 10rpx;margin-bottom: 10rpx;">
-								<u-tag size="mini" :text="item" bgColor="#E1E1E1" borderColor="#E1E1E1" color="#666">
+								<u-tag size="mini" :text="item" bgColor="#EDF8EF" borderColor="#08B761" color="#08B761">
 								</u-tag>
 							</view>
 						</view>
 					</view>
-					<u-icon name="arrow-right"></u-icon>
+					<!-- <u-icon name="arrow-right"></u-icon> -->
 				</view>
 			</view>
 			<!-- tab -->
@@ -68,14 +68,13 @@
 							<view style="display: flex;flex-wrap: wrap;margin-top: 20rpx;">
 								<view v-for="(item1,index1) in item.label" :key="index1"
 									style="margin-right: 10rpx;margin-bottom: 10rpx;">
-									<u-tag size="mini" :text="item1" bgColor="#E1E1E1" borderColor="#E1E1E1"
-										color="#666"></u-tag>
+									<u-tag size="mini" :text="item1" bgColor="#EDF8EF" borderColor="#08B761" color="#08B761"></u-tag>
 								</view>
 							</view>
 							<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
 								<text
 									style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
-								<text style="font-size: 24rpx;color: #999;">￥{{ item.originalPrice }}</text>
+								<text style="font-size: 24rpx;color: #999;text-decoration: line-through;">￥{{ item.originalPrice }}</text>
 							</view>
 						</view>
 					</view>

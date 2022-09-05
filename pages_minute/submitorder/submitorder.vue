@@ -8,7 +8,7 @@
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view style="display: flex;align-items: center;justify-content: space-between;width: 200rpx;">
 						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥{{ packData.price }}</text>
-						<text style="font-size: 24rpx;color: #999;">￥{{ packData.originalPrice }}</text>
+						<text style="font-size: 24rpx;color: #999;text-decoration: line-through;">￥{{ packData.originalPrice }}</text>
 					</view>
 					<u-number-box v-model="value" :integer="true" min="1" @change="change">
 						<view slot="minus">

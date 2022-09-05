@@ -8,7 +8,7 @@
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<view style="display: flex;align-items: center;justify-content: space-between;width: 200rpx;">
 						<text style="font-size: 30rpx;color: #FE5A3D;font-weight: bold;">￥{{ packData.price }}</text>
-						<text style="font-size: 24rpx;color: #999;">￥{{ packData.originalPrice }}</text>
+						<text style="font-size: 24rpx;color: #999;text-decoration: line-through;">￥{{ packData.originalPrice }}</text>
 					</view>
 					<u-number-box v-model="value" :integer="true" min="1" @change="change">
 						<view slot="minus">
@@ -47,7 +47,7 @@
 				<u-button color="#0BB762" shape="circle" @click="getBooknow()">立即预定</u-button>
 			</view>
 		</view>
-		<u-calendar :show="showCalendar" mode="range" @confirm="calendarConfirm" @close="showCalendar = false" startText="住店"
+		<u-calendar :show="showCalendar" :defaultDate="defaultDate" mode="range" @confirm="calendarConfirm" @close="showCalendar = false" startText="住店"
 			endText="离店" confirmDisabledText="请选择离店日期"></u-calendar>
 	</view>
 </template>
@@ -68,6 +68,8 @@
 				showCalendar: false,
 				value: 1,
 				price: 0,
+				defaultDate: [],
+				num: 1,
 				model: {
 					name: '',
 					tel: '',
@@ -111,7 +113,9 @@
 			const obj = JSON.parse(decodeURIComponent(option.obj));
 			this.load(obj.id);
 			this.model.hotel = obj.startTime + ' / ' + obj.endTime;
+			this.num = obj.num;
 			this.time = [obj.startTime,obj.endTime];
+			this.defaultDate = [obj.startTime,obj.endTime];
 			this.model.tel = this.userInfo.phone;
 		},
 		methods: {
@@ -122,7 +126,7 @@
 					id: id
 				})
 				this.packData = data;
-				this.price = data.price;
+				this.price = data.price * this.num;
 			},
 			gotoPage() {
 				// uni.navigateTo({
@@ -134,12 +138,14 @@
 			},
 			change(e) {
 				this.value = e.value;
-				this.price = Number(this.packData.price) * e.value;
+				this.price = Number(this.packData.price) * e.value * this.num;
 			},
 			calendarConfirm(e) {
 				this.showCalendar = false;
 				this.model.hotel = `${e[0]} / ${e[e.length - 1]}`;
 				this.time = [e[0],e[e.length - 1]];
+				this.num = e.length - 1;
+				this.price = Number(this.packData.price) * this.value * this.num;
 				this.$refs.form.validateField('hotel')
 			},
 			// 立即预定

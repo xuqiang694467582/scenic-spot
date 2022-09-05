@@ -109,7 +109,7 @@
 							<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
 								<text
 									style="font-size: 30rpx;color: #FF1616;font-weight: bold;">￥{{ item.price }}</text>
-								<text style="font-size: 24rpx;color: #999;margin-left: 20rpx;">￥{{ item.originalPrice }}</text>
+								<text style="font-size: 24rpx;color: #999;margin-left: 20rpx;text-decoration: line-through;">￥{{ item.originalPrice }}</text>
 							</view>
 						</view>
 					</view>
@@ -461,7 +461,8 @@
 				let obj = {
 					id: val.id,
 					startTime: this.startTime,
-					endTime: this.endTime
+					endTime: this.endTime,
+					num: this.num
 				}
 				let item = encodeURIComponent(JSON.stringify(obj));
 				uni.navigateTo({
