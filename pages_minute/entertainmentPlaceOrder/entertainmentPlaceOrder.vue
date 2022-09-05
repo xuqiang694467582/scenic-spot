@@ -25,8 +25,8 @@
 				<input placeholder="填写姓名" v-model="name" />
 			</view>
 			<view class="telBox">
-				<view>预留手机尾号</view>
-				<input placeholder="填写手机尾号" type="number" v-model="phone" />
+				<view>预留手机号</view>
+				<input placeholder="填写手机号" type="number" v-model="phone" />
 			</view>
 			<!-- <view class="telBox">
 				<view>备注</view>

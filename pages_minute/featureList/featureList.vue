@@ -4,7 +4,7 @@
 			<image :src="item.coverImg" class="img"></image>
 			<view class="goodsInfo">
 				<view class="name">{{item.name}}</view>
-				<!-- <view class="info">adas</view> -->
+				<view class="info">{{item.introduce}}</view>
 			</view>
 		</view>
 	</view>
@@ -72,7 +72,7 @@
 				color: #333333;
 			}
 			.info {
-				font-size: 32rpx;
+				font-size: 28rpx;
 				font-weight: 500;
 				color: #999;
 				margin-top: 16rpx;

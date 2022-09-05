@@ -152,8 +152,8 @@
 						tel: this.phone,
 						time: this.time
 					},
-					merchantId: 0,
-					merchantName: 0,
+					merchantId: this.orderData[0].specialtyId,
+					merchantName:  this.orderData[0].specialtyName,
 					orderItems: []
 				}]
 				const listId=[]
