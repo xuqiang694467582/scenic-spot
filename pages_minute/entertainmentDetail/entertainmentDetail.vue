@@ -52,7 +52,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="mouduleBox" id="feature">
+			<view class="mouduleBox" id="feature" v-if="featureList.length>0">
 				<view class="featureTitle">
 					<view class="title" style="margin-bottom: 0;">特色项目（{{total}}）</view>
 					<view class="more" @click="moreTap">更多项目<u-icon name="arrow-right" size="10"></u-icon>

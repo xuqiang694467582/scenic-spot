@@ -20,7 +20,7 @@
 			</view> -->
 			<view class="tipBox">
 				<text class="tTitle">保障</text>
-				<text>可退款·过期自动退款</text>
+				<text>可退款</text>
 			</view>
 		</view>
 		<view class="mouduleBox">

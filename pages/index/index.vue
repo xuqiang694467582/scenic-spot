@@ -8,7 +8,7 @@
 			<uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
 				<view slot="left">
 					<view class="top-content">
-						<u-search v-model="keyword" :showAction="false" placeholder="搜索美食/住宿/商品" @search="searchTap">
+						<u-search v-model="keyword" :showAction="false" placeholder="搜索商家名称" @search="searchTap">
 						</u-search>
 						<button open-type='contact' class="kfBox">
 							<view class="top-content-icon">
