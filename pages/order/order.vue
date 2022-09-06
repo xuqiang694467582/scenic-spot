@@ -12,7 +12,7 @@
 			lineColor="rgba(8, 183, 97, 1)" :current="curt"></u-tabs>
 
 		<view class="content" v-if="list.length>0">
-			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id,item.type[0])">
 				<view class="topBox">
 					<view>{{item.placeTimeStr}}</view>
 					<view>{{item.statusStr}}</view>
@@ -143,50 +143,71 @@
 				})
 
 
-		},
-		// 取消订单
-		cancelOrder(id) {
-			uni.showModal({
-				title: '提示',
-				content: '确定取消',
-				success: async (res) => {
-					if (res.confirm) {
-						await addOrderCancel({
-							id: id
-						})
-						uni.showToast({
-							title: '取消成功'
-						})
-						this.list = []
-						this.listQuery.page = 1
-						this.getList()
-					} else if (res.cancel) {
-						console.log('用户点击取消');
+			},
+			// 取消订单
+			cancelOrder(id) {
+				uni.showModal({
+					title: '提示',
+					content: '确定取消',
+					success: async (res) => {
+						if (res.confirm) {
+							await addOrderCancel({
+								id: id
+							})
+							uni.showToast({
+								title: '取消成功'
+							})
+							this.list = []
+							this.listQuery.page = 1
+							this.getList()
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
 					}
-				}
-			});
+				});
 
-		},
-		async getList() {
-			this.listQuery.status = this.curt == 0 ? '' : this.curt - 1
-			const {
-				data
-			} = await getOrderList(this.listQuery)
-			uni.stopPullDownRefresh()
-			this.list = this.list.concat(data.records)
-		},
-		toDetail(id) {
-			uni.navigateTo({
-				url: `/pages_minute/orderDetail/orderDetail?id=${id}`
-			})
-		},
-		changeType(item) {
-			this.curt = item.index
-			this.list = []
-			this.listQuery.page = 1
-			this.getList()
+			},
+			async getList() {
+				this.listQuery.status = this.curt == 0 ? '' : this.curt - 1
+				const {
+					data
+				} = await getOrderList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
+			toDetail(id, type) {
+				switch (type) {
+					case '0':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/cwDetail?id=${id}`
+						})
+						break;
+					case '1':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/cwDetail?id=${id}`
+						})
+						break;
+					case '2':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/hotelDetail?id=${id}`
+						})
+						break;
+					case '3':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/specialtyDetail?id=${id}`
+						})
+						break;
+
+
+				}
+			},
+			changeType(item) {
+				this.curt = item.index
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			}
 		}
-	}
 	}
 </script>
 
@@ -285,6 +306,7 @@
 					flex: 1;
 					margin-left: 16rpx;
 					flex-direction: column;
+
 					.priceBox {
 						margin-top: 20rpx;
 

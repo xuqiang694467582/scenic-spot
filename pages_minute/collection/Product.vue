@@ -8,7 +8,7 @@
 			</view>
 			<view class="listBox" v-if="list.length>0">
 				<view class="list" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepSpecialtyGood.specialtyGoodId)">
-					<view class="selectBox" @click="selectTap(index)" v-if="isEdit">
+					<view class="selectBox" @click.stop="selectTap(index)" v-if="isEdit">
 						<image :src="item.checked?'../../static/order/selectA.png':'../../static/order/select.png'">
 						</image>
 					</view>

@@ -30,19 +30,61 @@
 				</u-scroll-list>
 			</view>
 			<view class="modalBox">
-				<view class="lineBox"  @click="toDetail(0)" v-if="userInfo.isMerchant">
+				<view class="lineBox" @click="toDetail(0)" v-if="userInfo.isMerchant">
 					<view class="lbL">
 						<image src="../../static/my/sjhx.png"></image>
 						<view>商家核销</view>
 					</view>
 					<u-icon name="arrow-right" size="12"></u-icon>
 				</view>
-				<view class="lineBox" v-for="(item,index) in list" :key="index" @click="toDetail(index+1)" >
+				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index+1)">
 					<view class="lbL">
 						<image :src="item.img"></image>
 						<view>{{item.name}}</view>
 					</view>
 					<u-icon name="arrow-right" size="12"></u-icon>
+				</view>
+			</view>
+			<view class="modalBox">
+				<view class="orderTop">
+					<view class="otTitle">已支付的订单</view>
+					<view class="otAll" @click="toOrder(2)">查看全部<u-icon name="arrow-right" color="#999999" size="12"></u-icon>
+					</view>
+				</view>
+				<view class="orderList" v-for="(item,index) in list" :key="index"
+					@click="toOrderDetail(item.id,item.type[0])">
+					<view class="shopName">
+						<image src="../../static/order/shopIco.png" class="shopIco"></image>
+						{{item.merchantName}}
+						<u-icon name="arrow-right" color="#999999" size="12"></u-icon>
+					</view>
+					<view class="goodsBox" v-if="item.name">
+						<image :src="item.images[0]" class="goodsImg"></image>
+						<view class="goodsInfo">
+							<view class="goodsName">{{item.name}}</view>
+							<!-- <view class="goodsTip">11:00-13:00、17:00-21:30</view> -->
+							<view class="goodsP">
+								<view class="priceBox">
+									<text class="unit">￥</text>
+									<text class="price">{{item.payPrice}}</text>
+									<text class="num">共{{item.number}}件</text>
+								</view>
+								<view class="wait">待使用</view>
+							</view>
+						</view>
+					</view>
+					<view class="goodsBox" v-else>
+						<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4">
+							class="goodsImg"></image>
+						<view class="goodsInfo">
+							<view class="goodsP">
+								<view class="priceBox">
+									<text class="num">共{{item.number}}件</text>
+								</view>
+								<view class="wait">待使用</view>
+							</view>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -56,6 +98,9 @@
 	import {
 		editUserInfo
 	} from '@/api/user.js'
+	import {
+		getOrderList
+	} from '@/api/order.js'
 	export default {
 		data() {
 			return {
@@ -85,7 +130,7 @@
 						}
 					],
 				],
-				list: [{
+				menuList: [{
 						name: '收藏管理',
 						img: '../../static/my/wdsc.png'
 					},
@@ -93,14 +138,64 @@
 						name: '我的攻略',
 						img: '../../static/my/wdgl.png'
 					},
-				]
+				],
+				listQuery: {
+					page: 1,
+					pageSize: 10,
+					status: 1
+				},
+				list: [],
 			}
 		},
 		computed: mapState(['userInfo', 'wechatUserId']),
 		onShow() {
-			
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onPullDownRefresh() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		onReachBottom() {
+			this.listQuery.page++
+			this.getList()
 		},
 		methods: {
+			toOrderDetail(id, type) {
+				switch (type) {
+					case '0':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/cwDetail?id=${id}`
+						})
+						break;
+					case '1':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/cwDetail?id=${id}`
+						})
+						break;
+					case '2':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/hotelDetail?id=${id}`
+						})
+						break;
+					case '3':
+						uni.navigateTo({
+							url: `/pages_minute/orderDetail/specialtyDetail?id=${id}`
+						})
+						break;
+
+
+				}
+			},
+			async getList() {
+				const {
+					data
+				} = await getOrderList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+			},
 			toDetail(index) {
 				if (this.isGetTel() === false) return
 				switch (index) {
@@ -169,6 +264,115 @@
 <style lang="scss">
 	page {
 		background-color: #F2F2F4;
+	}
+
+	.goodsBox {
+		margin-top: 36rpx;
+		display: flex;
+		align-items: center;
+
+		.goodsInfo {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+
+			.goodsP {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-top: 20rpx;
+
+				.wait {
+					font-weight: 500;
+					color: #08B761;
+					font-size: 24rpx;
+				}
+			}
+
+			.priceBox {
+
+
+				.unit {
+					font-size: 30rpx;
+					font-weight: bold;
+				}
+
+				.price {
+					font-size: 40rpx;
+					font-weight: bold;
+				}
+
+				.num {
+					margin-left: 22rpx;
+					font-size: 24rpx;
+					color: #666666;
+				}
+			}
+
+			.goodsName {
+				font-weight: 500;
+				color: #333333;
+				font-size: 26rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+
+			.goodsTip {
+				font-weight: 400;
+				color: #333333;
+				font-size: 24rpx;
+				margin-top: 16rpx;
+			}
+		}
+
+		.goodsImg {
+			width: 152rpx;
+			height: 152rpx;
+			border-radius: 24rpx;
+			margin-right: 20rpx;
+		}
+	}
+
+	.orderList {
+		padding: 34rpx 0;
+		border-bottom: 1px solid #EBEBEB;
+
+		.shopName {
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			color: #333333;
+			font-size: 28rpx;
+
+			.shopIco {
+				width: 28rpx;
+				height: 28rpx;
+				margin-right: 16rpx;
+			}
+		}
+	}
+
+	.orderTop {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		.otTitle {
+			font-weight: 600;
+			color: #333333;
+			font-size: 30rpx;
+		}
+
+		.otAll {
+			font-weight: 400;
+			color: #999999;
+			font-size: 24rpx;
+			display: flex;
+			align-items: center;
+		}
 	}
 
 	.modalBox {

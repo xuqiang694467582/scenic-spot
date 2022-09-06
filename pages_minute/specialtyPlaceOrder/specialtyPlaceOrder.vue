@@ -30,7 +30,7 @@
 										:checked="isAgree" @change="checkboxChange">
 									</u-checkbox>
 								</u-checkbox-group>
-								<text>《自提自取服务协议》</text>
+								<text @click="toAgree">《自提自取服务协议》</text>
 							</view>
 						</view>
 						<!-- <view class="distanceBox">
@@ -105,6 +105,7 @@
 		},
 		computed: {
 			...mapState(['orderData', 'userInfo']),
+			
 			price() {
 				let price = 0
 				this.orderData.forEach(item => {
@@ -124,6 +125,11 @@
 
 		},
 		methods: {
+			toAgree(){
+				uni.navigateTo({
+					url:'/pages_minute/agree/agree'
+				})
+			},
 			bindTimeChange(e) {
 				this.time = e.detail.value
 			},

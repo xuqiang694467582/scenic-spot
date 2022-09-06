@@ -3,21 +3,21 @@
 		<view class="topBox" v-show="detail.status==='0'">
 			<view>
 				<view class="status">订单待支付</view>
-				<!-- <view class="statusInfo">订单将在2分钟后自动取消</view> -->
+				<view class="statusInfo">请尽快支付该订单</view>
 			</view>
 			<view class="btn" @click="payTap">立即支付</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='1'">
 			<view>
 				<view class="status">订单已支付</view>
-				<!-- <view class="statusInfo">正在打包中，稍后可前往自提点提取</view> -->
+				<view class="statusInfo">正在打包中，稍后可前往自提点提取</view>
 			</view>
 			<view class="btn" @click="show=true">核销码</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='2'">
 			<view>
 				<view class="status">订单已完成</view>
-				<!-- <view class="statusInfo">取货完成，期待您的再次光顾</view> -->
+				<view class="statusInfo">取货完成，期待您的再次光顾</view>
 			</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='3'">
@@ -32,22 +32,14 @@
 				<view>{{productDetail.merchantName}}</view>
 				<view>
 					<image src="../../static/order/navigation.png" @click="navigationTap()"></image>
-					<!-- <image src="../../static/order/tel.png"></image> -->
+					<!-- <image src="../../static/order/tel.png" @click="telTap"></image> -->
 				</view>
 			</view>
 			<view class="listInfo" v-for="(items,indexs) in productDetail.orderItemDetailVoList" :key="indexs">
-				<image :src="items.productInfo.diningRoomPackageImage" v-show="productDetail.type==='0'"></image>
-				<image :src="items.productInfo.amusementPackageImage" v-show="productDetail.type==='1'"></image>
-				<image :src="items.productInfo.hotelTypeImage" v-show="productDetail.type==='2'"></image>
-				<image :src="items.productInfo.productImage" v-show="productDetail.type==='3'"></image>
+				<image :src="items.productInfo.productImage"></image>
 				<view class="infoR">
-					<view class="infoName" v-show="productDetail.type==='0'">{{items.productInfo.diningRoomPackageName}}
-					</view>
-					<view class="infoName" v-show="productDetail.type==='1'">{{items.productInfo.amusementPackageName}}
-					</view>
-					<view class="infoName" v-show="productDetail.type==='2'">{{items.productInfo.hotelTypeName}}</view>
-					<view class="infoName" v-show="productDetail.type==='3'">{{items.productInfo.productName}}</view>
-					<view v-show="productDetail.type==='3'">
+					<view class="infoName">{{items.productInfo.productName}}</view>
+					<view>
 						<view class="spec">{{items.productInfo.productSpecificationName}}</view>
 					</view>
 					<view class="setMealBox">
@@ -66,57 +58,7 @@
 				<view class="totalPrice"><text>￥</text>{{detail.payPrice}}</view>
 			</view>
 		</view>
-		<!-- 餐厅 -->
-		<view class="orderBox foodBox" v-show="productDetail.type==='0'">
-			<view class="foodTitle">
-				<view>套餐菜品</view>
-			</view>
-			<view class="foodLine" v-for="(item,index) in productDetail.orderItemDetailVoList[0].productInfo.dishList" :key="index">
-				<view class="foodName">
-					<view></view>{{item.dishName}}（{{item.number}}份）
-				</view>
-				<view class="foodPrice"><text>￥</text>{{item.price}}</view>
-			</view>
-		</view>
-		<!-- 酒店显示 -->
-		<view class="orderBox otherBox" v-show="productDetail.type=='2'">
-			<image :src="productDetail.merchantMainImg" class="shopImg"></image>
-			<view class="shopBox">
-				<view>{{productDetail.merchantName}}</view>
-			</view>
-			<image src="../../static/order/navigation.png" class="shopNav" @click="navigationTap()"></image>
-		</view>
-		<view class="orderBox" v-for="(item,index) in productDetail.orderItemDetailVoList"
-			v-show="productDetail.type=='2'">
-			<view class="dateBox">
-				<view class="dateText">{{item.startDate}}({{item.startWeek}})</view>
-				<view class="dateNum">{{item.day}}晚</view>
-				<view class="dateText">{{item.endDate}}({{item.endWeek}})</view>
-			</view>
-			<view class="setMeal">
-				<view class="sName">{{item.productInfo.hotelTypeName}}</view>
-				<view class="setMealBox" style="margin-bottom: 16rpx;">
-					<view class="priceBox">
-						<text class="unit">￥</text>
-						<text class="price">{{item.productInfo.price}}</text>
-						<text class="oldPrice">￥{{item.productInfo.totalPrice}}</text>
-					</view>
-					<view class="sNum">×{{item.productInfo.number}}</view>
-				</view>
 
-				<view class="tag">{{item.productInfo.meal}}·{{item.productInfo.roomType}}</view>
-			</view>
-			<view class="otherInfo">
-				<view>
-					<text>住客姓名</text>
-					<text class="otherText">{{productDetail.otherInfo.name}}</text>
-				</view>
-				<view>
-					<text>联系电话</text>
-					<text class="otherText">{{productDetail.otherInfo.tel}}</text>
-				</view>
-			</view>
-		</view>
 		<view class="orderBox">
 			<view class="titleBox">
 				<view>订单信息</view>
@@ -276,103 +218,19 @@
 				})
 				this.detail = data
 				const productDetail = data.childrenOrder[0]
-				if (productDetail.type === '2') { //酒店处理
-					productDetail.orderItemDetailVoList.forEach(item => {
-						item.day = this.dateDiff(item.productInfo.reserveStartTime, item.productInfo
-							.reserveEndTime)
-						item.startWeek = this.getWeek(item.productInfo.reserveStartTime)
-						item.endWeek = this.getWeek(item.productInfo.reserveEndTime)
-						const startList = item.productInfo.reserveStartTime.split('-')
-						item.startDate = `${startList[1]}月${startList[2]}日`
-						const endList = item.productInfo.reserveEndTime.split('-')
-						item.endDate = `${endList[1]}月${endList[2]}日`
-					})
-				}
+
 				this.productDetail = productDetail
 			},
 			close() {
 				this.show = false
 			},
-			getWeek(date) {
-				let myDate = new Date(date)
-				let wk = myDate.getDay()
-				let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-				let week = weeks[wk]
-				return week
-			},
-			dateDiff(sDate1, sDate2) {
-				var aDate, oDate1, oDate2, iDays;
-				aDate = sDate1.split("-");
-				oDate1 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]); //转换为yyyy-MM-dd格式
-				aDate = sDate2.split("-");
-				oDate2 = new Date(aDate[1] + '/' + aDate[2] + '/' + aDate[0]);
-				iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24); //把相差的毫秒数转换为天数
-				return iDays; //返回相差天数
-			},
+
 
 		}
 	}
 </script>
 
 <style lang="scss">
-	.foodBox{
-		padding-bottom:1rpx!important;
-		.foodTitle {
-			font-weight: 500;
-			color: #333333;
-			font-size: 30rpx;
-			padding-top: 26rpx;
-			margin-bottom: 32rpx;
-		}
-		
-		.foodLine {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-bottom: 32rpx;
-		
-			.foodName {
-				font-weight: 400;
-				color: #333333;
-				font-size: 28rpx;
-				display: flex;
-				align-items: center;
-		
-				view {
-					width: 8rpx;
-					height: 8rpx;
-					background: #08B761;
-					border-radius: 50%;
-					margin-right: 12rpx;
-				}
-			}
-	}
-
-
-		.foodPrice {
-			font-weight: bold;
-			color: #333333;
-			font-size: 34rpx;
-
-			text {
-				font-size: 24rpx;
-			}
-		}
-	}
-
-	.setMealBox {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		.sNum {
-			font-size: 28rpx;
-			color: #333333;
-			position: relative;
-			top: 10rpx;
-		}
-	}
-
 	.priceBox {
 		margin-top: 20rpx;
 
@@ -401,34 +259,6 @@
 		}
 	}
 
-	.otherBox {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 28rpx 30rpx 36rpx 30rpx !important;
-
-		.shopBox {
-			display: flex;
-			flex: 1;
-			flex-direction: column;
-			font-weight: 500;
-			color: #333333;
-			font-size: 30rpx;
-			margin-left: 24rpx;
-			margin-right: 40rpx;
-		}
-
-		.shopImg {
-			width: 108rpx;
-			height: 108rpx;
-			border-radius: 12rpx;
-		}
-
-		.shopNav {
-			width: 42rpx;
-			height: 42rpx;
-		}
-	}
 
 	.otherInfo {
 		padding-bottom: 28rpx;

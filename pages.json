@@ -60,7 +60,7 @@
 				}
 			},
 			{
-				"path": "orderDetail/orderDetail",
+				"path": "orderDetail/specialtyDetail",
 				"style": {
 					"navigationBarTitleText": "订单详情",
 					"enablePullDownRefresh": false
@@ -212,6 +212,30 @@
                     "navigationBarTitleText": "我的攻略",
                     "enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff"
+                }
+                
+                }
+                ,{
+                    "path" : "orderDetail/cwDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                } ,{
+                    "path" : "orderDetail/hotelDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
+                ,{
+                    "path" : "agree/agree",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "自提自取服务协议",
+                    "enablePullDownRefresh": false
                 }
                 
                 }

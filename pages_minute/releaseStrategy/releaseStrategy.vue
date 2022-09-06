@@ -6,7 +6,7 @@
 					border="none" height="40rpx" autoHeight></u--textarea>
 			</u-form-item>
 			<u-form-item label="正文" prop="context">
-				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" autoHeight>
+				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" maxlength="-1" autoHeight>
 				</u--textarea>
 			</u-form-item>
 		</u--form>
@@ -212,6 +212,7 @@
 		font-size: 30rpx;
 		text-align: center;
 		line-height: 94rpx;
+		z-index: 1111;
 	}
 
 	.addressBox {

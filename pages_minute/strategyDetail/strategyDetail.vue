@@ -7,12 +7,13 @@
 				<view class="navTitle">{{detail.wechatUserName}}</view>
 			</view>
 		</uni-nav-bar>
-		<u-swiper :list="detail.introductionImg" height="261" radius="12" :autoplay="false" indicator v-if="detail.introductionImg.length>0"></u-swiper>
+		<u-swiper :list="detail.introductionImg" height="261" radius="12" :autoplay="false" indicator
+			v-if="detail.introductionImg.length>0"></u-swiper>
 		<view class="content">
 			<view class="title">{{detail.title}}</view>
 			<view class="time">{{detail.createTimeStr}}
-				· 
-			已有{{detail.pageViews}}人浏览
+				·
+				已有{{detail.pageViews}}人浏览
 			</view>
 			<view class="text">
 				{{detail.context}}
@@ -23,7 +24,7 @@
 				<view class="tR">
 					<view class="topBox">
 						<view>{{item.userName}}<text class="author" v-if="item.identityFlag=='0'">作者</text></view>
-						<view>{{item.commentDateStr}}</view>
+						<view style="font-size: 26rpx;">{{item.commentDateStr}}</view>
 					</view>
 					<view class="replyText" @click="replyTap(item.id)">{{item.commentDetails}}</view>
 					<view class="replyChild">
@@ -33,12 +34,13 @@
 								<view class="topBox">
 									<view>{{items.userName}}<text class="author"
 											v-if="items.identityFlag=='0'">作者</text></view>
-									<view>{{items.commentDateStr}}</view>
+									<view style="font-size: 26rpx;">{{items.commentDateStr}}</view>
 								</view>
 								<view class="replyText">{{items.commentDetails}}</view>
 							</view>
 						</view>
-						<view class="more" @click="moreTap(item.id,index)" v-if="item.replyCount>0&&item.isMore===false">
+						<view class="more" @click="moreTap(item.id,index)"
+							v-if="item.replyCount>0&&item.isMore===false">
 							<view class="heng"></view>
 							<text>展开更多回复</text>
 							<u-icon name="arrow-down" color="#333333" size="12"></u-icon>
@@ -54,14 +56,15 @@
 			<view class="commentBox">
 				<image src="../../static/strategy/edit.png"></image>
 				<input placeholder="评论一下吧~" @click="isReptrue=false" @focus="focusTap" v-model="temp.commentDetails"
-					@confirm="confirmTap" :focus="isFocus" @blur="blurTap"/>
+					@confirm="confirmTap" :focus="isFocus" @blur="blurTap" />
 			</view>
 			<view class="operateBox" v-if="!isFocus">
 				<!-- <view class="operate">
 					<image src="../../static/strategy/zan.png"></image>5.6w
 				</view> -->
 				<view class="operate" @click="collectTap">
-					<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/my/star.png'"></image>{{detail.keepRaiderCount}}
+					<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/my/star.png'"></image>
+					{{detail.keepRaiderCount}}
 				</view>
 				<view class="operate">
 					<image src="../../static/strategy/comment.png"></image>{{detail.commentReplyCount}}
@@ -83,7 +86,8 @@
 		getReply
 	} from '@/api/strategy.js'
 	import {
-		addFavorite,addFavoriteCancel
+		addFavorite,
+		addFavoriteCancel
 	} from '@/api/product.js'
 	export default {
 		data() {
@@ -137,12 +141,15 @@
 		methods: {
 			// 回复列表
 			async moreTap(id, index) {
-				const replyListQuery=this.list[index].replyListQuery
+				const replyListQuery = this.list[index].replyListQuery
 				const {
 					data
 				} = await getReply(replyListQuery)
-				this.list[index].children=data
-				this.list[index].isMore=true
+				data.forEach(item => {
+					item.commentDateStr = item.commentDateStr.slice(5, 10)
+				})
+				this.list[index].children = data
+				this.list[index].isMore = true
 			},
 			// 回复
 			replyTap(id) {
@@ -153,7 +160,9 @@
 			// 收藏
 			async collectTap() {
 				if (this.detail.isKeep) {
-					await addFavoriteCancel({ids:[this.detail.keepId]})
+					await addFavoriteCancel({
+						ids: [this.detail.keepId]
+					})
 					this.getDetail()
 				} else {
 					await addFavorite({
@@ -176,7 +185,15 @@
 					item.replyListQuery = {
 						id: item.id,
 					}
-					item.isMore=false
+					item.isMore = false
+					item.commentDateStr = item.commentDateStr.slice(5, 10)
+
+					if (item.children) {
+						item.children.forEach(items => {
+							items.commentDateStr = items.commentDateStr.slice(5, 10)
+						})
+					}
+
 				})
 				this.list = this.list.concat(data.records)
 			},
@@ -222,9 +239,9 @@
 			// 评论获取焦点
 			focusTap() {
 				this.isFocus = true
-				this.isReply=false
+				this.isReply = false
 			},
-			blurTap(){
+			blurTap() {
 				this.isFocus = false
 				this.isFocus = false
 			},
