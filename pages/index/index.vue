@@ -62,7 +62,7 @@
 					</view>
 					<view class="cele-c-r">
 						<view class="cele-c-r-t" @click="gotoCele(1)">
-							<image class="cele-c-r-t-image" :src="celebrity && celebrity[1].coverImg"></image>
+							<image v-if="celebrity[1]" class="cele-c-r-t-image" :src="celebrity && celebrity[1].coverImg"></image>
 							<view class="cele-c-tag">TOP2</view>
 							<view class="cele-c-text">
 								<view class="cele-c-text-t">
@@ -73,7 +73,7 @@
 							</view>
 						</view>
 						<view class="cele-c-r-t" @click="gotoCele(2)">
-							<image class="cele-c-r-t-image" :src="celebrity && celebrity[2].coverImg"></image>
+							<image v-if="celebrity[2]" class="cele-c-r-t-image" :src="celebrity && celebrity[2].coverImg"></image>
 							<view class="cele-c-tag">TOP3</view>
 							<view class="cele-c-text">
 								<view class="cele-c-text-t">
@@ -678,9 +678,12 @@
 					align-items: center;
 					
 					&-l{
+						max-width: 80%;
 						font-size: 30rpx;
 						color: #fff;
-						white-space:nowrap;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
 					}
 					
 					image{
