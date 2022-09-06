@@ -95,7 +95,7 @@
 					<view>数量</view>
 					<view class="num">
 						<image src="../../static/order/jian.png" @click="jianTap"></image>
-						<input :value="num" />
+						<view>{{num}}</view>
 						<image src="../../static/order/jia.png" @click="jiaTap"></image>
 					</view>
 				</view>
@@ -261,7 +261,7 @@
 					width: 40rpx;
 				}
 
-				input {
+				view {
 					width: 50rpx;
 					text-align: center;
 					font-weight: 500;
