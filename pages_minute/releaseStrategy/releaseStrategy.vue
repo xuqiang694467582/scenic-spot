@@ -45,7 +45,8 @@
 					address: '',
 					introductionImg: [],
 					latitude: '',
-					longitude: ''
+					longitude: '',
+					attractionId:''
 				},
 				fileList1: [],
 				rules: {
@@ -65,8 +66,9 @@
 				id:'',
 			}
 		},
-		computed: mapState(['uploadUrl', 'token']),
+		computed: mapState(['uploadUrl', 'token','scenicData']),
 		onLoad(options) {
+			this.temp.attractionId=this.scenicData.id
 			if(options.id){
 				this.id=options.id
 				this.getDetail()

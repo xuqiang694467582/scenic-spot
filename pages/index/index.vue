@@ -9,7 +9,7 @@
 				<view slot="left">
 					<view class="scenicBox" @click="toSelectScenic">
 						<image src="../../static/addressB.png" class="address"></image>
-						<view class="scenicName">{{scenicData!=''?scenicData.name:soptData.name}}</view>
+						<view class="scenicName">{{scenicData.name}}</view>
 						<image src="../../static/jtX.png" class="jtImg"></image>
 					</view>
 				</view>
@@ -203,6 +203,42 @@
 					</view>
 				</view>
 			</view>
+			<view class="strategyBox" id="strategy">
+				<view class="sTitle">
+					<view class="title">
+						<view></view>
+						景区攻略
+					</view>
+					<view class="more" @click="strategyMoreTap">
+						<text>更多</text>
+						<u-icon name="arrow-right" size="12"></u-icon>
+					</view>
+				</view>
+				<view class="strategyList" v-for="(item,index) in strategyList" :key="index" @click="toStrategyDetail(item.id)">
+					<view class="sName">{{item.title}}</view>
+					<view class="sContent">{{item.context}}</view>
+					<view class="sImgBox">
+						<image :src="items" v-for="(items,indexs) in item.introductionImg" :key="index" v-show="indexs<4">
+						</image>
+						<view class="imgNum" v-show="item.introductionImg.length>4">{{item.introductionImg.length}}图</view>
+					</view>
+					<view class="botBox">
+						<view class="userBox">
+							<image :src="item.wechatUserAvatar"></image>
+							<view class="userName">{{item.wechatUserName}}</view>
+							<view class="time">{{item.createTimeStr}}</view>
+						</view>
+						<view class="operate">
+							<!-- <view class="operateBox">
+								<image src="../../static/strategy/zan.png"></image>25.6w
+							</view> -->
+							<view class="operateBox">
+								<image src="../../static/strategy/comment.png"></image>{{item.commentReplyCount}}
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -226,6 +262,9 @@
 	import {
 		soptList
 	} from '@/api/parktour.js'
+	import {
+		getRaider
+	} from '@/api/strategy.js'
 	export default {
 		data() {
 			return {
@@ -264,6 +303,9 @@
 					},
 					{
 						name: '休闲娱乐',
+					},
+					{
+						name: '景区攻略',
 					}
 				],
 				diningRoomList: [],
@@ -272,7 +314,7 @@
 				specialtyList: [],
 				bannerList: [],
 				celebrity: [],
-				soptData: ''
+				strategyList: []
 			}
 		},
 		computed: mapState(['token', 'userInfo', 'location', 'scenicData']),
@@ -293,6 +335,43 @@
 		},
 		methods: {
 			...mapMutations(['SET_LOCATION', 'SET_SCENICDATA']),
+			strategyMoreTap(){
+				uni.switchTab({
+					url:'/pages/strategy/strategy'
+				})
+			},
+			toStrategyDetail(id) {
+				if (!this.userInfo.nickname) {
+					uni.showModal({
+						title: '提示',
+						content: '请授权用户信息',
+						success: function(res) {
+							if (res.confirm) {
+								uni.switchTab({
+									url:'/pages/my/my'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					return 
+				}
+				uni.navigateTo({
+					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
+				})
+			},
+			async getStrategyList() {
+				const {
+					data
+				} = await getRaider({
+					page: 1,
+					pageSize: 10,
+					attractionId: this.scenicData.id
+				})
+				this.strategyList = data.records
+			},
+			// 选择景区
 			toSelectScenic() {
 				uni.navigateTo({
 					url: '/pages_minute/selectScenic/selectScenic'
@@ -303,14 +382,14 @@
 				const {
 					data
 				} = await soptList()
-				console.log(this.scenicData,111111111)
-				if (this.scenicData === '') {				
+				if (this.scenicData === '') {
 					this.SET_SCENICDATA(data.records[0])
 				}
 				this.getList()
 				this.getBannerList()
 				this.getNoticebar()
 				this.getCelebrity()
+				this.getStrategyList()
 			},
 			toHotel(id) {
 				if (this.isGetTel() === false) return
@@ -333,14 +412,18 @@
 			async getBannerList() {
 				const {
 					data
-				} = await getBanner({attractionId:this.scenicData.id})
+				} = await getBanner({
+					attractionId: this.scenicData.id
+				})
 				this.bannerList = data
 			},
 			// 获取公告
 			async getNoticebar() {
 				const {
 					data
-				} = await getAnnouncementList({attractionId:this.scenicData.id})
+				} = await getAnnouncementList({
+					attractionId: this.scenicData.id
+				})
 				let newList = [];
 				data.map((val) => {
 					newList.push(val.context)
@@ -351,7 +434,9 @@
 			async getCelebrity() {
 				const {
 					data
-				} = await getCeleList({attractionId:this.scenicData.id})
+				} = await getCeleList({
+					attractionId: this.scenicData.id
+				})
 				this.celebrity = data.slice(0, 3)
 			},
 			// 查看景点
@@ -376,6 +461,8 @@
 					id = '#hotelBox'
 				} else if (e.index === 2) {
 					id = '#amusementBox'
+				}else if(e.index === 3){
+					id = '#strategy'
 				}
 				uni.createSelectorQuery()
 					.select(".container") //对应外层节点
@@ -397,7 +484,7 @@
 					// ...this.location,
 					page: 1,
 					pageSize: 4,
-					attractionId:this.scenicData.id
+					attractionId: this.scenicData.id
 				}
 				getDiningRoom(params).then(res => {
 					this.diningRoomList = res.data.records
@@ -552,6 +639,163 @@
 </script>
 
 <style lang="scss">
+	.strategyBox {
+		width: 100%;
+		background: #fff;
+		border-radius: 24rpx;
+		padding: 32rpx 24rpx;
+		box-sizing: border-box;
+
+		.strategyList {
+			margin-top: 24rpx;
+			padding-bottom: 24rpx;
+			border-bottom: 1px solid #F4F4F4;
+
+			.botBox {
+				display: flex;
+				align-items: center;
+				margin-top: 30rpx;
+				justify-content: space-between;
+
+				.operate {
+					display: flex;
+					align-items: center;
+					font-weight: 400;
+					color: #999999;
+					font-size: 28rpx;
+
+					.operateBox {
+						display: flex;
+						align-items: center;
+						margin-left: 32rpx;
+					}
+
+					image {
+						width: 36rpx;
+						height: 36rpx;
+						margin-right: 8rpx;
+					}
+				}
+
+				.userBox {
+					display: flex;
+					align-items: center;
+
+					.time {
+						font-weight: 400;
+						color: #999999;
+						font-size: 26rpx;
+						margin-left: 16rpx;
+					}
+
+					.userName {
+						font-weight: 500;
+						color: #333333;
+						font-size: 26rpx;
+						margin-left: 12rpx;
+						max-width: 200rpx;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: -webkit-box;
+						-webkit-line-clamp:1;
+						-webkit-box-orient: vertical;
+					}
+
+					image {
+						width: 38rpx;
+						height: 38rpx;
+						border-radius: 50%;
+					}
+				}
+			}
+
+			.sImgBox {
+				display: flex;
+				margin-top: 24rpx;
+				position: relative;
+
+				image {
+					width: 164rpx;
+					height: 164rpx;
+					border-radius: 12rpx;
+					margin-right: 20rpx;
+				}
+
+				.imgNum {
+					width: 48rpx;
+					height: 38rpx;
+					background: rgba(0, 0, 0, 0.6);
+					border-radius: 8rpx;
+					font-weight: 400;
+					color: #FFFFFF;
+					font-size: 24rpx;
+					right: 8rpx;
+					bottom: 8rpx;
+					position: absolute;
+					text-align: center;
+					line-height: 38rpx;
+				}
+			}
+
+			.sContent {
+				margin-top: 16rpx;
+				font-weight: 400;
+				color: #333333;
+				font-size: 26rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+
+			.sName {
+				font-weight: 500;
+				color: #333333;
+				font-size: 32rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+		}
+
+		.sTitle {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 16rpx;
+
+			.more {
+				font-weight: 400;
+				color: #999999;
+				font-size: 26rpx;
+				display: flex;
+				align-items: center;
+
+				text {
+					margin-right: 10rpx;
+				}
+			}
+
+			.title {
+				display: flex;
+				align-items: center;
+				font-weight: 500;
+				color: #333333;
+				font-size: 32rpx;
+
+				view {
+					width: 6rpx;
+					height: 30rpx;
+					background: linear-gradient(180deg, #BDE1CF 0%, #03B85F 100%);
+					margin-right: 12rpx;
+				}
+			}
+		}
+	}
+
 	.scenicBox {
 		display: flex;
 		align-items: center;
@@ -655,7 +899,7 @@
 	}
 
 	.swiperBanner {
-		padding:0 20rpx;
+		padding: 0 20rpx;
 		box-sizing: border-box;
 	}
 

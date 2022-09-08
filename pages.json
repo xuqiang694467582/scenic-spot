@@ -262,7 +262,7 @@
 			},
 			{
 				"pagePath": "pages/strategy/strategy",
-				"text": "攻略",
+				"text": "景区攻略",
 				"iconPath": "./static/tabbarIcon/strategy.png",
 				"selectedIconPath": "./static/tabbarIcon/strategyA.png"
 			},

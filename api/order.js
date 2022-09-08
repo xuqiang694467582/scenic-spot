@@ -43,7 +43,7 @@ export const delCart = (data) => {
  * 总订单列表
  */
 export const getOrderList = (params) => {
-  return http.get('/wx/order/parent/list', {
+  return http.get('/wx/order/list', {
     params
   })
 }
@@ -53,7 +53,7 @@ export const getOrderList = (params) => {
 export const addOrderCancel = (data) => {	
 	return http.middleware({
 		method: 'POST', // 必须大写
-		url: '/wx/order/parent/cancel',
+		url: '/wx/order/cancel',
 		data: data,
 	})
 }
@@ -63,15 +63,15 @@ export const addOrderCancel = (data) => {
 export const addOrderPay = (data) => {	
 	return http.middleware({
 		method: 'POST', // 必须大写
-		url: '/wx/order/parent/pay',
+		url: '/wx/order/pay',
 		data: data,
 	})
 }
 /**
- * 总订单列表
+ * 订单详情
  */
 export const getOrderDetail = (params) => {
-  return http.get('/wx/order/parent/detail', {
+  return http.get('/wx/order/detail', {
     params
   })
 }

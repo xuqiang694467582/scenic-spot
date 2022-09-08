@@ -36,17 +36,22 @@
 		getRaiderMyself,
 		delRaider
 	} from '@/api/strategy.js'
+	import {
+		mapState
+	} from 'vuex'
 	export default {
 		data() {
 			return {
 				listQuery: {
 					page: 1,
 					pageSize: 10,
+					attractionId:''
 				},
 				list: [],
 			}
 		},
 		onShow() {
+			this.listQuery.attractionId=this.scenicData.id
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -60,6 +65,7 @@
 			this.listQuery.page++
 			this.getList()
 		},
+		computed: mapState(['scenicData']),
 		methods: {
 			editTap(id) {
 				uni.navigateTo({
