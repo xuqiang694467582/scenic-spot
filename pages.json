@@ -239,6 +239,16 @@
                 }
                 
                 }
+                ,{
+                    "path" : "selectScenic/selectScenic",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "选择景区",
+                    "enablePullDownRefresh": true,
+					"navigationBarBackgroundColor": "#ffffff"
+                }
+                
+                }
             ]
 	}],
 	// 底部导航栏

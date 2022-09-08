@@ -7,6 +7,15 @@
 			<!-- 导航栏 -->
 			<uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
 				<view slot="left">
+					<view class="scenicBox" @click="toSelectScenic">
+						<image src="../../static/addressB.png" class="address"></image>
+						<view class="scenicName">{{scenicData!=''?scenicData.name:soptData.name}}</view>
+						<image src="../../static/jtX.png" class="jtImg"></image>
+					</view>
+				</view>
+			</uni-nav-bar>
+			<!-- <uni-nav-bar :statusBar="true" :border="false" leftWidth="530rpx" backgroundColor="transparent">
+				<view slot="left">
 					<view class="top-content">
 						<u-search v-model="keyword" :showAction="false" placeholder="搜索商家名称" @search="searchTap">
 						</u-search>
@@ -17,7 +26,17 @@
 						</button>
 					</view>
 				</view>
-			</uni-nav-bar>
+			</uni-nav-bar> -->
+			<view class="top-content">
+				<u-search v-model="keyword" :showAction="false" placeholder="搜索商家名称" height="30" @search="searchTap"
+					bgColor="#ffffff">
+				</u-search>
+				<button open-type='contact' class="kfBox">
+					<view class="top-content-icon">
+						<image src="@/static/index/cust.png"></image>
+					</view>
+				</button>
+			</view>
 			<!-- 滚动通知 -->
 			<view class="notice">
 				<u-notice-bar bgColor="transparent" color="#E4E4E4" :text="text"></u-notice-bar>
@@ -45,7 +64,9 @@
 			<!-- 网红景点 -->
 			<view class="cele" v-if="celebrity.length !== 0">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title"> <view class="titleSu"></view>景点网红打卡榜</view>
+					<view class="food-title">
+						<view class="titleSu"></view>景点网红打卡榜
+					</view>
 					<!-- <view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">查看榜单<u-icon name="arrow-right" size="12"></u-icon></view> -->
 				</view>
 				<view class="cele-c">
@@ -62,7 +83,8 @@
 					</view>
 					<view class="cele-c-r">
 						<view class="cele-c-r-t" @click="gotoCele(1)">
-							<image v-if="celebrity[1]" class="cele-c-r-t-image" :src="celebrity && celebrity[1].coverImg"></image>
+							<image v-if="celebrity[1]" class="cele-c-r-t-image"
+								:src="celebrity && celebrity[1].coverImg"></image>
 							<view class="cele-c-tag">TOP2</view>
 							<view class="cele-c-text">
 								<view class="cele-c-text-t">
@@ -73,7 +95,8 @@
 							</view>
 						</view>
 						<view class="cele-c-r-t" @click="gotoCele(2)">
-							<image v-if="celebrity[2]" class="cele-c-r-t-image" :src="celebrity && celebrity[2].coverImg"></image>
+							<image v-if="celebrity[2]" class="cele-c-r-t-image"
+								:src="celebrity && celebrity[2].coverImg"></image>
 							<view class="cele-c-tag">TOP3</view>
 							<view class="cele-c-text">
 								<view class="cele-c-text-t">
@@ -88,7 +111,9 @@
 			</view>
 			<!-- 园区特产 -->
 			<view class="specialty">
-				<view class="specialty-title"><view class="titleSu"></view>园区特产</view>
+				<view class="specialty-title">
+					<view class="titleSu"></view>园区特产
+				</view>
 				<u-scroll-list indicatorActiveColor="#A8A1A1" indicatorColor="#ABABAB">
 					<view class="specialty-list">
 						<view class="specialty-list-con" v-for="(item,index) in specialtyList" :key="index"
@@ -97,7 +122,8 @@
 							<view class="specialty-list-con-text">{{item.name}}</view>
 							<view class="specialty-list-con-price">
 								<text style="color: #333;font-size: 30rpx;">￥{{item.price}}</text>
-								<text style="color: #999;font-size: 26rpx;text-decoration: line-through;">￥{{item.originalPrice}}</text>
+								<text
+									style="color: #999;font-size: 26rpx;text-decoration: line-through;">￥{{item.originalPrice}}</text>
 							</view>
 						</view>
 					</view>
@@ -112,11 +138,16 @@
 			<!-- 特色餐饮 -->
 			<view class="food" id="foodBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title"> <view class="titleSu"></view>特色餐厅</view>
-					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
+					<view class="food-title">
+						<view class="titleSu"></view>特色餐厅
+					</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;"
+						@click="toProductList(0)">更多<u-icon name="arrow-right" size="12"></u-icon>
+					</view>
 				</view>
 				<view class="food-block">
-					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index" @click="toFood(item.id)">
+					<view class="food-block-l" v-for="(item,index) in diningRoomList" :key="index"
+						@click="toFood(item.id)">
 						<image :src="item.coverImg"></image>
 						<view class="shopName">{{item.name}}</view>
 						<!-- <u-icon name="home" :label="item.name"></u-icon> -->
@@ -130,8 +161,12 @@
 			<!-- 旅游住宿 -->
 			<view class="food" id="hotelBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title"> <view class="titleSu"></view>旅游住宿</view>
-					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(1)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
+					<view class="food-title">
+						<view class="titleSu"></view>旅游住宿
+					</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;"
+						@click="toProductList(1)">更多<u-icon name="arrow-right" size="12"></u-icon>
+					</view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in hotelList" :key="index" @click="toHotel(item.id)">
@@ -148,8 +183,12 @@
 			<!-- 休闲娱乐 -->
 			<view class="food" id="amusementBox">
 				<view style="display: flex;justify-content: space-between;">
-					<view class="food-title"> <view class="titleSu"></view>休闲娱乐</view>
-					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(2)">更多<u-icon name="arrow-right" size="12"></u-icon></view>
+					<view class="food-title">
+						<view class="titleSu"></view>休闲娱乐
+					</view>
+					<view style="color: #999;font-size: 26rpx;display: flex;align-items: center;"
+						@click="toProductList(2)">更多<u-icon name="arrow-right" size="12"></u-icon>
+					</view>
 				</view>
 				<view class="food-block">
 					<view class="food-block-l" v-for="(item,index) in amusementList" :key="index"
@@ -184,6 +223,9 @@
 	import {
 		getSpecialtyGood
 	} from '@/api/specialty.js'
+	import {
+		soptList
+	} from '@/api/parktour.js'
 	export default {
 		data() {
 			return {
@@ -230,16 +272,16 @@
 				specialtyList: [],
 				bannerList: [],
 				celebrity: [],
+				soptData: ''
 			}
 		},
-		computed: mapState(['token', 'userInfo', 'location']),
+		computed: mapState(['token', 'userInfo', 'location', 'scenicData']),
 		onLoad() {
 			// 登录获取token
 			uni.login({
 				provider: 'weixin',
 				success: async (loginRes) => {
-					this.$store.dispatch('login', loginRes.code).then(() => {
-					})
+					this.$store.dispatch('login', loginRes.code).then(() => {})
 				}
 			});
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45;
@@ -247,20 +289,36 @@
 		onShow() {
 			this.keyword = ''
 			this.getLocation()
-			this.getList()
-			this.getBannerList()
-			this.getNoticebar()
-			this.getCelebrity()
+			this.getSoptList()
 		},
 		methods: {
-			...mapMutations(['SET_LOCATION']),
-			toHotel(id){
+			...mapMutations(['SET_LOCATION', 'SET_SCENICDATA']),
+			toSelectScenic() {
+				uni.navigateTo({
+					url: '/pages_minute/selectScenic/selectScenic'
+				})
+			},
+			// 景区列表
+			async getSoptList() {
+				const {
+					data
+				} = await soptList()
+				console.log(this.scenicData,111111111)
+				if (this.scenicData === '') {				
+					this.SET_SCENICDATA(data.records[0])
+				}
+				this.getList()
+				this.getBannerList()
+				this.getNoticebar()
+				this.getCelebrity()
+			},
+			toHotel(id) {
 				if (this.isGetTel() === false) return
 				uni.navigateTo({
 					url: `/pages_minute/hotelDetail/hotelDetail?id=${id}`
 				})
 			},
-			toFood(id){
+			toFood(id) {
 				if (this.isGetTel() === false) return
 				uni.navigateTo({
 					url: `/pages_minute/diningDetail/diningDetail?id=${id}`
@@ -275,14 +333,14 @@
 			async getBannerList() {
 				const {
 					data
-				} = await getBanner()
+				} = await getBanner({attractionId:this.scenicData.id})
 				this.bannerList = data
 			},
 			// 获取公告
 			async getNoticebar() {
 				const {
 					data
-				} = await getAnnouncementList()
+				} = await getAnnouncementList({attractionId:this.scenicData.id})
 				let newList = [];
 				data.map((val) => {
 					newList.push(val.context)
@@ -293,11 +351,11 @@
 			async getCelebrity() {
 				const {
 					data
-				} = await getCeleList()
-				this.celebrity = data.slice(0,3)
+				} = await getCeleList({attractionId:this.scenicData.id})
+				this.celebrity = data.slice(0, 3)
 			},
 			// 查看景点
-			gotoCele(index){
+			gotoCele(index) {
 				uni.navigateTo({
 					url: `/pages_minute/parktourDetail/parktourDetail?id=${this.celebrity[index].id}`
 				})
@@ -336,9 +394,10 @@
 			},
 			getList() {
 				const params = {
-					...this.location,
+					// ...this.location,
 					page: 1,
-					pageSize: 4
+					pageSize: 4,
+					attractionId:this.scenicData.id
 				}
 				getDiningRoom(params).then(res => {
 					this.diningRoomList = res.data.records
@@ -493,26 +552,59 @@
 </script>
 
 <style lang="scss">
+	.scenicBox {
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+
+		.address {
+			width: 28rpx;
+			height: 28rpx;
+		}
+
+		.scenicName {
+			font-weight: 500;
+			color: #FFFFFF;
+			font-size: 32rpx;
+			margin-left: 8rpx;
+			max-width: 400rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+		}
+
+		.jtImg {
+			width: 16rpx;
+			height: 16rpx;
+			margin-left: 16rpx;
+		}
+	}
+
 	page {
 		background-color: #f4f4f4;
 	}
-	.shopName{
+
+	.shopName {
 		font-weight: 500;
 		color: #333333;
 		margin-top: 14rpx;
 		font-size: 32rpx;
-		overflow: hidden; 
-		text-overflow: ellipsis; 
-		display: -webkit-box;	
-		-webkit-line-clamp: 2; 
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 	}
-	.titleSu{
+
+	.titleSu {
 		width: 6rpx;
 		height: 30rpx;
 		background: linear-gradient(180deg, #BDE1CF 0%, #03B85F 100%);
 		margin-right: 12rpx;
 	}
+
 	.kfBox {
 		margin: 0;
 		padding: 0;
@@ -532,7 +624,7 @@
 
 	.back {
 		width: 100%;
-		height: 568rpx;
+		height: 672rpx;
 		background: linear-gradient(180deg, rgba(3, 184, 95, 1) 75%, rgba(255, 255, 255, 1) 95%);
 		position: absolute;
 	}
@@ -540,6 +632,11 @@
 	.top-content {
 		display: flex;
 		align-items: center;
+		position: relative;
+		z-index: 111;
+		padding: 0 22rpx;
+		box-sizing: border-box;
+		margin-top: 16rpx;
 
 		&-icon {
 			margin-left: 20rpx;
@@ -558,7 +655,8 @@
 	}
 
 	.swiperBanner {
-		padding: 20rpx;
+		padding:0 20rpx;
+		box-sizing: border-box;
 	}
 
 	.menu {
@@ -610,6 +708,7 @@
 					flex-direction: column;
 					justify-content: center;
 					align-items: center;
+
 					&__image {
 						width: 76rpx;
 						height: 76rpx;
@@ -629,31 +728,31 @@
 			}
 		}
 	}
-	
-	.cele{
+
+	.cele {
 		padding: 20rpx;
 		background-color: #fff;
 		margin-bottom: 20rpx;
 		border-radius: 0 0 20rpx 20rpx;
-		
-		&-c{
+
+		&-c {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			
-			&-l{
+
+			&-l {
 				width: 48%;
 				height: 380rpx;
 				position: relative;
-				
-				image{
+
+				image {
 					width: 100%;
 					height: 100%;
 					border-radius: 24rpx;
 				}
 			}
-			
-			&-tag{
+
+			&-tag {
 				width: 110rpx;
 				height: 60rpx;
 				display: flex;
@@ -666,18 +765,18 @@
 				top: 0;
 				border-radius: 24rpx 0 30rpx 0;
 			}
-			
-			&-text{
+
+			&-text {
 				position: absolute;
 				bottom: 25rpx;
 				left: 25rpx;
 				right: 0;
-				
-				&-t{
+
+				&-t {
 					display: flex;
 					align-items: center;
-					
-					&-l{
+
+					&-l {
 						max-width: 80%;
 						font-size: 30rpx;
 						color: #fff;
@@ -685,33 +784,33 @@
 						overflow: hidden;
 						text-overflow: ellipsis;
 					}
-					
-					image{
+
+					image {
 						width: 28rpx;
 						height: 28rpx;
 						margin-left: 10rpx;
 					}
 				}
-				
-				&-b{
+
+				&-b {
 					color: #C0C0C0;
 					font-size: 24rpx;
 				}
 			}
-			
-			&-r{
+
+			&-r {
 				width: 48%;
 				height: 380rpx;
 				display: flex;
 				flex-direction: column;
 				justify-content: space-between;
-				
-				&-t{
+
+				&-t {
 					width: 100%;
 					height: 180rpx;
 					position: relative;
-					
-					&-image{
+
+					&-image {
 						width: 100%;
 						height: 100%;
 						border-radius: 24rpx;
@@ -725,7 +824,7 @@
 		padding: 20rpx;
 		background-color: #fff;
 		border-radius: 20rpx;
-		
+
 		&-title {
 			margin-bottom: 20rpx;
 			display: flex;

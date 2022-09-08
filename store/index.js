@@ -15,7 +15,8 @@ const store = new Vuex.Store({
 		location: uni.getStorageSync("location") ? uni.getStorageSync("location") : "", //当前位置
 		wechatUserId:uni.getStorageSync("wechatUserId") ?uni.getStorageSync("wechatUserId") : "",
 		orderData:'',
-		uploadUrl: 'https://qianfengtestapi.huiyunbh.com/sys/storage/upload'
+		uploadUrl: 'https://qianfengtestapi.huiyunbh.com/sys/storage/upload',
+		scenicData:uni.getStorageSync("scenicData") ? uni.getStorageSync("scenicData") : ""//景区信息
 	},
 	mutations: {
 		SET_USERINFO(state, data) {
@@ -37,6 +38,10 @@ const store = new Vuex.Store({
 		SET_ORDERDATA(state, data){
 			state.orderData = data
 		},
+		SET_SCENICDATA(state, data){
+			state.scenicData = data
+			uni.setStorageSync("scenicData", state.scenicData)
+		}
 	},
 	actions: {
 		login({
