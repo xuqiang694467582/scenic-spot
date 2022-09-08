@@ -84,12 +84,13 @@
 					longitude: '',
 					page: 1,
 					pageSize: 10,
-					name: ''
+					name: '',
+					attractionId:''
 				},
 				list: []
 			}
 		},
-		computed: mapState(['location']),
+		computed: mapState(['location','scenicData']),
 		onLoad(options) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.curt = options.type ? options.type*1 : 0
@@ -97,7 +98,8 @@
 					...this.location,
 					page: 1,
 					pageSize: 10,
-					name: options.keyword ? options.keyword : ''
+					name: options.keyword ? options.keyword : '',
+					attractionId:this.scenicData.id
 				},
 				this.getList()
 		},

@@ -22,6 +22,9 @@
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
 	import {getSpecialtyGood} from '@/api/specialty.js'
 	export default {
 		data() {
@@ -29,12 +32,15 @@
 				listQuery:{
 					name:'',
 					page :1,
-					pageSize:10
+					pageSize:10,
+					attractionId:''
 				},
 				list:[]
 			}
 		},
+		computed: mapState(['scenicData']),
 		onLoad() {
+			this.listQuery.attractionId=this.scenicData.id
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()

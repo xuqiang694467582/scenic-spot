@@ -51,7 +51,8 @@
 
 <script>
 	import {
-		mapMutations
+		mapMutations,
+		mapState
 	} from 'vuex'
 	import {
 		getCartList,
@@ -73,6 +74,7 @@
 			this.getList()
 		},
 		computed: {
+			...mapState(['scenicData']),
 			price() {
 				let price = 0
 				this.list.forEach(item => {
@@ -164,7 +166,7 @@
 			async getList() {
 				const {
 					data
-				} = await getCartList()
+				} = await getCartList({attractionId:this.scenicData.id})
 				if (data.length === 0) {
 					this.list = []
 					return

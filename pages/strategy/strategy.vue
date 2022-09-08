@@ -46,12 +46,13 @@
 				listQuery: {
 					page: 1,
 					pageSize: 10,
+					attractionId:''
 				},
 				list: [],
 			}
 		},
 		onLoad() {
-
+			this.listQuery.attractionId=this.scenicData.id
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
@@ -66,7 +67,15 @@
 			this.listQuery.page++
 			this.getList()
 		},
-		computed: mapState(['userInfo']),
+		computed: mapState(['userInfo','scenicData']),
+		watch: {
+		    scenicData:function(newData, oldData) {
+				this.listQuery.attractionId=this.scenicData.id
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+		    }
+		  },
 		methods: {
 			//校验是否授权用户信息
 			isUser() {
