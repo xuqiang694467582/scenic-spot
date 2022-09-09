@@ -27,15 +27,15 @@
 			</view>
 		</view>
 		<!-- 特产显示 -->
-		<view class="orderBox" :key="index" v-show="productDetail.type!='2'">
+		<view class="orderBox" :key="index" v-show="detail.type!='2'">
 			<view class="titleBox">
-				<view>{{productDetail.merchantName}}</view>
+				<view>{{detail.merchantName}}</view>
 				<view>
 					<image src="../../static/order/navigation.png" @click="navigationTap()"></image>
 					<!-- <image src="../../static/order/tel.png" @click="telTap"></image> -->
 				</view>
 			</view>
-			<view class="listInfo" v-for="(items,indexs) in productDetail.orderItemDetailVoList" :key="indexs">
+			<view class="listInfo" v-for="(items,indexs) in detail.orderItemDetailVoList" :key="indexs">
 				<image :src="items.productInfo.productImage"></image>
 				<view class="infoR">
 					<view class="infoName">{{items.productInfo.productName}}</view>
@@ -64,9 +64,9 @@
 				<view>订单信息</view>
 			</view>
 			<view class="orderInfoBox">
-				<view class="orderInfo" v-if="productDetail.otherInfo.number">
+				<view class="orderInfo" v-if="detail.otherInfo.number">
 					<view>人数：</view>
-					<view>{{productDetail.otherInfo.number}}</view>
+					<view>{{detail.otherInfo.number}}</view>
 				</view>
 				<view class="orderInfo" v-if="detail.status=='1'">
 					<view>支付金额：</view>
@@ -122,7 +122,7 @@
 				show: false,
 				id: '',
 				detail: '',
-				productDetail: ''
+				detail: ''
 			}
 		},
 		onLoad(options) {
@@ -136,7 +136,7 @@
 				const {
 					data
 				} = await addOrderPay({
-					orderSn: this.detail.orderSn
+					id: this.id
 				})
 
 				uni.requestPayment({
@@ -167,7 +167,7 @@
 
 			},
 			navigationTap() {
-				if (!this.productDetail.latitude) {
+				if (!this.detail.latitude) {
 					uni.showToast({
 						title: '暂无地址',
 						icon: 'none'
@@ -175,10 +175,10 @@
 					return
 				}
 				uni.openLocation({
-					latitude: this.productDetail.latitude * 1,
-					longitude: this.productDetail.longitude * 1,
-					name: this.productDetail.merchantName,
-					address: this.productDetail.address,
+					latitude: this.detail.latitude * 1,
+					longitude: this.detail.longitude * 1,
+					name: this.detail.merchantName,
+					address: this.detail.address,
 					success: function() {
 						console.log('success');
 					}
@@ -217,9 +217,7 @@
 					id: this.id
 				})
 				this.detail = data
-				const productDetail = data.childrenOrder[0]
-
-				this.productDetail = productDetail
+			
 			},
 			close() {
 				this.show = false

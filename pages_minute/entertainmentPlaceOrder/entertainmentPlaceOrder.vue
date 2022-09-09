@@ -64,7 +64,7 @@
 			}
 		},
 		computed: {
-			...mapState(['userInfo']),
+			...mapState(['userInfo','scenicData']),
 			price(){
 				return this.detail.price*1*this.num
 			}
@@ -99,6 +99,7 @@
 					},
 					merchantId:this.detail.amusementId,
 					merchantName:this.detail.amusementName,
+					merchantType:0,
 					amusementPackageInfoVo:{
 						name:this.name,
 						number:'',
@@ -111,11 +112,11 @@
 						}
 					}]
 				}]
-				const {data}=await addPlace({orders:params})
+				const {data}=await addPlace({orders:params,attractionId: this.scenicData.id})
 				this.payOrder(data)
 			},
-			async payOrder(orderSn){
-				const {data}=await addOrderPay({orderSn:orderSn})
+			async payOrder(data){
+				
 				uni.requestPayment({
 					provider: 'wxpay',
 					timeStamp: data.orderResult.timeStamp,

@@ -38,8 +38,9 @@
 				</view>
 				<view class="btnBox">
 					<view class="cancel" v-show="item.status==='0'" @click.stop="cancelOrder(item.id)">取消订单</view>
-					<view v-show="item.status==='0'" @click.stop="payTap(item.orderSn)">支付</view>
+					<view v-show="item.status==='0'" @click.stop="payTap(item.id)">支付</view>
 					<view v-show="item.status==='1'">核销码</view>
+					<view class="cancel" v-show="item.status==='1'" @click.stop="refundTap(item.id)">取消订单</view>
 					<!-- <view v-show="item.status==='1'">确认收货</view> -->
 				</view>
 			</view>
@@ -65,7 +66,8 @@
 	import {
 		getOrderList,
 		addOrderCancel,
-		addOrderPay
+		addOrderPay,
+		addRefundOrder
 	} from '@/api/order.js'
 	export default {
 		data() {
@@ -108,13 +110,35 @@
 			this.getList()
 		},
 		methods: {
+			// 申请退款
+			refundTap(id){
+				uni.showModal({
+					title: '提示',
+					content: '确定取消',
+					success: async (res) => {
+						if (res.confirm) {
+							await addRefundOrder({
+								orderId: id
+							})
+							uni.showToast({
+								title: '取消成功'
+							})
+							this.list = []
+							this.listQuery.page = 1
+							this.getList()
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
 			// 支付
-			async payTap(orderSn) {
+			async payTap(id) {
 				const that = this
 				const {
 					data
 				} = await addOrderPay({
-					orderSn: orderSn
+					id: id
 				})
 
 				uni.requestPayment({
