@@ -15,7 +15,7 @@ export const attrList = (params) => {
 }
 // 景区详情
 export const soptDetail = (params) => {
-	return http.get('/wx/attraction/detail', {
+	return http.get('/wx/attraction-point/detail', {
 	  params
 	})
 }
