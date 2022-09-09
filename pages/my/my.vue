@@ -62,7 +62,6 @@
 						<image :src="item.images[0]" class="goodsImg"></image>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.name}}</view>
-							<!-- <view class="goodsTip">11:00-13:00、17:00-21:30</view> -->
 							<view class="goodsP">
 								<view class="priceBox">
 									<text class="unit">￥</text>
@@ -74,7 +73,7 @@
 						</view>
 					</view>
 					<view class="goodsBox" v-else>
-						<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4">
+						<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4"
 							class="goodsImg"></image>
 						<view class="goodsInfo">
 							<view class="goodsP">
