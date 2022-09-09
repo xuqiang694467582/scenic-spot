@@ -13,31 +13,31 @@
 				<view>已核销<text>已对用户该次消费进行核销</text></view>
 			</view>
 		</view>
-		<view class="codeBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
+		<view class="codeBox" v-for="(item,index) in detail.orderItemDetailVoList" :key="index">
 			<image src="../../static/order/detailBg.png" class="bgImg"></image>
 			<view class="codeInfo">
 				<view class="goodsInfo">
-					<image :src="productDetail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage" class="goodsImg"></image>
+					<image :src="detail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage" class="goodsImg"></image>
 					<view class="giR">
-						<view class="gName">{{productDetail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}</view>
+						<view class="gName">{{detail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}</view>
 						<!-- <view class="gInfo">随时退·过期退</view> -->
 						<view class="gPrice"><text>￥</text>{{item.productInfo.price}}</view>
 					</view>
 				</view>
 				<view>
 					<view class="codeText">券码信息</view>
-					<view class="codeNum" :class="detail.status==='2'?'useCode':''">{{productDetail.couponInfo.couponNumber}}</view>
+					<view class="codeNum" :class="detail.status==='2'?'useCode':''">{{detail.couponInfo.couponNumber}}</view>
 				</view>
 			</view>
 		</view>
 		
 		<view class="content">
 			<!-- 餐厅 -->
-			<view class=" foodBox" v-show="productDetail.type==='0'">
+			<view class=" foodBox" v-show="detail.type==='0'">
 				<view class="foodTitle">
 					<view>套餐菜品</view>
 				</view>
-				<view class="foodLine" v-for="(item,index) in productDetail.orderItemDetailVoList[0].productInfo.dishList" :key="index">
+				<view class="foodLine" v-for="(item,index) in detail.orderItemDetailVoList[0].productInfo.dishList" :key="index">
 					<view class="foodName">
 						<view></view>{{item.dishName}}（{{item.number}}份）
 					</view>
@@ -52,7 +52,7 @@
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">数 量：</view>
-					<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
+					<view>{{detail.orderItemDetailVoList[0].productInfo.number}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">订单号：</view>
@@ -60,7 +60,7 @@
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">预留号码：</view>
-					<view>{{productDetail.otherInfo.tel}}</view>
+					<view>{{detail.otherInfo.tel}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">付款时间：</view>
@@ -87,7 +87,7 @@
 		data() {
 			return {
 				detail:'',
-				productDetail:'',
+				detail:'',
 				id:'',
 				lId:'',
 				barHightTop: ''
@@ -133,8 +133,7 @@
 					id: this.id
 				})
 				this.detail = data
-				const productDetail = data.childrenOrder[0]
-				this.productDetail = productDetail
+				
 			},
 		}
 	}

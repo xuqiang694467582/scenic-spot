@@ -15,7 +15,7 @@
 			<view class="btn over" >确认核销</view>
 		</view>
 		<view class="orderBox">
-			<view class="listInfo" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
+			<view class="listInfo" v-for="(item,index) in detail.orderItemDetailVoList" :key="index">
 				<image :src="item.productInfo.productImage"></image>
 				<view class="infoR">
 					<view class="infoName">{{item.productInfo.productName}}</view>
@@ -35,7 +35,7 @@
 
 			<view class="totalPriceBox">
 				<view class="text">合计</view>
-				<view class="totalPrice"><text>￥</text>{{productDetail.payPrice}}</view>
+				<view class="totalPrice"><text>￥</text>{{detail.payPrice}}</view>
 			</view>
 		</view>
 		<view class="orderBox">
@@ -57,11 +57,11 @@
 				</view>
 				<view class="orderInfo">
 					<view>核销码：</view>
-					<view>{{productDetail.couponInfo.couponNumber}}</view>
+					<view>{{detail.couponInfo.couponNumber}}</view>
 				</view>
 				<view class="orderInfo">
 					<view>备注：</view>
-					<view>{{productDetail.otherInfo.remakes}}</view>
+					<view>{{detail.otherInfo.remakes}}</view>
 				</view>
 			</view>
 		</view>
@@ -81,7 +81,7 @@
 		data() {
 			return {
 				detail:'',
-				productDetail:'',
+				detail:'',
 				id:'',
 				lId:'',
 			}
@@ -125,8 +125,7 @@
 					id: this.id
 				})
 				this.detail = data
-				const productDetail = data.childrenOrder[0]
-				this.productDetail = productDetail
+				
 			},
 		}
 	}

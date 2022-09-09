@@ -4,10 +4,10 @@
 			<view class="bgBox">
 				<image src="../../static/order/orderBg.png" class="bgImg"></image>
 				<view class="pointBox">
-					<view class="pTitle">自提点自提</view>
+					<view class="pTitle">商品自提</view>
 					<view class="point">
 						<view>
-							<view class="pText">园区农产品自提点</view>
+							<view class="pText">顾客请前往商店自提</view>
 							<view class="pickUpData">
 								<view class="puDate">
 									<view class="puText">自取时间</view>
@@ -46,26 +46,34 @@
 		</view>
 		<view class="content">
 			<view class="goodsContent">
-				<view class="list" v-for="(item,index) in orderData" :key="index">
-					<view class="listR">
-						<image :src="item.mainImage" class="goodsImg"></image>
-						<view class="infoBox">
-							<view class="name">{{item.name}}</view>
-							<view> <view class="specBox">{{item.specificationName}}</view></view>
-							<view class="priceBox">
-								<view class="price">
-									<text class="pPrice"><text>￥</text>{{item.price}}</text>
-									<text class="oldPrice">￥{{item.originalPrice}}</text>
-								</view>
-								<view class="numBox">
-									×{{item.number}}
-									<!-- <image src="../../static/order/jian.png" ></image>
-									<input value="1" />
-									<image src="../../static/order/jia.png"></image> -->
+				<view class="list" v-for="(items,indexs) in orderData" :key="indexs">
+					<view class="shopBox">
+						<image src="../../static/order/shopIco.png" class="shopIco"></image>
+						<view>{{items.merchantName}}</view>
+						<image src="../../static/jtR.png" class="jt"></image>
+					</view>
+					<view class="gList" v-for="(item,index) in items.details" :key="index">
+						<view class="listR">
+							<image :src="item.mainImage" class="goodsImg"></image>
+							<view class="infoBox">
+								<view class="name">{{item.name}}</view>
+								<view> <view class="specBox">{{item.specificationName}}</view></view>
+								<view class="priceBox">
+									<view class="price">
+										<text class="pPrice"><text>￥</text>{{item.price}}</text>
+										<text class="oldPrice">￥{{item.originalPrice}}</text>
+									</view>
+									<view class="numBox">
+										×{{item.number}}
+										<!-- <image src="../../static/order/jian.png" ></image>
+										<input value="1" />
+										<image src="../../static/order/jia.png"></image> -->
+									</view>
 								</view>
 							</view>
 						</view>
 					</view>
+					
 				</view>
 			</view>
 			<view class="remarkBox">
@@ -104,18 +112,23 @@
 			}
 		},
 		computed: {
-			...mapState(['orderData', 'userInfo']),
+			...mapState(['orderData', 'userInfo','scenicData']),
 			
 			price() {
 				let price = 0
 				this.orderData.forEach(item => {
-					price += item.price * 1 * item.number * 1
+					item.details.forEach(items => {
+						if (items.checked) {
+							price += items.productPrice * 1 * items.number * 1
+						}
+					})
 				})
 				return price
 			}
 		},
 		onLoad(options){
 			this.type=options.type
+			console.log(this.orderData)
 		},
 		onShow() {
 			this.startTime = getDateTime.timeStr('y-m-d h:i:s');
@@ -151,43 +164,66 @@
 					})
 					return
 				}
-				const params = [{
-					type: 3,
-					specialtyGoodInfoVo: {
-						remakes: this.remark,
-						tel: this.phone,
-						time: this.time
-					},
-					merchantId: this.orderData[0].specialtyId,
-					merchantName:  this.orderData[0].specialtyName,
-					orderItems: []
-				}]
+				// const params = [{
+				// 	type: 3,
+				// 	specialtyGoodInfoVo: {
+				// 		remakes: this.remark,
+				// 		tel: this.phone,
+				// 		time: this.time
+				// 	},
+				// 	merchantId: this.orderData[0].specialtyId,
+				// 	merchantName:  this.orderData[0].specialtyName,
+				// 	orderItems: []
+				// }]
+				// const listId=[]
+				// this.orderData.forEach(item => {
+				// 	params[0].orderItems.push({
+				// 		productId: item.id,
+				// 		specialtyGoodDetailInfo: {
+				// 			number: item.number,
+				// 			productSpecificationId:item.specificationId
+				// 		}
+				// 	})
+				// 	listId.push(item.cartId)
+				// })
 				const listId=[]
+				const params=[]
 				this.orderData.forEach(item => {
-					params[0].orderItems.push({
-						productId: item.id,
-						specialtyGoodDetailInfo: {
-							number: item.number,
-							productSpecificationId:item.specificationId
-						}
+					const obj={
+						merchantId:item.merchantId,
+						merchantName:item.merchantName,
+						merchantType:3,
+						type:3,
+						specialtyGoodInfoVo:{
+							remakes: this.remark,
+							tel: this.phone,
+							time: this.time
+						},
+						orderItems:[]
+					}
+					item.details.forEach(items=>{
+						obj.orderItems.push({
+							productId:items.id,
+							specialtyGoodDetailInfo:{
+								number:items.number,
+								productSpecificationId:items.specificationId
+							}
+						})
+						listId.push(items.cartId)
 					})
-					listId.push(item.cartId)
+					params.push(obj)
 				})
 				const {
 					data
 				} = await addPlace({
-					orders: params
+					orders: params,
+					attractionId: this.scenicData.id
 				})
 				this.payOrder(data,listId)
 
 
 			},
-			async payOrder(orderSn,listId) {
-				const {
-					data
-				} = await addOrderPay({
-					orderSn: orderSn
-				})
+			async payOrder(data,listId) {
 				if(this.type==='cart'){
 					await delCart({shoppingCartIds:listId})
 				}
@@ -299,11 +335,36 @@
 		padding: 1rpx 24rpx 54rpx 30rpx;
 		box-sizing: border-box;
 		border-radius: 24rpx;
-
-		.list {
-			margin-top: 54rpx;
+		.shopBox {
 			display: flex;
 			align-items: center;
+			font-weight: 600;
+			color: #333333;
+			font-size: 30rpx;
+			padding-bottom: 28rpx;
+			border-bottom: 1px solid #EBEBEB;
+			margin-bottom: 32rpx;
+		
+			.shopIco {
+				width: 32rpx;
+				height: 32rpx;
+				margin-right: 20rpx;
+			}
+		
+			.jt {
+				width: 30rpx;
+				height: 30rpx;
+				margin-left: 4rpx;
+			}
+		}
+		.gList{
+			display: flex;
+			align-items: center;
+			margin-top: 40rpx;
+		}
+		.list {
+			margin-top: 32rpx;
+			
 
 			.listR {
 				display: flex;

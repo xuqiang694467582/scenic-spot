@@ -25,7 +25,7 @@
 					<view class="">预订成功后30分钟内<text>免费取消</text></view>
 				</view>
 			</view>
-			<view class="modalBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
+			<view class="modalBox" v-for="(item,index) in detail.orderItemDetailVoList" :key="index">
 				<view class="dateBox">
 					<view class="dateText">{{item.startDate}}({{item.startWeek}})</view>
 					<view class="dateNum">{{item.day}}晚</view>
@@ -38,11 +38,11 @@
 				<view class="otherInfo">
 					<view>
 						<text>住客姓名</text>
-						<text class="otherText">{{productDetail.otherInfo.name}}</text>
+						<text class="otherText">{{detail.otherInfo.name}}</text>
 					</view>
 					<view>
 						<text>联系电话</text>
-						<text class="otherText">{{productDetail.otherInfo.tel}}</text>
+						<text class="otherText">{{detail.otherInfo.tel}}</text>
 					</view>
 				</view>
 			</view>
@@ -54,7 +54,7 @@
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">数 量：</view>
-						<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
+						<view>{{detail.orderItemDetailVoList[0].productInfo.number}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">订单号：</view>
@@ -62,7 +62,7 @@
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">预留号码：</view>
-						<view>{{productDetail.otherInfo.tel}}</view>
+						<view>{{detail.otherInfo.tel}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">付款时间：</view>
@@ -89,7 +89,7 @@
 		data() {
 			return {
 				detail:'',
-				productDetail:'',
+				detail:'',
 				id:'',
 				lId:'',
 				barHightTop: ''
@@ -134,9 +134,9 @@
 				} = await getOrderDetail({
 					id: this.id
 				})
-				this.detail = data
-				const productDetail = data.childrenOrder[0]
-				productDetail.orderItemDetailVoList.forEach(item => {
+				
+			
+				data.orderItemDetailVoList.forEach(item => {
 					item.day = this.dateDiff(item.productInfo.reserveStartTime, item.productInfo
 						.reserveEndTime)
 					item.startWeek = this.getWeek(item.productInfo.reserveStartTime)
@@ -146,7 +146,7 @@
 					const endList=item.productInfo.reserveEndTime.split('-')
 					item.endDate=`${endList[1]}月${endList[2]}日`
 				})
-				this.productDetail = productDetail
+				this.detail = data
 			},
 			getWeek(date) {
 				let myDate = new Date(date)

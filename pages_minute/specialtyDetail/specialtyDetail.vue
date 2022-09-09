@@ -110,6 +110,7 @@
 
 <script>
 	import {
+		mapState,
 		mapMutations
 	} from 'vuex'
 	import {getSpecialtyGoodDetail,addCart,getGoodList} from '@/api/specialty.js'
@@ -132,6 +133,7 @@
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight +5
 			this.getDetail()
 		},
+		computed: mapState(['scenicData']),
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
 			// 收藏
@@ -159,7 +161,7 @@
 			},
 			// 加入购物车
 			async addCart(){
-				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id,merchantId:this.detail.specialtyId})
+				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id,merchantId:this.detail.specialtyId,attractionId: this.scenicData.id})
 				uni.showToast({
 					title:'添加成功'
 				})
@@ -192,7 +194,19 @@
 				data.price=this.specList[this.sepcCurt].price
 				data.specificationName=this.specList[this.sepcCurt].name
 				data.specificationId=this.specList[this.sepcCurt].id
-				this.SET_ORDERDATA([data])
+				const list={
+					merchantId:data.specialtyId,
+					merchantName: data.specialtyName,
+					merchantType: 3,
+					type: 3,
+					details: [data]
+				}
+				// const data = this.detail
+				// data.number = this.num
+				// data.price=this.specList[this.sepcCurt].price
+				// data.specificationName=this.specList[this.sepcCurt].name
+				// data.specificationId=this.specList[this.sepcCurt].id
+				this.SET_ORDERDATA([list])
 				uni.navigateTo({
 					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
 				})

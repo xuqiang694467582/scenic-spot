@@ -7,7 +7,7 @@ import {
 export const addPlace = (data) => {	
 	return http.middleware({
 		method: 'POST', // 必须大写
-		url: '/wx/order/parent/place',
+		url: '/wx/order/parent/place-pay',
 		data: data,
 	})
 }
@@ -74,4 +74,14 @@ export const getOrderDetail = (params) => {
   return http.get('/wx/order/detail', {
     params
   })
+}
+/**
+ * 退款申请
+ */
+export const addRefundOrder = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/refund-order/apply',
+		data: data,
+	})
 }

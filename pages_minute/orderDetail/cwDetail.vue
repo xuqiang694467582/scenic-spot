@@ -24,16 +24,16 @@
 				<view>已取消<text>已取消订单，希望再次光顾</text></view>
 			</view>
 			<!-- 待支付显示 -->
-			<view v-show="detail.status==='0'" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index"
+			<view v-show="detail.status==='0'" v-for="(item,index) in detail.orderItemDetailVoList" :key="index"
 				class="payGoodsBox">
 				<view class="pgBox">
 					<view class="goodsInfo">
 						<image
-							:src="productDetail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage"
+							:src="detail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage"
 							class="goodsImg"></image>
 						<view class="giR">
 							<view class="gName">
-								{{productDetail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}
+								{{detail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}
 							</view>
 							<view class="gInfo">随时退</view>
 							<view class="gPrice"><text>￥</text>{{item.productInfo.price}}</view>
@@ -42,17 +42,17 @@
 				</view>
 			</view>
 			<!-- 支付后显示 -->
-			<view class="codeBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index"
+			<view class="codeBox" v-for="(item,index) in detail.orderItemDetailVoList" :key="index"
 				v-show="detail.status!=='0'">
 				<image src="../../static/order/detailBg.png" class="bgImg"></image>
 				<view class="codeInfo">
 					<view class="goodsInfo">
 						<image
-							:src="productDetail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage"
+							:src="detail.type==='1'?item.productInfo.amusementPackageImage:item.productInfo.diningRoomPackageImage"
 							class="goodsImg"></image>
 						<view class="giR">
 							<view class="gName">
-								{{productDetail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}
+								{{detail.type==='1'?item.productInfo.amusementPackageName:item.productInfo.diningRoomPackageName}}
 							</view>
 							<view class="gInfo">随时退</view>
 							<view class="gPrice"><text>￥</text>{{item.productInfo.price}}</view>
@@ -61,7 +61,7 @@
 					<view>
 						<view class="codeText">券码信息</view>
 						<view class="codeNum" >
-							<text :class="detail.status==='2'||detail.status==='3'?'useCode':''">{{productDetail.couponInfo ?productDetail.couponInfo.couponNumber:'暂无'}}</text>
+							<text :class="detail.status==='2'||detail.status==='3'?'useCode':''">{{detail.couponInfo ?detail.couponInfo.couponNumber:'暂无'}}</text>
 							<view class="cancelText" v-if="detail.status==='3'">已取消</view>
 							<view class="cancelText" v-if="detail.status==='2'">已使用</view>
 						</view>
@@ -74,7 +74,7 @@
 				<view class="shopBox">
 					<view>
 						<view class="shopName">
-							<image src="../../static/order/shopIco.png"></image>{{productDetail.merchantName}}
+							<image src="../../static/order/shopIco.png"></image>{{detail.merchantName}}
 						</view>
 					<!-- 	<view class="shopDistance">
 							<image src="../../static/strategy/address.png"></image>距离你1.2km
@@ -83,12 +83,12 @@
 					<image src="../../static/parktour/navigation.png" class="navigation" @click="navigationTap"></image>
 				</view>
 				<!-- 餐厅 -->
-				<view class=" foodBox" v-show="productDetail.type==='0'">
+				<view class=" foodBox" v-show="detail.type==='0'">
 					<view class="foodTitle">
 						<view>套餐菜品</view>
 					</view>
 					<view class="foodLine"
-						v-for="(item,index) in productDetail.orderItemDetailVoList[0].productInfo.dishList"
+						v-for="(item,index) in detail.orderItemDetailVoList[0].productInfo.dishList"
 						:key="index">
 						<view class="foodName">
 							<view></view>{{item.dishName}}（{{item.number}}份）
@@ -104,7 +104,7 @@
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">数 量：</view>
-						<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
+						<view>{{detail.orderItemDetailVoList[0].productInfo.number}}</view>
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">订单号：</view>
@@ -112,7 +112,7 @@
 					</view>
 					<view class="lineBox">
 						<view class="lTitle">预留号码：</view>
-						<view>{{productDetail.otherInfo.tel}}</view>
+						<view>{{detail.otherInfo.tel}}</view>
 					</view>
 					<view class="lineBox" v-if="detail.payTimeStr">
 						<view class="lTitle">付款时间：</view>
@@ -143,7 +143,6 @@
 		data() {
 			return {
 				detail: '',
-				productDetail: '',
 				id: '',
 				lId: '',
 				barHightTop: ''
@@ -171,7 +170,7 @@
 			},
 			// 导航
 			navigationTap() {
-				if (!this.productDetail.latitude) {
+				if (!this.detail.latitude) {
 					uni.showToast({
 						title: '暂无地址',
 						icon: 'none'
@@ -179,10 +178,10 @@
 					return
 				}
 				uni.openLocation({
-					latitude: this.productDetail.latitude * 1,
-					longitude: this.productDetail.longitude * 1,
-					name: this.productDetail.merchantName,
-					address: this.productDetail.address,
+					latitude: this.detail.latitude * 1,
+					longitude: this.detail.longitude * 1,
+					name: this.detail.merchantName,
+					address: this.detail.address,
 					success: function() {
 						console.log('success');
 					}
@@ -224,7 +223,7 @@
 				const {
 					data
 				} = await addOrderPay({
-					orderSn: this.detail.orderSn
+					id: this.id
 				})
 
 				uni.requestPayment({
@@ -259,8 +258,6 @@
 					id: this.id
 				})
 				this.detail = data
-				const productDetail = data.childrenOrder[0]
-				this.productDetail = productDetail
 			},
 		}
 	}

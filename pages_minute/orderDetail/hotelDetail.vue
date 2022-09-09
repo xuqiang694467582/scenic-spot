@@ -35,9 +35,9 @@
 			</view>
 			<view class="modalBox shopBox">
 				<view class="shop">
-					<image :src="productDetail.merchantMainImg" class="shopImg"></image>
+					<image :src="detail.merchantMainImg" class="shopImg"></image>
 					<view class="shopInfo">
-						<view class="shopName" @click="toShop">{{productDetail.merchantName}}
+						<view class="shopName" @click="toShop">{{detail.merchantName}}
 							<u-icon name="arrow-right" color="#333333" size="14"></u-icon>
 						</view>
 						<!-- <view class="shopDistance"><image src="../../static/strategy/address.png"></image>距离你1.2km</view> -->
@@ -45,7 +45,7 @@
 				</view>
 				<image src="../../static/parktour/navigation.png" class="navigation" @click="navigationTap"></image>
 			</view>
-			<view class="modalBox" v-for="(item,index) in productDetail.orderItemDetailVoList" :key="index">
+			<view class="modalBox" v-for="(item,index) in detail.orderItemDetailVoList" :key="index">
 				<view class="dateBox">
 					<view class="dateText">{{item.startDate}}({{item.startWeek}})</view>
 					<view class="dateNum">{{item.day}}晚</view>
@@ -58,11 +58,11 @@
 				<view class="otherInfo">
 					<view>
 						<text>住客姓名</text>
-						<text class="otherText">{{productDetail.otherInfo.name}}</text>
+						<text class="otherText">{{detail.otherInfo.name}}</text>
 					</view>
 					<view>
 						<text>联系电话</text>
-						<text class="otherText">{{productDetail.otherInfo.tel}}</text>
+						<text class="otherText">{{detail.otherInfo.tel}}</text>
 					</view>
 				</view>
 			</view>
@@ -74,7 +74,7 @@
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">数 量：</view>
-					<view>{{productDetail.orderItemDetailVoList[0].productInfo.number}}</view>
+					<view>{{detail.orderItemDetailVoList[0].productInfo.number}}</view>
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">订单号：</view>
@@ -84,7 +84,7 @@
 				</view>
 				<view class="lineBox">
 					<view class="lTitle">预留号码：</view>
-					<view>{{productDetail.otherInfo.tel}}</view>
+					<view>{{detail.otherInfo.tel}}</view>
 				</view>
 				<view class="lineBox" v-if="detail.payTimeStr">
 					<view class="lTitle">付款时间：</view>
@@ -115,7 +115,7 @@
 		data() {
 			return {
 				detail: '',
-				productDetail: '',
+				detail: '',
 				id: '',
 				lId: '',
 				barHightTop: ''
@@ -147,7 +147,7 @@
 				const {
 					data
 				} = await addOrderPay({
-					orderSn: this.detail.orderSn
+					id: this.id
 				})
 
 				uni.requestPayment({
@@ -203,7 +203,7 @@
 			// 跳转商家
 			toShop() {
 				uni.navigateTo({
-					url: `/pages_minute/hotelDetail/hotelDetail?id=${this.productDetail.merchantId}`
+					url: `/pages_minute/hotelDetail/hotelDetail?id=${this.detail.merchantId}`
 				})
 			},
 			backTap() {
@@ -214,7 +214,7 @@
 			},
 			// 导航
 			navigationTap() {
-				if (!this.productDetail.latitude) {
+				if (!this.detail.latitude) {
 					uni.showToast({
 						title: '暂无地址',
 						icon: 'none'
@@ -222,10 +222,10 @@
 					return
 				}
 				uni.openLocation({
-					latitude: this.productDetail.latitude * 1,
-					longitude: this.productDetail.longitude * 1,
-					name: this.productDetail.merchantName,
-					address: this.productDetail.address,
+					latitude: this.detail.latitude * 1,
+					longitude: this.detail.longitude * 1,
+					name: this.detail.merchantName,
+					address: this.detail.address,
 					success: function() {
 						console.log('success');
 					}
@@ -237,9 +237,9 @@
 				} = await getOrderDetail({
 					id: this.id
 				})
-				this.detail = data
-				const productDetail = data.childrenOrder[0]
-				productDetail.orderItemDetailVoList.forEach(item => {
+				
+				// const detail = data.childrenOrder[0]
+				data.orderItemDetailVoList.forEach(item => {
 					item.day = this.dateDiff(item.productInfo.reserveStartTime, item.productInfo
 						.reserveEndTime)
 					item.startWeek = this.getWeek(item.productInfo.reserveStartTime)
@@ -249,7 +249,8 @@
 					const endList = item.productInfo.reserveEndTime.split('-')
 					item.endDate = `${endList[1]}月${endList[2]}日`
 				})
-				this.productDetail = productDetail
+				this.detail = data
+				// this.detail = detail
 			},
 			getWeek(date) {
 				let myDate = new Date(date)
