@@ -21,7 +21,7 @@ export const getAnnouncementList = (params) => {
  * 网红景点列表
  */
 export const getCeleList = (params) => {
-  return http.get('/wx/index/internet-celebrity-attractions', {
+  return http.get('/wx/index/internet-celebrity-attraction-point', {
     params
   })
 }

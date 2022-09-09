@@ -57,7 +57,7 @@
 		hotelRecoDetail
 	} from '@/api/parktour.js';
 	import {
-		addPlace,
+		addPlacePay,
 		addOrderPay
 	} from '@/api/order.js';
 	import { mapState } from 'vuex';
@@ -104,7 +104,7 @@
 				time: []
 			}
 		},
-		computed: mapState(['userInfo']),
+		computed: mapState(['userInfo', 'scenicData']),
 		onReady() {
 			// 如果需要兼容微信小程序，并且校验规则中含有方法等，只能通过setRules方法设置规则
 			this.$refs.form.setRules(this.rules)
@@ -154,6 +154,7 @@
 				this.$refs.form.validate().then(async res => {
 					const params = [{
 						type: 2,
+						merchantType: 2,
 						merchantId: this.packData.hotelId,
 						merchantName: this.packData.hotelName,
 						hotelTypeOtherInfo: {
@@ -163,6 +164,7 @@
 						orderItems: [{
 							productId: this.packData.id,
 							itemHotelTypeDetailInfo: {
+								days: this.num,
 								number: this.value,
 								reserveStartTime: this.time[0],
 								reserveEndTime: this.time[1],
@@ -172,7 +174,8 @@
 					try {
 						const {
 							data
-						} = await addPlace({
+						} = await addPlacePay({
+							attractionId: this.scenicData.id,
 							orders: params
 						})
 						this.payOrder(data)
@@ -182,22 +185,22 @@
 				})
 			},
 			async payOrder(orderSn) {
-				const {
-					data
-				} = await addOrderPay({
-					orderSn: orderSn
-				})
+				// const {
+				// 	data
+				// } = await addOrderPay({
+				// 	orderSn: orderSn
+				// })
 				uni.requestPayment({
 					// 时间戳
-					timeStamp: data.orderResult.timeStamp,
+					timeStamp: orderSn.orderResult.timeStamp,
 					// 随机字符串 
-					nonceStr: data.orderResult.nonceStr,
+					nonceStr: orderSn.orderResult.nonceStr,
 					// 统一下单接口返回的 prepay_id 参数值
-					package: data.orderResult.packageValue,
+					package: orderSn.orderResult.packageValue,
 					// 签名算法，应与后台下单时的值一致
-					signType: data.orderResult.signType,
+					signType: orderSn.orderResult.signType,
 					// 签名
-					paySign: data.orderResult.paySign,
+					paySign: orderSn.orderResult.paySign,
 					// 支付成功的回调
 					success(result) {
 						uni.showToast({

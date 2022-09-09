@@ -82,7 +82,7 @@
 						</view>
 					</view>
 					<view class="cele-c-r">
-						<view class="cele-c-r-t" @click="gotoCele(1)">
+						<view v-if="celebrity.length > 2" class="cele-c-r-t" @click="gotoCele(1)">
 							<image v-if="celebrity[1]" class="cele-c-r-t-image"
 								:src="celebrity && celebrity[1].coverImg"></image>
 							<view class="cele-c-tag">TOP2</view>
@@ -94,7 +94,7 @@
 								<!-- <view class="cele-c-text-b">11543人打卡</view> -->
 							</view>
 						</view>
-						<view class="cele-c-r-t" @click="gotoCele(2)">
+						<view v-if="celebrity.length > 3" class="cele-c-r-t" @click="gotoCele(2)">
 							<image v-if="celebrity[2]" class="cele-c-r-t-image"
 								:src="celebrity && celebrity[2].coverImg"></image>
 							<view class="cele-c-tag">TOP3</view>
@@ -435,7 +435,7 @@
 				const {
 					data
 				} = await getCeleList({
-					attractionId: this.scenicData.id
+					attractionId: this.scenicData.id,
 				})
 				this.celebrity = data.slice(0, 3)
 			},

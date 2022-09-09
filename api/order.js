@@ -12,6 +12,16 @@ export const addPlace = (data) => {
 	})
 }
 /**
+ * 下单-支付
+ */
+export const addPlacePay = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/order/parent/place-pay',
+		data: data,
+	})
+}
+/**
  * 购物车列表
  */
 export const getCartList = (params) => {

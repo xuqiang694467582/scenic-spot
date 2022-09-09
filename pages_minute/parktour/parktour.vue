@@ -26,17 +26,23 @@
 		<u-popup :show="show" mode="bottom" :overlay="false" round="12">
 			<view class="cont-list">
 				<scroll-view style="height: 100%;" :scroll-y="true" @scrolltolower="lower">
-					<view class="list" v-for="(item,index1) in list">
-						<view class="list-l"  @click="gotoPage(item)">
+					<!-- 列表 -->
+					<view v-if="list.length !== 0" class="list" v-for="(item,index1) in list">
+						<view class="list-l" @click="gotoPage(item)">
 							<image :src="item.coverImg"></image>
 							<view class="list-l-r">
 								<text>{{ item.name }}</text>
-								<u-icon name="map-fill" :label="'距离你' + item.distanceStr" color="#08B761" size="24rpx" labelSize="24rpx"></u-icon>
+								<u-icon name="map-fill" :label="'距离你' + item.distanceStr" color="#08B761" size="24rpx"
+									labelSize="24rpx"></u-icon>
 							</view>
 						</view>
 						<view class="list-r">
 							<image src="@/static/parktour/navigation.png" @click="getAss(item)"></image>
 						</view>
+					</view>
+					<!-- 空状态 -->
+					<view v-if="list.length === 0" style="height: 100%;display: flex;align-items: center;justify-content: center;">
+						<u-empty mode="list" text="敬请期待..." ></u-empty>
 					</view>
 				</scroll-view>
 			</view>
@@ -81,15 +87,21 @@
 </template>
 
 <script>
-	import { soptList, diningList, hotelList, mentList } from '@/api/parktour.js';
-	import { mapState } from 'vuex';
+	import {
+		attrList,
+		diningList,
+		hotelList,
+		mentList
+	} from '@/api/parktour.js';
+	import {
+		mapState
+	} from 'vuex';
 	export default {
 		data() {
 			return {
 				// 顶部菜单列表
 				menuType: 1,
-				menulist: [
-					{
+				menulist: [{
 						type: 1,
 						imgUrl: '../../static/parktour/tm1.png',
 						imgUrls: '../../static/parktour/tm_1.png',
@@ -121,14 +133,16 @@
 				// 标记点，多个对象可生成多个点
 				markers: [],
 				show: true,
-				listQuery:{
+				listQuery: {
 					page: 1,
-					pageSize: 10
+					pageSize: 10,
+					attractionId: ''
 				},
 			}
 		},
-		computed: mapState(['location']),
+		computed: mapState(['location', 'scenicData']),
 		onLoad() {
+			this.listQuery.attractionId = this.scenicData.id;
 			this.load();
 		},
 		methods: {
@@ -138,12 +152,14 @@
 				this.load()
 			},
 			// 获取列表
-			async load(){
+			async load() {
 				// 清空地图标点
 				this.markers = [];
-				switch(this.menuType){
+				switch (this.menuType) {
 					case 1:
-						const { data } = await soptList({
+						const {
+							data
+						} = await attrList({
 							latitude: this.location.latitude,
 							longitude: this.location.longitude,
 							...this.listQuery
@@ -259,8 +275,8 @@
 					}
 				});
 			},
-			gotoPage(val){
-				switch(this.menuType){
+			gotoPage(val) {
+				switch (this.menuType) {
 					case 1:
 						uni.navigateTo({
 							url: `/pages_minute/parktourDetail/parktourDetail?id=${val.id}`
@@ -282,13 +298,13 @@
 						})
 				}
 			},
-			getAss(val){
+			getAss(val) {
 				uni.openLocation({
 					latitude: val.latitude * 1,
 					longitude: val.longitude * 1,
 					name: val.name,
 					address: val.address,
-					success: function () {
+					success: function() {
 						console.log('success');
 					}
 				});
@@ -381,7 +397,7 @@
 				display: flex;
 				flex-direction: column;
 				justify-content: space-around;
-				
+
 				text {
 					font-size: 30rpx;
 					font-weight: 500;
@@ -389,24 +405,24 @@
 				}
 			}
 		}
-		
-		&-r{
+
+		&-r {
 			image {
 				width: 58rpx;
 				height: 58rpx;
 			}
 		}
 	}
-	
+
 	// .content{
 	// 	// height: 800rpx;
 	// 	padding: 20rpx;
-		
+
 	// 	.content-title{
 	// 		background-color: #fff;
 	// 		border-radius: 24rpx;
 	// 		padding: 20rpx;
-			
+
 	// 		.content-title-one{
 	// 			margin: 10rpx 0;
 	// 			display: flex;
@@ -430,20 +446,20 @@
 	// 		.content-title-tag{
 	// 			display: flex;
 	// 			flex-wrap: wrap;
-				
+
 	// 			.content-title-tag-c{
 	// 				margin-right: 10rpx;
 	// 				margin-bottom: 10rpx;
 	// 			}
 	// 		}
 	// 	}
-		
+
 	// 	.content-image{
 	// 		background-color: #fff;
 	// 		border-radius: 24rpx;
 	// 		padding: 20rpx;
 	// 		margin-top: 20rpx;
-			
+
 	// 		.text{
 	// 			margin-bottom: 20rpx;
 	// 		}
