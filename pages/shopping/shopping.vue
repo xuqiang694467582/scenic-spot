@@ -410,6 +410,7 @@
 				display: flex;
 				flex: 1;
 				margin-left: 22rpx;
+				margin-top: 24rpx;
 
 				.goodsImg {
 					width: 176rpx;

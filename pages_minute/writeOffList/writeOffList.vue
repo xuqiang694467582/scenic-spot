@@ -13,7 +13,7 @@
 				:itemStyle="{width:'25%',height: '42px'}"></u-tabs>
 		</view>
 		<view class="listBox" v-if="list.length>0">
-			<view class="list" @click="toDetail(item.type,item.orderParentId,item.id)" v-for="(item,index) in list"
+			<view class="list" @click="toDetail(item.type,item.id,item.id)" v-for="(item,index) in list"
 				:key="index">
 				<view class="topBox">
 					<view class="codeBox" :style="item.couponStatus==='2'?'color:#999999':''">核销码：<text

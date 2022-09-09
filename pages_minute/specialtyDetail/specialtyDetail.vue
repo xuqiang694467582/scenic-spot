@@ -191,7 +191,7 @@
 			payTap(){
 				const data = this.detail
 				data.number = this.num
-				data.price=this.specList[this.sepcCurt].price
+				data.productPrice=this.specList[this.sepcCurt].price
 				data.specificationName=this.specList[this.sepcCurt].name
 				data.specificationId=this.specList[this.sepcCurt].id
 				const list={
