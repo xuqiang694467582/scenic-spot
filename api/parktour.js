@@ -7,14 +7,20 @@ export const soptList = (params) => {
 	  params
 	})
 }
+// 景区详情
+export const soptDetail = (params) => {
+	return http.get('/wx/attraction/detail', {
+	  params
+	})
+}
 // 景点
 export const attrList = (params) => {
 	return http.get('/wx/attraction-point/list', {
 	  params
 	})
 }
-// 景区详情
-export const soptDetail = (params) => {
+// 景点详情
+export const attrDetail = (params) => {
 	return http.get('/wx/attraction-point/detail', {
 	  params
 	})

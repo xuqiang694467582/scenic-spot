@@ -32,18 +32,16 @@
 				"navigationBarTitleText": "获取手机号",
 				"enablePullDownRefresh": false
 			}
-		}
-	    ,{
-            "path" : "pages/strategy/strategy",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "景区攻略",
-                "enablePullDownRefresh": true,
+		}, {
+			"path": "pages/strategy/strategy",
+			"style": {
+				"navigationBarTitleText": "景区攻略",
+				"enablePullDownRefresh": true,
 				"navigationBarBackgroundColor": "#ffffff"
-            }
-            
-        }
-    ],
+			}
+
+		}
+	],
 	"subPackages": [{
 		"root": "pages_minute",
 		"pages": [{
@@ -165,8 +163,7 @@
 				"style": {
 					"navigationStyle": "custom"
 				}
-			}
-			, {
+			}, {
 				"path": "writeOffDetail/hotelDetail",
 				"style": {
 					"navigationStyle": "custom"
@@ -183,73 +180,66 @@
 					"navigationBarTitleText": "我的收藏",
 					"enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff"
-                }
-                
-                }
-                ,{
-                    "path" : "releaseStrategy/releaseStrategy",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "发布攻略",
-                    "enablePullDownRefresh": false,
+				}
+
+			}, {
+				"path": "releaseStrategy/releaseStrategy",
+				"style": {
+					"navigationBarTitleText": "发布攻略",
+					"enablePullDownRefresh": false,
 					"navigationBarBackgroundColor": "#ffffff"
-                }
-                
-                }
-                ,{
-                    "path" : "strategyDetail/strategyDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationStyle": "custom",
+				}
+
+			}, {
+				"path": "strategyDetail/strategyDetail",
+				"style": {
+					"navigationStyle": "custom",
 					"enablePullDownRefresh": true
-                }
-                
-                }
-                ,{
-                    "path" : "myStrategy/myStrategy",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "我的攻略",
-                    "enablePullDownRefresh": true,
+				}
+
+			}, {
+				"path": "myStrategy/myStrategy",
+				"style": {
+					"navigationBarTitleText": "我的攻略",
+					"enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff"
-                }
-                
-                }
-                ,{
-                    "path" : "orderDetail/cwDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationStyle": "custom"
-                }
-                
-                } ,{
-                    "path" : "orderDetail/hotelDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationStyle": "custom"
-                }
-                
-                }
-                ,{
-                    "path" : "agree/agree",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "自提自取服务协议",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "selectScenic/selectScenic",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "选择景区",
-                    "enablePullDownRefresh": true,
+				}
+
+			}, {
+				"path": "orderDetail/cwDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "orderDetail/hotelDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "agree/agree",
+				"style": {
+					"navigationBarTitleText": "自提自取服务协议",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "selectScenic/selectScenic",
+				"style": {
+					"navigationBarTitleText": "选择景区",
+					"enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff"
-                }
-                
-                }
-            ]
+				}
+
+			}, {
+				"path": "spotDetail/spotDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}
+		]
 	}],
 	// 底部导航栏
 	"tabBar": {

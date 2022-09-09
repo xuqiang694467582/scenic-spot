@@ -44,8 +44,9 @@
 		computed: mapState([ 'location']),
 		methods: {
 			toDetail(id) {
+				console.log(id);
 				uni.redirectTo({
-					url: `/pages_minute/parktourDetail/parktourDetail?id=${id}`
+					url: `/pages_minute/spotDetail/spotDetail?id=${id}`
 				})
 				// switch (this.curt) {
 				// 	case 0:

@@ -33,7 +33,8 @@
 				<scroll-view class="imgBox" scroll-x="true">
 					<image :src="item" v-for="(item,index) in formData.photoExplanation" :key="index"
 						@click="preViewImg(index)"></image>
-					<view class="imgNum" v-show="formData.photoExplanation.length>4">{{formData.photoExplanation.length}}图
+					<view class="imgNum" v-show="formData.photoExplanation.length>4">
+						{{formData.photoExplanation.length}}图
 					</view>
 				</scroll-view>
 			</view>
@@ -45,7 +46,7 @@
 
 <script>
 	import {
-		attrDetail
+		soptDetail
 	} from '@/api/parktour.js';
 	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
@@ -67,7 +68,7 @@
 				try {
 					const {
 						data
-					} = await attrDetail({
+					} = await soptDetail({
 						id: id
 					})
 					this.formData = data;
@@ -122,13 +123,13 @@
 			height: 100%;
 		}
 	}
-	
+
 	.imgBox {
 		width: 100%;
 		display: flex;
 		white-space: nowrap;
 		position: relative;
-	
+
 		image {
 			width: 212rpx;
 			height: 170rpx;
@@ -136,7 +137,7 @@
 			margin-right: 8rpx;
 			display: inline-block;
 		}
-	
+
 		.imgNum {
 			padding: 0 6rpx;
 			height: 38rpx;
