@@ -29,14 +29,23 @@
 					</view>
 				</u-scroll-list>
 			</view>
-			<view class="modalBox">
-				<view class="lineBox" @click="toDetail(0)" v-if="userInfo.isMerchant">
+			<view class="modalBox" v-if="userInfo.isMerchant">
+				<view class="lineBox" @click="scanTap" >
+					<view class="lbL">
+						<image src="../../static/my/smhx.png"></image>
+						<view>扫码核销</view>
+					</view>
+					<u-icon name="arrow-right" size="12"></u-icon>
+				</view>
+				<view class="lineBox" @click="toDetail('sjhx')" >
 					<view class="lbL">
 						<image src="../../static/my/sjhx.png"></image>
 						<view>商家核销</view>
 					</view>
 					<u-icon name="arrow-right" size="12"></u-icon>
 				</view>
+			</view>
+			<view class="modalBox">			
 				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index+1)">
 					<view class="lbL">
 						<image :src="item.img"></image>
@@ -85,7 +94,7 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</view>	
 		</view>
 	</view>
 </template>
@@ -130,12 +139,19 @@
 					],
 				],
 				menuList: [{
-						name: '收藏管理',
+						name: '商家入驻',
+						img: '../../static/my/sjrz.png'
+					},{
+						name: '我的收藏',
 						img: '../../static/my/wdsc.png'
 					},
 					{
 						name: '我的攻略',
 						img: '../../static/my/wdgl.png'
+					},
+					{
+						name: '景区评价',
+						img: '../../static/my/jqpj.png'
 					},
 				],
 				listQuery: {
@@ -162,6 +178,29 @@
 			this.getList()
 		},
 		methods: {
+			// 扫码核销
+			scanTap(){
+				uni.scanCode({
+					success: function (res) {
+						console.log(res)
+						if(res.result){
+							
+						}else{
+							uni.showToast({
+								title:'无效二维码',
+								icon:'none'
+							})
+						}
+						
+					},
+					fail: function (res){
+						uni.showToast({
+							title:'无效二维码',
+							icon:'none'
+						})
+					}
+				});
+			},
 			toOrderDetail(id, type) {
 				switch (type) {
 					case '0':
@@ -198,7 +237,7 @@
 			toDetail(index) {
 				if (this.isGetTel() === false) return
 				switch (index) {
-					case 0:
+					case 'sjhx':
 						uni.navigateTo({
 							url: '/pages_minute/writeOffList/writeOffList'
 						})
