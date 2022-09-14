@@ -101,9 +101,8 @@
 			<view class="codeBox">
 				<image src="../../static/order/codeBg.png" class="codeBg"></image>
 				<view class="codeContent">
-					<view class="title">核销码</view>
-					<view class="code">{{detail.childrenOrder[0].couponInfo.couponNumber}}</view>
-					<view class="tip">凭取货码到自提点取货</view>
+					<view class="code">{{detail.couponInfo.couponNumber}}</view>
+					<image :src="detail.couponInfo.qrCodeUrl" class="ewm"></image>
 				</view>
 			</view>
 		</u-popup>
@@ -326,7 +325,7 @@
 
 	.codeBox {
 		width: 596rpx;
-		height: 390rpx;
+		height: 650rpx;
 
 		position: relative;
 
@@ -345,31 +344,24 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-
-			.tip {
-				margin-top: 26rpx;
-				font-weight: 400;
-				color: #999999;
-				font-size: 24rpx;
+			.ewm{
+				width: 380rpx;
+				height: 380rpx;
+				margin-top: 56rpx;
 			}
-
+			
 			.code {
-				font-size: 72rpx;
+				font-size: 62rpx;
 				font-weight: bold;
 				color: #333333;
-				margin-top: 38rpx;
-			}
-
-			.title {
 				width: 526rpx;
-				height: 136rpx;
+				height: 156rpx;
 				line-height: 156rpx;
 				text-align: center;
-				font-weight: 600;
-				color: #333333;
-				font-size: 40rpx;
 				border-bottom: 1px dashed #ccc;
 			}
+
+			
 		}
 	}
 

@@ -5,10 +5,10 @@
 			<u-swiper :list="[detail.mainImage]" @change="change" @click="click" radius="0" height="375" indicator
 				:autoplay="false"></u-swiper>
 		</view>
-		
+
 		<view class="content" style="border-radius: 0px 0px 24rpx 24rpx;">
 			<view class="name">{{detail.name}}</view>
-			
+
 			<view class="priceBox">
 				<view>
 					<text class="unit">￥</text>
@@ -27,6 +27,16 @@
 				<view class="title">保障</view>
 				<view>不支持7天无理由·品质保证</view>
 			</view>
+		</view>
+		<view class="content shopBox" @click="toShop">
+			<view class="shopL">
+				<image src="../../static/index/menu_4.png"></image>
+				<view>
+					<view>园区一号农产品商店</view>
+					<view class="productNum">共124件商品</view>
+				</view>
+			</view>
+			<view class="toShop">进店逛逛</view>
 		</view>
 		<view class="content">
 			<view class="mTitle">规格信息</view>
@@ -51,7 +61,8 @@
 		</view>
 		<view class="content">
 			<view class="mTitle">商品详情</view>
-			<image :src="item" class="goodsInfo" mode="widthFix" v-for="(item,index) in detail.detailsImg" :key="index"></image>
+			<image :src="item" class="goodsInfo" mode="widthFix" v-for="(item,index) in detail.detailsImg" :key="index">
+			</image>
 		</view>
 		<view class="footerBox">
 			<view class="cartBox" @click="collectTap">
@@ -63,8 +74,8 @@
 				<view>购物车</view>
 			</view>
 			<view class="btnBox" @click="show=true">
-				<view class="addCart" >加入购物车</view>
-				<view class="pay" >立即购买</view>
+				<view class="addCart">加入购物车</view>
+				<view class="pay">立即购买</view>
 			</view>
 		</view>
 		<!-- 加入购物车 -->
@@ -82,15 +93,16 @@
 							</view>
 							<view class="surplus">剩余：{{specList[sepcCurt].stock}}</view>
 						</view>
-						
+
 					</view>
 				</view>
-				 <view class="specTitle">规格</view>
+				<view class="specTitle">规格</view>
 				<view class="specList">
-					<view v-for="(item,index) in specList" :key="index" :class="sepcCurt===index?'active':''" @click="changeSpec(index)">{{item.name}}
+					<view v-for="(item,index) in specList" :key="index" :class="sepcCurt===index?'active':''"
+						@click="changeSpec(index)">{{item.name}}
 					</view>
 				</view>
-				
+
 				<view class="numBox">
 					<view>数量</view>
 					<view class="num">
@@ -113,89 +125,120 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-	import {getSpecialtyGoodDetail,addCart,getGoodList} from '@/api/specialty.js'
-	import {addFavorite,addFavoriteCancel} from '@/api/product.js'
+	import {
+		getSpecialtyGoodDetail,
+		addCart,
+		getGoodList
+	} from '@/api/specialty.js'
+	import {
+		addFavorite,
+		addFavoriteCancel
+	} from '@/api/product.js'
 	export default {
 		data() {
 			return {
 				bannerList: [],
 				show: false,
 				sepcCurt: 0,
-				barHightTop:'',
-				id:'',
-				detail:'',
-				num:1,
-				specList:[]
+				barHightTop: '',
+				id: '',
+				detail: '',
+				num: 1,
+				specList: []
 			}
 		},
 		onLoad(options) {
-			this.id=options.id
-			this.barHightTop = uni.getSystemInfoSync().statusBarHeight +5
+			this.id = options.id
+			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.getDetail()
 		},
 		computed: mapState(['scenicData']),
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
-			// 收藏
-			 async collectTap(){
-				 if(this.detail.isKeep){
-					await addFavoriteCancel({ids:[this.detail.keepId]})
-					this.getDetail()
-				 }else{
-					 await addFavorite({type:0,specialtyGoodKeep:{specialtyGoodId:this.id}})
-					 this.getDetail()
-				 }
-				
-			},
-			// 选择规格
-			changeSpec(index){
-				this.sepcCurt=index
-			},
-			toCart(){
-				uni.switchTab({
-					url:'/pages/shopping/shopping'
+			toShop() {
+				uni.navigateTo({
+					url: '/pages_minute/specialtyShop/specialtyShop'
 				})
 			},
-			close(){
-				this.show=false
+			// 收藏
+			async collectTap() {
+				if (this.detail.isKeep) {
+					await addFavoriteCancel({
+						ids: [this.detail.keepId]
+					})
+					this.getDetail()
+				} else {
+					await addFavorite({
+						type: 0,
+						specialtyGoodKeep: {
+							specialtyGoodId: this.id
+						}
+					})
+					this.getDetail()
+				}
+
+			},
+			// 选择规格
+			changeSpec(index) {
+				this.sepcCurt = index
+			},
+			toCart() {
+				uni.switchTab({
+					url: '/pages/shopping/shopping'
+				})
+			},
+			close() {
+				this.show = false
 			},
 			// 加入购物车
-			async addCart(){
-				await addCart({number:this.num,productId:this.id,specificationId:this.specList[this.sepcCurt].id,merchantId:this.detail.specialtyId,attractionId: this.scenicData.id})
+			async addCart() {
+				await addCart({
+					number: this.num,
+					productId: this.id,
+					specificationId: this.specList[this.sepcCurt].id,
+					merchantId: this.detail.specialtyId,
+					attractionId: this.scenicData.id
+				})
 				uni.showToast({
-					title:'添加成功'
+					title: '添加成功'
 				})
 			},
 			// 数量减
-			jianTap(){
-				if(this.num>1){
+			jianTap() {
+				if (this.num > 1) {
 					this.num--
 				}
-				
+
 			},
 			// 数量加
-			jiaTap(){
+			jiaTap() {
 				this.num++
 			},
-			async getDetail(){
-				const {data}=await getSpecialtyGoodDetail({id:this.id})
-				this.detail=data
-				const list=await getGoodList({specialtyGoodId:this.id})
-				this.specList=list.data
+			async getDetail() {
+				const {
+					data
+				} = await getSpecialtyGoodDetail({
+					id: this.id
+				})
+				this.detail = data
+				const list = await getGoodList({
+					specialtyGoodId: this.id
+				})
+				this.specList = list.data
 			},
-			backTap(){
+			backTap() {
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
 			},
-			payTap(){
+			payTap() {
 				const data = this.detail
 				data.number = this.num
-				data.productPrice=this.specList[this.sepcCurt].price
-				data.specificationName=this.specList[this.sepcCurt].name
-				data.specificationId=this.specList[this.sepcCurt].id
-				const list={
-					merchantId:data.specialtyId,
+				data.productPrice = this.specList[this.sepcCurt].price
+				data.specificationName = this.specList[this.sepcCurt].name
+				data.specificationId = this.specList[this.sepcCurt].id
+				const list = {
+					merchantId: data.specialtyId,
 					merchantName: data.specialtyName,
 					merchantType: 3,
 					type: 3,
@@ -208,7 +251,7 @@
 				// data.specificationId=this.specList[this.sepcCurt].id
 				this.SET_ORDERDATA([list])
 				uni.navigateTo({
-					url:'/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
+					url: '/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
 				})
 			}
 		}
@@ -216,33 +259,77 @@
 </script>
 
 <style lang="scss">
+	.shopBox {
+		display: flex;
+		align-items: center;
+
+		.toShop {
+			width: 140rpx;
+			height: 52rpx;
+			background: #F3982B;
+			border-radius: 100rpx;
+			font-weight: 400;
+			color: #FFFFFF;
+			font-size: 24rpx;
+			text-align: center;
+			line-height: 52rpx;
+		}
+
+		.shopL {
+			display: flex;
+			align-items: center;
+			flex: 1;
+			font-weight: 500;
+			color: #333333;
+			font-size: 30rpx;
+
+			.productNum {
+				margin-top: 20rpx;
+				font-weight: 400;
+				color: #999999;
+				font-size: 26rpx;
+			}
+
+			image {
+				width: 104rpx;
+				height: 104rpx;
+				border-radius: 12rpx;
+				margin-right: 20rpx;
+			}
+		}
+	}
 
 	.banner {
 		width: 100%;
 		position: relative;
-		.backImg{
+
+		.backImg {
 			width: 60rpx;
 			height: 60rpx;
 			position: absolute;
 			left: 28rpx;
 			z-index: 11;
 		}
-		.bannerImg{
+
+		.bannerImg {
 			width: 100%;
 			height: 100%;
 		}
 	}
+
 	.specBox {
 		width: 100%;
 		background: #fff;
 		border-radius: 24rpx 24rpx 0px 0px;
 		padding: 46rpx 42rpx 22rpx 24rpx;
 		box-sizing: border-box;
-		.specBtn{
+
+		.specBtn {
 			display: flex;
 			margin-top: 100rpx;
 			justify-content: space-between;
-			view{
+
+			view {
 				width: 328rpx;
 				height: 80rpx;
 				background: #F3982B;
@@ -253,10 +340,12 @@
 				text-align: center;
 				line-height: 80rpx;
 			}
-			.payTap{
+
+			.payTap {
 				background: rgba(11, 183, 98, 1);
 			}
 		}
+
 		.numBox {
 			display: flex;
 			align-items: center;
@@ -331,18 +420,21 @@
 				flex: 1;
 				flex-direction: column;
 				margin-left: 12rpx;
-				.specInfoBox{
+
+				.specInfoBox {
 					display: flex;
 					align-items: center;
 					justify-content: space-between;
 					margin-top: 30rpx;
 				}
-				.surplus{
+
+				.surplus {
 					font-size: 24rpx;
 					color: #999;
 				}
+
 				.goodsPrice {
-					
+
 
 					.unit {
 						font-size: 38rpx;
@@ -493,7 +585,7 @@
 				margin-right: 58rpx;
 			}
 		}
-		
+
 		.priceBox {
 			display: flex;
 			align-items: center;

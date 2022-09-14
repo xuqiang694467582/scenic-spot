@@ -39,7 +39,7 @@
 				<view class="btnBox">
 					<view class="cancel" v-show="item.status==='0'" @click.stop="cancelOrder(item.id)">取消订单</view>
 					<view v-show="item.status==='0'" @click.stop="payTap(item.id)">支付</view>
-					<view v-show="item.status==='1'">核销码</view>
+					<view v-show="item.status==='1'" @click.stop="codeTap(item)">核销码</view>
 					<view class="cancel" v-show="item.status==='1'" @click.stop="refundTap(item.id)">取消订单</view>
 					<!-- <view v-show="item.status==='1'">确认收货</view> -->
 				</view>
@@ -48,16 +48,15 @@
 		<u-empty mode="order" icon="http://cdn.uviewui.com/uview/empty/order.png" text="暂无订单" v-else>
 		</u-empty>
 		<!-- 取货码 -->
-		<!-- <u-popup :show="show" mode="top"  @close="close"  bgColor="transparent">
-		    <view class="codeBox">
-				<image src="../../static/order/codeBg.png" class="codeBg"></image>
-				<view class="codeContent">
-					<view class="title">取货码</view>
-					<view class="code">0089</view>
-					<view class="tip">凭取货码到自提点取货</view>
-				</view>
-			</view>  
-		</u-popup> -->
+		<u-popup :show="show" mode="center"  @close="show=false"  bgColor="transparent">
+		   <view class="codeBox">
+		   	<image src="../../static/order/codeBg.png" class="codeBg"></image>
+		   	<view class="codeContent">
+		   		<view class="code">{{nowData.couponInfo.couponNumber}}</view>
+		   		<image :src="nowData.couponInfo.qrCodeUrl" class="ewm"></image>
+		   	</view>
+		   </view>
+		</u-popup>
 
 	</view>
 </template>
@@ -91,7 +90,8 @@
 					name: '已取消'
 				}],
 				show: false,
-				curt: 0
+				curt: 0,
+				nowData:''
 			}
 		},
 		onLoad(options) {
@@ -110,6 +110,11 @@
 			this.getList()
 		},
 		methods: {
+			// 查看核销码
+			codeTap(item){
+				this.nowData=item
+				this.show=true
+			},
 			// 申请退款
 			refundTap(id){
 				uni.showModal({
@@ -238,15 +243,15 @@
 <style lang="scss">
 	.codeBox {
 		width: 596rpx;
-		height: 390rpx;
-		margin: 50% auto 0 auto;
+		height: 650rpx;
+	
 		position: relative;
-
+	
 		.codeBg {
 			width: 100%;
 			height: 100%;
 		}
-
+	
 		.codeContent {
 			position: absolute;
 			width: 100%;
@@ -257,34 +262,26 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-
-			.tip {
-				margin-top: 26rpx;
-				font-weight: 400;
-				color: #999999;
-				font-size: 24rpx;
+			.ewm{
+				width: 380rpx;
+				height: 380rpx;
+				margin-top: 56rpx;
 			}
-
+			
 			.code {
-				font-size: 72rpx;
+				font-size: 62rpx;
 				font-weight: bold;
 				color: #333333;
-				margin-top: 38rpx;
-			}
-
-			.title {
 				width: 526rpx;
-				height: 136rpx;
+				height: 156rpx;
 				line-height: 156rpx;
 				text-align: center;
-				font-weight: 600;
-				color: #333333;
-				font-size: 40rpx;
 				border-bottom: 1px dashed #ccc;
 			}
+	
+			
 		}
 	}
-
 	.content {
 		padding: 24rpx;
 		box-sizing: border-box;

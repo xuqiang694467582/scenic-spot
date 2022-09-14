@@ -366,7 +366,7 @@
 					data
 				} = await getRaider({
 					page: 1,
-					pageSize: 10,
+					pageSize: 2,
 					attractionId: this.scenicData.id
 				})
 				this.strategyList = data.records
