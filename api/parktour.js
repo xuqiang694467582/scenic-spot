@@ -25,6 +25,12 @@ export const attrDetail = (params) => {
 	  params
 	})
 }
+// 景点评价列表
+export const attrPointList = (params) => {
+	return http.get('/wx/attraction-point-comment/list', {
+	  params
+	})
+}
 // 餐厅
 export const diningList = (params) => {
 	return http.get('/wx/dining-room/list', {

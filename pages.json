@@ -238,6 +238,26 @@
 					"navigationStyle": "custom"
 				}
 
+			}, {
+				"path": "settled/settled",
+				"style": {
+					"navigationBarTitleText": "商家入驻",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "writeReview/writeReview",
+				"style": {
+					"navigationBarTitleText": "写评价",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "evaluation/evaluation",
+				"style": {
+					"navigationBarTitleText": "全部评价",
+					"enablePullDownRefresh": false
+				}
+
 			}
 		]
 	}],

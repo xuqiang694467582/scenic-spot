@@ -138,6 +138,10 @@
 						name: '我的攻略',
 						img: '../../static/my/wdgl.png'
 					},
+					{
+						name: '商家入驻',
+						img: '../../static/my/sjrz.png'
+					},
 				],
 				listQuery: {
 					page: 1,
@@ -212,6 +216,11 @@
 					case 2:
 						uni.navigateTo({
 							url: '/pages_minute/myStrategy/myStrategy'
+						})
+						break;
+					case 3:
+						uni.navigateTo({
+							url: '/pages_minute/settled/settled'
 						})
 						break;
 				}

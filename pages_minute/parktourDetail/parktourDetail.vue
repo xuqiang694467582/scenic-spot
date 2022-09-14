@@ -29,13 +29,48 @@
 				</u-read-more>
 			</view>
 			<view class="content-image">
-				<view class="text">图片介绍</view>
+				<view class="text"><view></view>图片介绍</view>
 				<scroll-view class="imgBox" scroll-x="true">
 					<image :src="item" v-for="(item,index) in formData.photoExplanation" :key="index"
 						@click="preViewImg(index)"></image>
 					<view class="imgNum" v-show="formData.photoExplanation.length>4">{{formData.photoExplanation.length}}图
 					</view>
 				</scroll-view>
+			</view>
+			<!-- 评论 -->
+			<view class="comment">
+				<view class="comment-title">
+					<view class="comment-title-text"><view></view>图片介绍</view>
+					<view class="comment-title-right" @click="viewEvaluation">
+						<!-- 共254条评价 -->
+						全部评价
+						<u-icon name="arrow-right" size="14"></u-icon>
+					</view>
+				</view>
+				<view class="comment-list" v-for="(item, index1) in pointList" :key="index1">
+					<view class="comment-list-title">
+						<view class="comment-list-title-left">
+							<u-avatar :src="item.userAvatar" size="36"></u-avatar>
+							<view class="comment-list-title-left-text">
+								<text class="comment-list-title-left-text-n">{{ item.userName }}</text>
+								<text class="comment-list-title-left-text-t">{{ item.commentDateStr }}</text>
+							</view>
+						</view>
+						<view class="comment-list-title-right">{{ item.score }}分</view>
+					</view>
+					<view class="comment-list-text">
+						{{ item.commentDetails }}
+					</view>
+					<scroll-view class="imgBox" scroll-x="true">
+						<image :src="item1" v-for="(item1,index2) in item.commentImg" :key="index2"
+							@click="preViewImg(index2)"></image>
+						<view class="imgNum" v-show="item1.commentImg.length>4">{{item1.commentImg.length}}图
+						</view>
+					</scroll-view>
+				</view>
+				<view>
+					<u-button text="我也来写评价~" color="#EBFFF5" icon="edit-pen" iconColor="#08B761" :customStyle="{'border':'1px solid #08B761','color': '#08B761','border-radius':'24rpx'}" @click="editReview"></u-button>
+				</view>
 			</view>
 			<!-- 附近玩乐 -->
 			<NearbyPlay id="nearby" />
@@ -45,7 +80,8 @@
 
 <script>
 	import {
-		attrDetail
+		attrDetail,
+		attrPointList
 	} from '@/api/parktour.js';
 	import NearbyPlay from '@/compontents/NearbyPlay.vue'
 	export default {
@@ -54,13 +90,17 @@
 		},
 		data() {
 			return {
+				id: '',
+				src: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg',
 				barHightTop: '',
 				formData: {},
+				pointList: []
 			}
 		},
 		onLoad(option) {
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.load(option.id)
+			this.id = option.id;
 		},
 		methods: {
 			async load(id) {
@@ -71,7 +111,14 @@
 						id: id
 					})
 					this.formData = data;
+					this.point(id)
 				} catch (e) {}
+			},
+			async point(id) {
+				const { data } = await attrPointList({
+					attractionPointId: id
+				})
+				this.pointList = data.records;
 			},
 			backTap() {
 				uni.navigateBack({
@@ -81,7 +128,7 @@
 			preViewImg(index) {
 				uni.previewImage({
 					current: index,
-					urls: this.formData.photoExplanation
+					urls: this.pointList.commentImg
 				})
 			},
 			getAddress() {
@@ -94,6 +141,18 @@
 						console.log('success');
 					}
 				});
+			},
+			// 查看全部评价
+			viewEvaluation(){
+				uni.navigateTo({
+					url: `/pages_minute/evaluation/evaluation?id=${this.id}`
+				})
+			},
+			// 填写评价
+			editReview(){
+				uni.navigateTo({
+					url: '/pages_minute/writeReview/writeReview'
+				})
 			}
 		}
 	}
@@ -161,7 +220,7 @@
 		.content-title {
 			background-color: #fff;
 			border-radius: 24rpx;
-			padding: 20rpx;
+			padding: 30rpx 32rpx;
 
 			.content-title-one {
 				margin: 30rpx 0;
@@ -206,11 +265,100 @@
 		.content-image {
 			background-color: #fff;
 			border-radius: 24rpx;
-			padding: 20rpx;
+			padding: 30rpx 32rpx;
 			margin: 20rpx 0;
 
 			.text {
 				margin-bottom: 20rpx;
+				display: flex;
+				align-items: center;
+				
+				view{
+					width: 6rpx;
+					height: 30rpx;
+					background: linear-gradient(180deg, #BDE1CF 0%, #03B85F 100%);
+					margin-right:12rpx;
+				}
+			}
+		}
+		
+		.comment{
+			background-color: #fff;
+			border-radius: 24rpx;
+			padding: 30rpx 32rpx;
+			margin: 20rpx 0;
+			
+			&-title{
+				margin-bottom: 20rpx;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				&-text{
+					display: flex;
+					align-items: center;
+					
+					view{
+						width: 6rpx;
+						height: 30rpx;
+						background: linear-gradient(180deg, #BDE1CF 0%, #03B85F 100%);
+						margin-right:12rpx;
+					}
+				}
+				&-right{
+					display: flex;
+					align-items: center;
+					font-size: 28rpx;
+					color: #333;
+					font-size: 500;
+				}
+			}
+			
+			&-list{
+				margin-bottom: 40rpx;
+				&-title{
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					
+					&-left{
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+						
+						&-text{
+							
+							&-n{
+								font-size: 30rpx;
+								font-weight: 600;
+								margin-left: 24rpx;
+								margin-right: 28rpx;
+							}
+							
+							&-t{
+								color: #999;
+								font-size: 28rpx;
+								font-weight: 400;
+							}
+						}
+					}
+					
+					&-right{
+						color: #08B761;
+						font-size: 28rpx;
+						font-weight: bold;
+					}
+				}
+				
+				&-text{
+					margin: 20rpx 0;
+					font-size: 26rpx;
+					color: #333;
+					line-height: 52rpx;
+					// display: -webkit-box;
+					// -webkit-box-orient: vertical;
+					// -webkit-line-clamp: 3;
+					// overflow: hidden;
+				}
 			}
 		}
 	}
