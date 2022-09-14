@@ -134,5 +134,12 @@ export const getDictCode = (params) => {
 	  params
 	})
 }
+// 景区推荐
+export const getAttractionRecommend = (params) => {
+	return http.get('/wx/attraction/recommend', {
+	  params
+	})
+}
+
 
 

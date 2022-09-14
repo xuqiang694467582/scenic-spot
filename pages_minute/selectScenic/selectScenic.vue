@@ -7,7 +7,7 @@ background: '#08B761',width: '132rpx',height: '72rpx',borderRadius: '100rpx',pos
 			</u-search>
 			<view class="title">推荐景区</view>
 			<view class="recommend">
-				<view v-for="(item,index) in 10" :key="index">云南丽江</view>
+				<view v-for="(item,index) in recommendList" :key="index"  @click="select(item)">{{item.name}}</view>
 			</view>
 			<view class="title" style="margin-top: 50rpx;">景区列表</view>
 		</view>
@@ -20,7 +20,7 @@ background: '#08B761',width: '132rpx',height: '72rpx',borderRadius: '100rpx',pos
 		mapMutations
 	} from 'vuex'
 	import {
-		soptList
+		soptList,getAttractionRecommend
 	} from '@/api/parktour.js'
 	export default {
 		data() {
@@ -31,12 +31,14 @@ background: '#08B761',width: '132rpx',height: '72rpx',borderRadius: '100rpx',pos
 					pageSize: 20,
 				},
 				list: [],
+				recommendList:[]
 			}
 		},
 		onShow() {
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
+			this.getRecommend()
 		},
 		onPullDownRefresh() {
 			this.list = []
@@ -49,6 +51,12 @@ background: '#08B761',width: '132rpx',height: '72rpx',borderRadius: '100rpx',pos
 		},
 		methods: {
 			...mapMutations(['SET_SCENICDATA']),
+			 async getRecommend(){
+				const {
+					data
+				} = await getAttractionRecommend()
+				this.recommendList=data
+			},
 			select(item){
 				this.SET_SCENICDATA(item)
 				uni.navigateBack({

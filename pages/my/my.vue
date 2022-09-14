@@ -29,15 +29,24 @@
 					</view>
 				</u-scroll-list>
 			</view>
-			<view class="modalBox">
-				<view class="lineBox" @click="toDetail(0)" v-if="userInfo.isMerchant">
+			<view class="modalBox" v-if="userInfo.isMerchant">
+				<view class="lineBox" @click="scanTap" >
+					<view class="lbL">
+						<image src="../../static/my/smhx.png"></image>
+						<view>扫码核销</view>
+					</view>
+					<u-icon name="arrow-right" size="12"></u-icon>
+				</view>
+				<view class="lineBox" @click="toDetail('sjhx')" >
 					<view class="lbL">
 						<image src="../../static/my/sjhx.png"></image>
 						<view>商家核销</view>
 					</view>
 					<u-icon name="arrow-right" size="12"></u-icon>
 				</view>
-				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index+1)">
+			</view>
+			<view class="modalBox">			
+				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index)">
 					<view class="lbL">
 						<image :src="item.img"></image>
 						<view>{{item.name}}</view>
@@ -62,7 +71,6 @@
 						<image :src="item.images[0]" class="goodsImg"></image>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.name}}</view>
-							<!-- <view class="goodsTip">11:00-13:00、17:00-21:30</view> -->
 							<view class="goodsP">
 								<view class="priceBox">
 									<text class="unit">￥</text>
@@ -74,7 +82,7 @@
 						</view>
 					</view>
 					<view class="goodsBox" v-else>
-						<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4">
+						<image :src="items" v-for="(items,indexs) in item.images" :key="indexs" v-show="indexs<4"
 							class="goodsImg"></image>
 						<view class="goodsInfo">
 							<view class="goodsP">
@@ -86,7 +94,7 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</view>	
 		</view>
 	</view>
 </template>
@@ -101,6 +109,9 @@
 	import {
 		getOrderList
 	} from '@/api/order.js'
+	import {
+		addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
@@ -131,7 +142,10 @@
 					],
 				],
 				menuList: [{
-						name: '收藏管理',
+						name: '商家入驻',
+						img: '../../static/my/sjrz.png'
+					},{
+						name: '我的收藏',
 						img: '../../static/my/wdsc.png'
 					},
 					{
@@ -139,8 +153,8 @@
 						img: '../../static/my/wdgl.png'
 					},
 					{
-						name: '商家入驻',
-						img: '../../static/my/sjrz.png'
+						name: '景区评价',
+						img: '../../static/my/jqpj.png'
 					},
 				],
 				listQuery: {
@@ -167,6 +181,45 @@
 			this.getList()
 		},
 		methods: {
+			// 扫码核销
+			scanTap(){
+				uni.scanCode({
+					success: function (resData) {
+						if(resData.result){
+							uni.showModal({
+								title: '提示',
+								content: '确定核销？',
+								success: async (res) => {
+									if (res.confirm) {
+										await addWriteOffVoucher({
+											id: resData.result
+										})
+										uni.showToast({
+											title: '核销成功'
+										})
+										
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
+							});
+							
+						}else{
+							uni.showToast({
+								title:'无效二维码',
+								icon:'none'
+							})
+						}
+						
+					},
+					fail: function (res){
+						uni.showToast({
+							title:'无效二维码',
+							icon:'none'
+						})
+					}
+				});
+			},
 			toOrderDetail(id, type) {
 				switch (type) {
 					case '0':
@@ -203,7 +256,7 @@
 			toDetail(index) {
 				if (this.isGetTel() === false) return
 				switch (index) {
-					case 0:
+					case 'sjhx':
 						uni.navigateTo({
 							url: '/pages_minute/writeOffList/writeOffList'
 						})

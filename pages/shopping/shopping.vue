@@ -54,7 +54,7 @@
 				<view class="payTap" @click="payTap">去支付({{selectNum}})</view>
 			</view>
 			<view class="botR" v-if="isManage">
-				<!-- <view class="collection">移入收藏</view> -->
+				<view class="collection" @click="collectTap">移入收藏</view>
 				<view class="del" @click="delTap">删除</view>
 			</view>
 		</view>
@@ -72,6 +72,9 @@
 		updateNumber,
 		delCart
 	} from '@/api/order.js'
+	import {
+		addFavorite
+	} from '@/api/product.js'
 	export default {
 		data() {
 			return {
@@ -125,6 +128,33 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
+			// 移入收藏
+			async collectTap() {
+				const list = []			
+				this.list.forEach(item => {
+					item.details.forEach(items => {
+						if (items.checked) {
+							list.push({
+								specialtyGoodKeep: {specialtyGoodId:items.productId},
+								type: 0
+							})
+							
+						}
+					})
+				})
+				if (list.length === 0) {
+					uni.showToast({
+						title: '请选择商品',
+						icon: 'none'
+					})
+					return
+				}
+				await addFavorite({
+					keepInfoList: list
+				})
+				this.delTap()
+
+			},
 			manageChange(type) {
 				this.isManage = type
 			},
@@ -159,9 +189,9 @@
 						})
 						list.push(obj)
 					}
-					
+
 				})
-				
+
 				if (list.length === 0) {
 					uni.showToast({
 						title: '请选择商品',
@@ -410,6 +440,7 @@
 				display: flex;
 				flex: 1;
 				margin-left: 22rpx;
+				margin-top: 24rpx;
 
 				.goodsImg {
 					width: 176rpx;

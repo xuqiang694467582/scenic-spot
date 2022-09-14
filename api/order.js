@@ -95,3 +95,11 @@ export const addRefundOrder = (data) => {
 		data: data,
 	})
 }
+/**
+ * 退款申请详情
+ */
+export const getRefundDetail = (params) => {
+  return http.get('/wx/refund-order/detail', {
+    params
+  })
+}

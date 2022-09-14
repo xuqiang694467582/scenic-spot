@@ -118,9 +118,7 @@
 				let price = 0
 				this.orderData.forEach(item => {
 					item.details.forEach(items => {
-						if (items.checked) {
 							price += items.productPrice * 1 * items.number * 1
-						}
 					})
 				})
 				return price
