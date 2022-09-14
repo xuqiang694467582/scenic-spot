@@ -157,7 +157,7 @@
 			...mapMutations(['SET_ORDERDATA']),
 			toShop() {
 				uni.navigateTo({
-					url: '/pages_minute/specialtyShop/specialtyShop'
+					url: `/pages_minute/specialtyShop/specialtyShop?id=${this.detail.specialtyId}`
 				})
 			},
 			// 收藏
@@ -168,12 +168,13 @@
 					})
 					this.getDetail()
 				} else {
-					await addFavorite({
+					const params=[{
 						type: 0,
 						specialtyGoodKeep: {
 							specialtyGoodId: this.id
 						}
-					})
+					}]
+					await addFavorite({keepInfoList:params})
 					this.getDetail()
 				}
 

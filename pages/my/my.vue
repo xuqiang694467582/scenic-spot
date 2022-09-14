@@ -46,7 +46,7 @@
 				</view>
 			</view>
 			<view class="modalBox">			
-				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index+1)">
+				<view class="lineBox" v-for="(item,index) in menuList" :key="index" @click="toDetail(index)">
 					<view class="lbL">
 						<image :src="item.img"></image>
 						<view>{{item.name}}</view>
@@ -109,6 +109,9 @@
 	import {
 		getOrderList
 	} from '@/api/order.js'
+	import {
+		addWriteOffVoucher
+	} from '@/api/writeOff.js'
 	export default {
 		data() {
 			return {
@@ -181,9 +184,25 @@
 			// 扫码核销
 			scanTap(){
 				uni.scanCode({
-					success: function (res) {
-						console.log(res)
-						if(res.result){
+					success: function (resData) {
+						if(resData.result){
+							uni.showModal({
+								title: '提示',
+								content: '确定核销？',
+								success: async (res) => {
+									if (res.confirm) {
+										await addWriteOffVoucher({
+											id: resData.result
+										})
+										uni.showToast({
+											title: '核销成功'
+										})
+										
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
+							});
 							
 						}else{
 							uni.showToast({

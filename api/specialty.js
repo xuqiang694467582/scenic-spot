@@ -35,3 +35,11 @@ export const getGoodList = (params) => {
     params
   })
 }
+/**
+ * 特产商家详情
+ */
+export const getSpecialtyDtail = (params) => {
+  return http.get('/wx/specialty/detail', {
+    params
+  })
+}

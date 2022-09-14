@@ -39,23 +39,24 @@
 				<view class="btnBox">
 					<view class="cancel" v-show="item.status==='0'" @click.stop="cancelOrder(item.id)">取消订单</view>
 					<view v-show="item.status==='0'" @click.stop="payTap(item.id)">支付</view>
-					<view v-show="item.status==='1'" @click.stop="codeTap(item)">核销码</view>
-					<view class="cancel" v-show="item.status==='1'" @click.stop="refundTap(item.id)">取消订单</view>
-					<!-- <view v-show="item.status==='1'">确认收货</view> -->
+					<view v-show="item.status==='1'&&!item.isRefundApply" @click.stop="codeTap(item)">核销码</view>
+					<view class="cancel" v-show="item.status==='1'&&!item.isRefundApply"
+						@click.stop="refundTap(item.id)">取消订单</view>
+					<view class="cancel refund" v-show="item.isRefundApply" @click="toRefund(item.refundApplyId)">退款进度</view>
 				</view>
 			</view>
 		</view>
 		<u-empty mode="order" icon="http://cdn.uviewui.com/uview/empty/order.png" text="暂无订单" v-else>
 		</u-empty>
 		<!-- 取货码 -->
-		<u-popup :show="show" mode="center"  @close="show=false"  bgColor="transparent">
-		   <view class="codeBox">
-		   	<image src="../../static/order/codeBg.png" class="codeBg"></image>
-		   	<view class="codeContent">
-		   		<view class="code">{{nowData.couponInfo.couponNumber}}</view>
-		   		<image :src="nowData.couponInfo.qrCodeUrl" class="ewm"></image>
-		   	</view>
-		   </view>
+		<u-popup :show="show" mode="center" @close="show=false" bgColor="transparent">
+			<view class="codeBox">
+				<image src="../../static/order/codeBg.png" class="codeBg"></image>
+				<view class="codeContent">
+					<view class="code">{{nowData.couponInfo.couponNumber}}</view>
+					<image :src="nowData.couponInfo.qrCodeUrl" class="ewm"></image>
+		 	</view>
+			</view>
 		</u-popup>
 
 	</view>
@@ -91,7 +92,7 @@
 				}],
 				show: false,
 				curt: 0,
-				nowData:''
+				nowData: ''
 			}
 		},
 		onLoad(options) {
@@ -110,13 +111,18 @@
 			this.getList()
 		},
 		methods: {
+			toRefund(id){
+				uni.navigateTo({
+					url:`/pages_minute/refundDetail/refundDetail?id=${id}`
+				})
+			},
 			// 查看核销码
-			codeTap(item){
-				this.nowData=item
-				this.show=true
+			codeTap(item) {
+				this.nowData = item
+				this.show = true
 			},
 			// 申请退款
-			refundTap(id){
+			refundTap(id) {
 				uni.showModal({
 					title: '提示',
 					content: '确定取消',
@@ -244,14 +250,14 @@
 	.codeBox {
 		width: 596rpx;
 		height: 650rpx;
-	
+
 		position: relative;
-	
+
 		.codeBg {
 			width: 100%;
 			height: 100%;
 		}
-	
+
 		.codeContent {
 			position: absolute;
 			width: 100%;
@@ -262,12 +268,13 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-			.ewm{
+
+			.ewm {
 				width: 380rpx;
 				height: 380rpx;
 				margin-top: 56rpx;
 			}
-			
+
 			.code {
 				font-size: 62rpx;
 				font-weight: bold;
@@ -278,10 +285,11 @@
 				text-align: center;
 				border-bottom: 1px dashed #ccc;
 			}
-	
-			
+
+
 		}
 	}
+
 	.content {
 		padding: 24rpx;
 		box-sizing: border-box;
@@ -308,11 +316,14 @@
 					color: #08B761;
 					margin-left: 16rpx;
 				}
-
 				.cancel {
 					border: 1px solid #999;
 					color: #999999;
 
+				}
+				.refund {
+					border: 1px solid #08B761;
+					color: #08B761;
 				}
 			}
 

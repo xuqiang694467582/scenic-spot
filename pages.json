@@ -247,6 +247,14 @@
                 }
                 
                 }
+                ,{
+                    "path" : "refundDetail/refundDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationStyle": "custom"
+                }
+                
+                }
             ]
 	}],
 	// 底部导航栏

@@ -45,6 +45,8 @@
 		onPullDownRefresh() {
 			if(this.curt==0){
 				this.$refs.product.pullDownRefresh()
+			}else if(this.curt==1){
+				this.$refs.shop.pullDownRefresh()
 			}else{
 				this.$refs.strategy.pullDownRefresh()
 			}
@@ -52,6 +54,8 @@
 		onReachBottom() {
 			if(this.curt==0){
 				this.$refs.product.reachBottom()
+			}else if(this.curt==1){
+				this.$refs.shop.reachBottom()
 			}else{
 				this.$refs.strategy.reachBottom()
 			}

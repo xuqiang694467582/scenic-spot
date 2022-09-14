@@ -2,29 +2,29 @@
 	<view>
 		<view class="topBox">
 			<view class="bgBox"></view>
-			<image src="../../static/index/menu_4.png" class="bgImg" @click="backTap"></image>
+			<image :src="detail.coverImg" class="bgImg" ></image>
 			<view :style="{paddingTop:barHightTop+'px'}" class="shopBox">
 				<view class="searchBox">
-					<image src="../../static/back.png" class="back"></image>
+					<image src="../../static/back.png" class="back" @click="backTap"></image>
 					<view class="search">
-						<u-search placeholder="请搜索商品" v-model="name" bgColor="rgba(255,255,255,0.5)" color="#ffffff"
+						<u-search placeholder="请搜索商品" v-model="listQuery.name" bgColor="rgba(255,255,255,0.5)" color="#ffffff"
 							:showAction="false" searchIconColor="#fff" placeholderColor="#fff" @search="searchTap"></u-search>
 					</view>
 				</view>
 				<view class="shopInfo">
 					<view class="siL">
-						<image src="../../static/index/menu_4.png"></image>
+						<image :src="detail.coverImg"></image>
 						<view>
-							<view class="shopName">园区一号农产品商店</view>
-							<view class="collectNum">已有2.5w人收藏店铺</view>
+							<view class="shopName">{{detail.name}}</view>
+							<view class="collectNum">已有{{detail.specialtyKeepCount}}人收藏店铺</view>
 						</view>
 					</view>
 					<view class="siR">
-						<view>
+						<view @click="telTap">
 							<image src="../../static/tel.png"></image>电话
 						</view>
-						<view>
-							<image src="../../static/my/star.png"></image>收藏
+						<view @click="collectTap">
+							<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/collect.png'"></image>收藏
 						</view>
 					</view>
 				</view>
@@ -49,7 +49,11 @@
 	import {
 		mapState
 	} from 'vuex'
-		import {getSpecialtyGood} from '@/api/specialty.js'
+		import {getSpecialtyGood,getSpecialtyDtail} from '@/api/specialty.js'
+		import {
+			addFavorite,
+			addFavoriteCancel
+		} from '@/api/product.js'
 	export default {
 		data() {
 			return {
@@ -58,18 +62,24 @@
 					name:'',
 					page :1,
 					pageSize:10,
-					attractionId:''
+					attractionId:'',
+					specialtyId:''
 				},
-				list:[]
+				list:[],
+				id:'',
+				detail:''
 			}
 		},
 		computed: mapState(['scenicData']),
-		onLoad() {
+		onLoad(options) {
+			this.id=options.id
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 5
 			this.listQuery.attractionId=this.scenicData.id
+			this.listQuery.specialtyId=this.id
 			this.list = []
 			this.listQuery.page = 1
 			this.getList()
+			this.getDetail()
 		},
 		onPullDownRefresh() {
 			this.list = []
@@ -81,6 +91,34 @@
 			this.getList()
 		},
 		methods: {
+			// 收藏
+			async collectTap() {
+				if (this.detail.isKeep) {
+					await addFavoriteCancel({
+						ids: [this.detail.keepId]
+					})
+					this.getDetail()
+				} else {
+					const params=[{
+						type: 2,
+						specialtyKeep: {
+							specialtyId: this.id
+						}
+					}]
+					await addFavorite({keepInfoList:params})
+					this.getDetail()
+				}
+			
+			},
+			telTap(){
+				uni.makePhoneCall({
+					phoneNumber: this.detail.tel
+				});
+			},
+			async getDetail(){
+				const {data}=await getSpecialtyDtail({id:this.id})
+				this.detail=data
+			},
 			searchTap(){
 				this.list = []
 				this.listQuery.page = 1

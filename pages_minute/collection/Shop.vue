@@ -1,17 +1,63 @@
 <template>
 	<view class="content">
-		<view class="listBox" v-for="(item,index) in 10" :key="index">
-			<image src="../../static/index/menu_4.png"></image>
+		<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.keepSpecialty.specialtyId)">
+			<image :src="item.keepSpecialty.specialtyCoverImage"></image>
 			<view>
-				<view class="shopName">园区一号农产品商店</view>
-				<view class="collectNum">已有2.5w人收藏店铺</view>
+				<view class="shopName">{{item.keepSpecialty.specialtyName}}</view>
+				<view class="collectNum">已有{{item.keepSpecialty.specialtyKeepCount}}人收藏店铺</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		getKeepList
+	} from '@/api/product.js'
+	export default {
+		data() {
+			return {			
+				listQuery: {
+					type: 2,
+					page: 1,
+					pageSize: 10
+				},
+				list: [],	
+			}
+		},
+		created() {
+			this.list = []
+			this.listQuery.page = 1
+			this.getList()
+		},
+		methods: {
+			toDetail(id) {
+				uni.navigateTo({
+					url: `/pages_minute/specialtyShop/specialtyShop?id=${id}`
+				})
+			},
+			pullDownRefresh() {
+				this.list = []
+				this.listQuery.page = 1
+				this.getList()
+			},
+			reachBottom() {
+				this.listQuery.page++
+				this.getList()
+			},
+			async getList() {
+				const {
+					data
+				} = await getKeepList(this.listQuery)
+				uni.stopPullDownRefresh()
+				this.list = this.list.concat(data.records)
+				this.total = data.total
+			},
+		}
+	}
 </script>
+
+
 
 <style scoped lang="scss">
 	.content {
