@@ -16,7 +16,7 @@
 						<image :src="detail.coverImg"></image>
 						<view>
 							<view class="shopName">{{detail.name}}</view>
-							<view class="collectNum">已有{{detail.specialtyKeepCount}}人收藏店铺</view>
+							<view class="collectNum">已有{{detail.specialtyKeepCount?detail.specialtyKeepCount:0}}人收藏店铺</view>
 						</view>
 					</view>
 					<view class="siR">

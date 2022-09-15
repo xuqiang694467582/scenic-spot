@@ -165,12 +165,13 @@
 					})
 					this.getDetail()
 				} else {
-					await addFavorite({
+					const params=[{
 						type: 1,
 						raiderKeep: {
 							raiderId: this.id
 						}
-					})
+					}]
+					await addFavorite({keepInfoList:params})
 					this.getDetail()
 				}
 
