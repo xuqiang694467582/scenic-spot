@@ -62,9 +62,9 @@
 						{{ item.commentDetails }}
 					</view>
 					<scroll-view class="imgBox" scroll-x="true">
-						<image :src="item1" v-for="(item1,index2) in item.commentImg" :key="index2"
-							@click="preViewImg(index2)"></image>
-						<view class="imgNum" v-show="item1.commentImg.length>4">{{item1.commentImg.length}}图
+						<image :src="item2" v-for="(item2,index2) in item.commentImg" :key="index2"
+							@click="preViewImage(index1,index2)"></image>
+						<view class="imgNum" v-show="item2.commentImg.length>4">{{item2.commentImg.length}}图
 						</view>
 					</scroll-view>
 				</view>
@@ -128,7 +128,13 @@
 			preViewImg(index) {
 				uni.previewImage({
 					current: index,
-					urls: this.pointList.commentImg
+					urls: this.formData.photoExplanation
+				})
+			},
+			preViewImage(index1, index2){
+				uni.previewImage({
+					current: index2,
+					urls: this.pointList[index1].commentImg
 				})
 			},
 			getAddress() {
@@ -151,7 +157,7 @@
 			// 填写评价
 			editReview(){
 				uni.navigateTo({
-					url: '/pages_minute/writeReview/writeReview'
+					url: `/pages_minute/writeReview/writeReview?id=${this.id}`
 				})
 			}
 		}

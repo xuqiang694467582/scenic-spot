@@ -3,13 +3,10 @@
 		<view class="comment-list" v-for="(item,index) in list" :key="index">
 			<view class="comment-list-title">
 				<view class="comment-list-title-left">
-					<u-avatar :src="item.userAvatar" size="36"></u-avatar>
-					<view class="comment-list-title-left-text">
-						<text class="comment-list-title-left-text-n">{{ item.userName }}</text>
-						<text class="comment-list-title-left-text-t">{{ item.commentDateStr }}</text>
-					</view>
+					<image src="@/static/parktour/tm_1.png" ></image>
+					<text class="comment-list-title-left-text">{{ item.attractionPointName }}</text>
 				</view>
-				<view class="comment-list-title-right">{{ item.score }}分</view>
+				<view class="comment-list-title-right">{{ item.commentDateStr }}</view>
 			</view>
 			<view class="comment-list-text">
 				{{ item.commentDetails }}
@@ -20,27 +17,38 @@
 				<view class="imgNum" v-show="item1.commentImg.length > 4">{{item1.commentImg.length}}图
 				</view>
 			</scroll-view>
+			<view class="comment-list-bottom">
+				<view class="comment-list-bottom-left">{{ item.isAnonymous === true ? '匿名评价' : '' }}</view>
+				<view class="comment-list-bottom-right">
+					<u-button type="text" icon="trash" iconColor="#666666" text="删除" @click="deletePoint(item.id)"></u-button>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	import {
-		attrPointList
+		attrMySelf,
+		deleteComment
 	} from '@/api/parktour.js';
+	import {
+		mapState,
+	} from 'vuex'
 	export default {
 		data() {
 			return {
 				list: []
 			}
 		},
-		onLoad(option) {
-			this.load(option.id)
+		computed: mapState(['scenicData']),
+		onLoad() {
+			this.load()
 		},
 		methods: {
-			async load(id){
-				const { data } = await attrPointList({
-					attractionPointId: id
+			async load(){
+				const { data } = await attrMySelf({
+					attractionId: this.scenicData.id
 				})
 				this.list = data.records;
 			},
@@ -49,6 +57,14 @@
 					current: index1,
 					urls: this.list[index].commentImg
 				})
+			},
+			// 删除
+			async deletePoint(id){
+				try{
+					await deleteComment(id);
+					this.load();
+					uni.$u.toast('已删除');
+				}catch(e){}
 			}
 		}
 	}
@@ -69,6 +85,8 @@ page{
 		margin-bottom: 20rpx;
 		
 		&-title{
+			border-bottom: 2rpx solid #F7F7F7;
+			padding-bottom: 20rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -78,27 +96,22 @@ page{
 				align-items: center;
 				justify-content: space-between;
 				
+				& image{
+					width: 44rpx;
+					height: 44rpx;
+				}
+				
 				&-text{
-					
-					&-n{
-						font-size: 30rpx;
-						font-weight: 600;
-						margin-left: 24rpx;
-						margin-right: 28rpx;
-					}
-					
-					&-t{
-						color: #999;
-						font-size: 28rpx;
-						font-weight: 400;
-					}
+					font-size: 30rpx;
+					font-weight: 600;
+					margin-left: 24rpx;
+					margin-right: 28rpx;
 				}
 			}
 			
 			&-right{
-				color: #08B761;
-				font-size: 28rpx;
-				font-weight: bold;
+				color: #999;
+				font-size: 26rpx;
 			}
 		}
 		
@@ -107,10 +120,24 @@ page{
 			font-size: 26rpx;
 			color: #333;
 			line-height: 52rpx;
-			// display: -webkit-box;
-			// -webkit-box-orient: vertical;
-			// -webkit-line-clamp: 3;
-			// overflow: hidden;
+		}
+		
+		&-bottom{
+			border-top: 2rpx solid #F7F7F7;
+			padding-top: 20rpx;
+			margin-top: 20rpx;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			
+			&-left{
+				color: #999999;
+				font-size: 28rpx;
+			}
+			
+			&-right{
+				
+			}
 		}
 	}
 	

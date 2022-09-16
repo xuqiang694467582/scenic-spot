@@ -17,7 +17,11 @@
 						</view> -->
 						<!-- <u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag> -->
 					</view>
-					<image src="@/static/parktour/navigation.png" @click="getAss()"></image>
+					<view>
+						<image style="margin-right: 20rpx;" src="@/static/parktour/phone.png" @click="getPhone"></image>
+						<image src="@/static/parktour/navigation.png" @click="getAss()"></image>
+					</view>
+					
 				</view>
 				<u-divider></u-divider>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
@@ -58,7 +62,7 @@
 			<view class="content-combo" id="hotelBox">
 				<view class="content-combo-title">
 					<view>推荐套餐</view>
-					<view style="color: #999;font-size: 26rpx;" @click="toProductList()">更多></view>
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList(0)">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in recommend" :key="index">
 					<view style="display: flex;align-items: center;" @click="gotoRese(item.id)">
@@ -87,7 +91,7 @@
 			<view class="content-combo" id="dishes">
 				<view class="content-combo-title">
 					<view>商家菜品</view>
-					<!-- <view style="color: #999;font-size: 26rpx;">查看全部></view> -->
+					<view style="color: #999;font-size: 26rpx;" @click="toProductList(1)">更多></view>
 				</view>
 				<view class="combo-list" v-for="(item, index) in dishesList" :key="index">
 					<view style="display: flex;">
@@ -210,14 +214,16 @@
 					})
 					.exec();
 			},
+			// 预订
 			getReserve(val) {
 				uni.navigateTo({
 					url: `/pages_minute/submitorder/submitorder?id=${val.id}`
 				})
 			},
-			toProductList() {
+			//餐厅
+			toProductList(type) {
 				uni.navigateTo({
-					url: `/pages_minute/productList/productList?type=${0}`
+					url: `/pages_minute/diningDishes/diningDishes?id=${this.formData.id}&type=${type}`
 				})
 			},
 			getAss(val) {
@@ -229,6 +235,12 @@
 					success: function() {
 						console.log('success');
 					}
+				});
+			},
+			// 打电话
+			getPhone(){
+				uni.makePhoneCall({
+					phoneNumber: this.formData.tel
 				});
 			}
 		}

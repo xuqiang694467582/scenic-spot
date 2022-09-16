@@ -17,7 +17,10 @@
 						</view> -->
 						<!-- <u-tag text="500+点评" bgColor="#08B761" borderColor="#08B761" ></u-tag> -->
 					</view>
-					<image src="@/static/parktour/navigation.png" @click="getAss()"></image>
+					<view>
+						<image style="margin-right: 20rpx;" src="@/static/parktour/phone.png" @click="getPhone"></image>
+						<image src="@/static/parktour/navigation.png" @click="getAss()"></image>
+					</view>
 				</view>
 				<!-- <u-divider></u-divider> -->
 				<view>
@@ -532,6 +535,12 @@
 					success: function() {
 						console.log('success');
 					}
+				});
+			},
+			// 打电话
+			getPhone(){
+				uni.makePhoneCall({
+					phoneNumber: this.formData.tel
 				});
 			}
 		}

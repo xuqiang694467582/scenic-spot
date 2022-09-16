@@ -241,8 +241,8 @@
 			}, {
 				"path": "settled/settled",
 				"style": {
-					"navigationBarTitleText": "商家入驻",
-					"enablePullDownRefresh": false
+					"navigationBarTitleText": "店铺列表",
+					"enablePullDownRefresh": true
 				}
 
 			}, {
@@ -258,24 +258,48 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "specialtyShop/specialtyShop",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "refundDetail/refundDetail",
+				"style": {
+					"navigationStyle": "custom"
+				}
+
+			}, {
+				"path": "evaluationList/evaluationList",
+				"style": {
+					"navigationBarTitleText": "景区评价",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "addSettled/addSettled",
+				"style": {
+					"navigationBarTitleText": "商家入驻",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "settledState/settledState",
+				"style": {
+					"navigationBarTitleText": "商家入驻",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "diningDishes/diningDishes",
+				"style": {
+					"navigationBarTitleText": "菜品",
+					"enablePullDownRefresh": false
+				}
+
 			}
-		    ,{
-                    "path" : "specialtyShop/specialtyShop",
-                    "style" :                                                                                    
-                {
-                    "navigationStyle": "custom"
-                }
-                
-                }
-                ,{
-                    "path" : "refundDetail/refundDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationStyle": "custom"
-                }
-                
-                }
-            ]
+		]
 	}],
 	// 底部导航栏
 	"tabBar": {

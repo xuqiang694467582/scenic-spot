@@ -31,6 +31,31 @@ export const attrPointList = (params) => {
 	  params
 	})
 }
+
+// 景点评价列表-个人发布列表
+export const attrMySelf = (params) => {
+	return http.get('/wx/attraction-point-comment/myself', {
+	  params
+	})
+}
+
+// 景点评论添加
+export const addComment = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/attraction-point-comment/add',
+		data: data,
+	})
+}
+
+// 删除
+export const deleteComment = (id) => {	
+	return http.middleware({
+		method: 'DELETE', // 必须大写
+		url: `/wx/attraction-point-comment/delete?id=${id}`,
+	})
+}
+
 // 餐厅
 export const diningList = (params) => {
 	return http.get('/wx/dining-room/list', {

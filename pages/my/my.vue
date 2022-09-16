@@ -141,7 +141,8 @@
 						}
 					],
 				],
-				menuList: [{
+				menuList: [
+					{
 						name: '商家入驻',
 						img: '../../static/my/sjrz.png'
 					},{
@@ -242,8 +243,6 @@
 							url: `/pages_minute/orderDetail/specialtyDetail?id=${id}`
 						})
 						break;
-
-
 				}
 			},
 			async getList() {
@@ -261,6 +260,11 @@
 							url: '/pages_minute/writeOffList/writeOffList'
 						})
 						break;
+					case 0:
+						uni.navigateTo({
+							url: '/pages_minute/settled/settled'
+						})
+						break;
 					case 1:
 						uni.navigateTo({
 							url: '/pages_minute/collection/collection'
@@ -273,7 +277,7 @@
 						break;
 					case 3:
 						uni.navigateTo({
-							url: '/pages_minute/settled/settled'
+							url: '/pages_minute/evaluationList/evaluationList'
 						})
 						break;
 				}
