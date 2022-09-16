@@ -8,7 +8,7 @@
 		</uni-nav-bar> -->
 
 		<u-tabs :list="typeList" @click="changeType" :activeStyle="{ color: 'rgba(8, 183, 97, 1)' }"
-			:inactiveStyle="{ color: 'rgba(51, 51, 51, 1)' }" :itemStyle="{width:'14%',height:'80rpx'}"
+			:inactiveStyle="{ color: 'rgba(51, 51, 51, 1)' }" :itemStyle="{width:'16.66%',height:'80rpx',padding:0}"
 			lineColor="rgba(8, 183, 97, 1)" :current="curt"></u-tabs>
 
 		<view class="content" v-if="list.length>0">
@@ -89,6 +89,8 @@
 					name: '已完成'
 				}, {
 					name: '已取消'
+				}, {
+					name: '已退款'
 				}],
 				show: false,
 				curt: 0,

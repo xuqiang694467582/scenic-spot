@@ -20,9 +20,9 @@
 			<view class="botBox">
 				<view class="time">{{item.createTimeStr}}</view>
 				<view class="operate">
-					<!-- <view class="operateBox">
-						<image src="../../static/strategy/zan.png"></image>25.6w
-					</view> -->
+					<view class="operateBox"  @click.stop="praiseTap(item,index)">
+						<image :src="item.isRaiderPraise?'../../static/strategy/zanA.png':'../../static/strategy/zan.png'"></image>{{item.raiderPraiseCount}}
+					</view>
 					<view class="operateBox">
 						<image src="../../static/strategy/comment.png"></image>{{item.commentReplyCount}}
 					</view>
@@ -38,7 +38,7 @@
 		mapState
 	} from 'vuex'
 	import {
-		getRaider
+		getRaider,addPraise,removePraise
 	} from '@/api/strategy.js'
 	export default {
 		data() {
@@ -77,6 +77,21 @@
 		    }
 		  },
 		methods: {
+			// 点赞
+			async praiseTap(item,index){
+				if(item.isRaiderPraise){
+					this.list[index].isRaiderPraise=false
+					this.list[index].raiderPraiseCount--
+					await removePraise(item.raiderPraiseId)
+					
+				}else{
+					this.list[index].isRaiderPraise=true
+					this.list[index].raiderPraiseCount++
+					const {data}=await addPraise({raiderId:item.id})
+					this.list[index].raiderPraiseId=data
+					
+				}
+			},
 			//校验是否授权用户信息
 			isUser() {
 				if (!this.userInfo.nickname) {
