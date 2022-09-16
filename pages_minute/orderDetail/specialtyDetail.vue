@@ -26,14 +26,21 @@
 				<view class="statusInfo">已取消订单，希望再次光顾</view>
 			</view>
 		</view>
-		<!-- 特产显示 -->
-		<view class="orderBox" :key="index" v-show="detail.type!='2'">
-			<view class="titleBox">
-				<view>{{detail.merchantName}}</view>
-				<view>
-					<image src="../../static/order/navigation.png" @click="navigationTap()"></image>
-					<!-- <image src="../../static/order/tel.png" @click="telTap"></image> -->
-				</view>
+		<view class="ztdBox">
+			<view class="zl">
+				<image src="../../static/order/ztd.png"></image>
+				{{detail.merchantName}}
+			</view>
+			<view class="zr">
+				<image src="../../static/order/navigation.png" @click="navigationTap()"></image>
+				<image src="../../static/order/tel.png" @click="telTap"></image>
+			</view>
+		</view>
+		<view class="orderBox" :key="index" >
+			<view class="titleBox" @click="toShop">
+				<image src="../../static/order/shopIco.png" class="shopIco"></image>
+				{{detail.merchantName}}
+				<image src="../../static/jtR.png" class="jt"></image>
 			</view>
 			<view class="listInfo" v-for="(items,indexs) in detail.orderItemDetailVoList" :key="indexs">
 				<image :src="items.productInfo.productImage"></image>
@@ -129,6 +136,16 @@
 			this.getDetail()
 		},
 		methods: {
+			telTap(){
+				uni.makePhoneCall({
+					phoneNumber: this.detail.merchantTel
+				});
+			},
+			toShop(){
+				uni.navigateTo({
+					url: `/pages_minute/specialtyShop/specialtyShop?id=${this.detail.merchantId}`
+				})
+			},
 			// 支付
 			async payTap() {
 				const that = this
@@ -216,7 +233,7 @@
 					id: this.id
 				})
 				this.detail = data
-			
+
 			},
 			close() {
 				this.show = false
@@ -228,8 +245,49 @@
 </script>
 
 <style lang="scss">
-	.priceBox {
+	.setMealBox{
 		margin-top: 20rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.ztdBox {
+		background: #FFFFFF;
+		box-shadow: 0px 0px 20rpx 2rpx rgba(204, 204, 204, 0.1);
+		border-radius: 24rpx;
+		padding: 0 34rpx 0 40rpx;
+		height: 108rpx;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 20rpx;
+		.zr{
+			display: flex;
+			image{
+				width: 40rpx;
+				height: 40rpx;
+				margin-left: 36rpx;
+			}
+		}
+		.zl {
+			display: flex;
+			align-items: center;
+			font-weight: 600;
+			color: #333333;
+			font-size: 30rpx;
+			flex: 1;
+
+			image {
+				width: 28rpx;
+				height: 28rpx;
+				margin-right: 16rpx;
+			}
+		}
+	}
+
+	.priceBox {
+		
 
 		.oldPrice {
 			font-weight: 400;
@@ -344,12 +402,13 @@
 			z-index: 111;
 			top: 0;
 			left: 0;
-			.ewm{
+
+			.ewm {
 				width: 380rpx;
 				height: 380rpx;
 				margin-top: 56rpx;
 			}
-			
+
 			.code {
 				font-size: 62rpx;
 				font-weight: bold;
@@ -361,7 +420,7 @@
 				border-bottom: 1px dashed #ccc;
 			}
 
-			
+
 		}
 	}
 
@@ -473,17 +532,22 @@
 		.titleBox {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
 			border-bottom: 1px solid #EBEBEB;
 			font-weight: 600;
 			color: #333333;
 			font-size: 32rpx;
 			padding: 30rpx 0 28rpx 0;
-
-			image {
-				width: 40rpx;
-				margin-left: 36rpx;
-				height: 40rpx;
+		
+			.shopIco {
+				width: 32rpx;
+				margin-right: 20rpx;
+				height: 32rpx;
+			}
+		
+			.jt {
+				width: 30rpx;
+				height: 30rpx;
+				margin-left: 4rpx;
 			}
 		}
 	}

@@ -1,14 +1,15 @@
 <template>
 	<view>
 		<view class="topBox">
-			<view :style="{paddingTop:barHightTop+'px'}" class="backImg">
-				<u-icon name="arrow-left" size="16" color="#ffffff" @click="backTap"></u-icon>
+			<view :style="{paddingTop:barHightTop+'px'}" class="backImg"  @click="backTap">
+				<u-icon name="arrow-left" size="16" color="#ffffff"></u-icon>
 			</view>
 		</view>
 		<view class="container" :style="{marginTop:barHightTop+'px'}">
 			<view class="infoBox">
-				<view class="infoTitle" v-show="detail.refundState==='1'">退款成功</view>
-				<view class="infoTitle" v-show="detail.refundState==='0'">退款中</view>
+				<view class="infoTitle" v-show="detail.state==='1'">退款成功</view>
+				<view class="infoTitle" v-show="detail.state==='0'">退款中</view>
+					<view class="infoTitle" v-show="detail.state==='3'">退款失败</view>
 				<view class="infoLine">
 					<view>退款金额</view>
 					<view class="rPrice"><text>￥</text>{{detail.orderDetail.payPrice}}</view>
@@ -20,12 +21,13 @@
 			</view>
 
 			<view class="orderBox" >
-				<view class="titleBox">
+				<view class="titleBox" @click="toShop">
 					<image src="../../static/order/shopIco.png" class="shopIco"></image>
 					{{detail.orderDetail.merchantName}}
 					<image src="../../static/jtR.png" class="jt"></image>
 				</view>
-				<view class="listInfo" v-for="(item,index) in detail.orderDetail.orderItemDetailVoList" :key="index">
+				<!-- 特产 -->
+				<view class="listInfo" v-for="(item,index) in detail.orderDetail.orderItemDetailVoList" :key="index"  v-if="item.type==='3'">
 					<image :src="item.productInfo.productImage"></image>
 					<view class="infoR">
 						<view class="infoName">{{item.productInfo.productName}}</view>
@@ -42,13 +44,55 @@
 						</view>
 					</view>
 				</view>
+				<!-- 娱乐 -->
+				<view class="listInfo" v-for="(item,index) in detail.orderDetail.orderItemDetailVoList" :key="index"  v-if="item.type==='1'">
+					<image :src="item.productInfo.amusementPackageImage"></image>				
+					<view class="infoR">
+						<view class="infoName">{{item.productInfo.amusementPackageName}}</view>
+						<view class="setMealBox">
+							<view class="priceBox">
+								<text class="unit">￥</text>
+								<text class="price">{{item.productInfo.price}}</text>							
+							</view>
+							<view class="sNum">×{{item.productInfo.number}}</view>
+						</view>
+					</view>
+				</view>
+				<!-- 酒店 -->
+				<view class="listInfo" v-for="(item,index) in detail.orderDetail.orderItemDetailVoList" :key="index"  v-if="item.type==='2'">
+					<image :src="item.productInfo.hotelTypeImage"></image>				
+					<view class="infoR">
+						<view class="infoName">{{item.productInfo.hotelTypeName}}</view>
+						<view class="setMealBox">
+							<view class="priceBox">
+								<text class="unit">￥</text>
+								<text class="price">{{item.productInfo.price}}</text>							
+							</view>
+							<view class="sNum">×{{item.productInfo.number}}</view>
+						</view>
+					</view>
+				</view>
+				<!-- 餐厅 -->
+				<view class="listInfo" v-for="(item,index) in detail.orderDetail.orderItemDetailVoList" :key="index"  v-if="item.type==='0'">
+					<image :src="item.productInfo.diningRoomPackageImage"></image>				
+					<view class="infoR">
+						<view class="infoName">{{item.productInfo.diningRoomPackageName}}</view>
+						<view class="setMealBox">
+							<view class="priceBox">
+								<text class="unit">￥</text>
+								<text class="price">{{item.productInfo.price}}</text>							
+							</view>
+							<view class="sNum">×{{item.productInfo.number}}</view>
+						</view>
+					</view>
+				</view>
 
 			</view>
 
 			<view class="infoBox" style="margin-top: 20rpx;">
 				<view class="infoTitle">退款流程</view>
 				<view class="processBox">
-					<view class="process">
+					<view class="process" v-show="detail.refundState==='1'">
 						<view class="pTitle">
 							<image src="../../static/my/yuan.png"></image>
 							退款已入账
@@ -58,14 +102,24 @@
 							<view class="time">{{detail.applyTimeStr}}</view>
 						</view>			
 					</view>
-					<view class="process">
+					<view class="process" v-show="detail.state==='2'">
 						<view class="pTitle">
 							<image src="../../static/my/yuan.png"></image>
 							平台审核通过
 						</view>
 						<view class="botProcess" >
 							<view class="pInfo">平台已受理您的退款申请</view>
-							<view class="time">{{detail.applyTimeStr}}</view>
+							<view class="time">{{detail.reviewerTimeStr}}</view>
+						</view>			
+					</view>
+					<view class="process" v-show="detail.state==='3'">
+						<view class="pTitle">
+							<image src="../../static/my/yuan.png"></image>
+							平台审核未通过
+						</view>
+						<view class="botProcess" >
+							<view class="pInfo">{{detail.opinion}}</view>
+							<view class="time">{{detail.reviewerTimeStr}}</view>
 						</view>			
 					</view>
 					<view class="process" >
@@ -102,6 +156,35 @@
 			this.getDetail()
 		},
 		methods: {
+			toShop(){
+				switch (this.detail.orderDetail.type) {
+					case '0':
+						uni.navigateTo({
+							url: `/pages_minute/diningDetail/diningDetail?id=${this.detail.orderDetail.merchantId}`
+						})
+						break;
+					case '1':
+						uni.navigateTo({
+							url: `/pages_minute/entertainmentDetail/entertainmentDetail?id=${this.detail.orderDetail.merchantId}`
+						})
+						break;
+					case '2':
+						uni.navigateTo({
+							url: `/pages_minute/hotelDetail/hotelDetail?id=${this.detail.orderDetail.merchantId}`
+						})
+						break;
+					case '3':
+						uni.navigateTo({
+							url: `/pages_minute/specialtyShop/specialtyShop?id=${this.detail.orderDetail.merchantId}`
+						})
+						break;
+				}
+			},
+			backTap(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
 			async getDetail(){
 				const {data}=await getRefundDetail({id:this.id})
 				this.detail=data

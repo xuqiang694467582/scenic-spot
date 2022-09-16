@@ -103,7 +103,7 @@
 					})
 
 				})
-				return price
+				return price.toFixed(2)
 			},
 			selectNum() {
 				const list = []
