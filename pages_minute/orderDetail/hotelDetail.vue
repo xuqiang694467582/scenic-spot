@@ -22,6 +22,10 @@
 				<image src="../../static/order/success.png"></image>
 				<view>已取消<text>已取消订单，希望再次光顾</text></view>
 			</view>
+			<view class="tipBox" v-if="detail.status==='4'">
+				<image src="../../static/order/success.png"></image>
+				<view>已退款<text>已退款，希望再次光顾</text></view>
+			</view>
 			<view class="modalBox">
 				<view class="pTitle">费用信息</view>
 				<view class="pBox">

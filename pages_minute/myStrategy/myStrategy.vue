@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view v-if="list.length>0">
-			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+			<view class="listBox" v-for="(item,index) in list" :key="index" @click="toDetail(item.id,item)">
 				<view class="infoBox">
 					<view class="title">{{item.title}}</view>
 					<view class="info">{{item.context}}</view>
@@ -13,9 +13,14 @@
 					</view>
 				</view>
 				<view class="botBox">
-					<view class="time">{{item.createTimeStr}}</view>
-					<view class="operate">
-						<view class="operateBox" @click.stop="editTap(item.id)">
+					<view class="botL">
+						<view class="state" style="background: #FEBD26;" v-show="item.state==='1'">审核中</view>
+						<view class="state" style="background: #08B761" v-show="item.state==='2'">审核通过</view>
+						<view class="state" style="background: #C9C9C9" v-show="item.state==='3'">审核失败</view>
+						<view class="time">{{item.createTimeStr.slice(0,10)}}</view>
+					</view>				
+					<view class="operate" >
+						<view class="operateBox" @click.stop="editTap(item.id)" v-if="item.state==='3'">
 							<image src="../../static/strategy/editor.png"></image>
 						</view>
 						<view class="operateBox" @click.stop="delTap(item.id)">
@@ -37,7 +42,8 @@
 		delRaider
 	} from '@/api/strategy.js'
 	import {
-		mapState
+		mapState,
+		mapMutations
 	} from 'vuex'
 	export default {
 		data() {
@@ -67,6 +73,7 @@
 		},
 		computed: mapState(['scenicData']),
 		methods: {
+			...mapMutations(['SET_ORDERDATA']),
 			editTap(id) {
 				uni.navigateTo({
 					url: `/pages_minute/releaseStrategy/releaseStrategy?id=${id}`
@@ -98,10 +105,26 @@
 				uni.stopPullDownRefresh()
 				this.list = this.list.concat(data.records)
 			},
-			toDetail(id) {
-				uni.navigateTo({
-					url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
-				})
+			toDetail(id,item) {
+				switch(item.state){
+					case '1':
+						uni.navigateTo({
+							url:'/pages_minute/myStrategy/wait'
+						})
+					break;
+					case '2':
+						uni.navigateTo({
+							url: `/pages_minute/strategyDetail/strategyDetail?id=${id}`
+						})
+					break;
+					case '3':
+					this.SET_ORDERDATA(item)
+						uni.navigateTo({
+							url: '/pages_minute/myStrategy/fail'
+						})
+					break;
+				}
+				
 			},
 
 		}
@@ -121,7 +144,21 @@
 			align-items: center;
 			justify-content: space-between;
 			margin-top: 28rpx;
-
+			.botL{
+				display: flex;
+				align-items: center;
+				.state{
+					width: 136rpx;
+					height: 48rpx;
+					border-radius: 12rpx;
+					text-align: center;
+					line-height: 48rpx;
+					font-weight: 400;
+					color: #FFFFFF;
+font-size: 26rpx;
+margin-right: 16rpx;
+				}
+			}
 			.operate {
 				display: flex;
 				align-items: center;

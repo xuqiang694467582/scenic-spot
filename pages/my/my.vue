@@ -212,12 +212,6 @@
 							})
 						}
 						
-					},
-					fail: function (res){
-						uni.showToast({
-							title:'无效二维码',
-							icon:'none'
-						})
 					}
 				});
 			},

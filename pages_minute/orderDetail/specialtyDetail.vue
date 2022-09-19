@@ -26,6 +26,12 @@
 				<view class="statusInfo">已取消订单，希望再次光顾</view>
 			</view>
 		</view>
+		<view class="topBox" v-show="detail.status==='4'">
+			<view>
+				<view class="status">订单已退款</view>
+				<view class="statusInfo">订单已退款，希望再次光顾</view>
+			</view>
+		</view>
 		<view class="ztdBox">
 			<view class="zl">
 				<image src="../../static/order/ztd.png"></image>

@@ -59,9 +59,9 @@
 					@confirm="confirmTap" :focus="isFocus" @blur="blurTap" />
 			</view>
 			<view class="operateBox" v-if="!isFocus">
-				<!-- <view class="operate">
-					<image src="../../static/strategy/zan.png"></image>5.6w
-				</view> -->
+				<view class="operate" @click="praiseTap">
+					<image :src="detail.isRaiderPraise?'../../static/strategy/zanA.png':'../../static/strategy/zan.png'"></image>{{detail.raiderPraiseCount}}
+				</view>
 				<view class="operate" @click="collectTap">
 					<image :src="detail.isKeep?'../../static/my/starA.png':'../../static/my/star.png'"></image>
 					{{detail.keepRaiderCount}}
@@ -83,7 +83,8 @@
 		addComment,
 		getReplyList,
 		addReply,
-		getReply
+		getReply,
+		addPraise,removePraise
 	} from '@/api/strategy.js'
 	import {
 		addFavorite,
@@ -139,6 +140,15 @@
 			this.getList()
 		},
 		methods: {
+			async praiseTap(){
+				if(this.detail.isRaiderPraise){
+					await removePraise(this.detail.raiderPraiseId)
+					this.getDetail()
+				}else{
+					await addPraise({raiderId:this.id})
+					this.getDetail()
+				}
+			},
 			// 回复列表
 			async moreTap(id, index) {
 				const replyListQuery = this.list[index].replyListQuery

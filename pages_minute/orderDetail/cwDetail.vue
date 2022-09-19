@@ -23,6 +23,10 @@
 				<image src="../../static/order/success.png"></image>
 				<view>已取消<text>已取消订单，希望再次光顾</text></view>
 			</view>
+			<view class="tipBox" v-if="detail.status==='4'">
+				<image src="../../static/order/success.png"></image>
+				<view>已退款<text>已退款，希望再次光顾</text></view>
+			</view>
 			<!-- 待支付显示 -->
 			<view v-show="detail.status==='0'" v-for="(item,index) in detail.orderItemDetailVoList" :key="index"
 				class="payGoodsBox">
