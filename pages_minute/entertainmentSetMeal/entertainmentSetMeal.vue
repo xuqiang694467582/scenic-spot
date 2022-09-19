@@ -14,10 +14,10 @@
 				</view>
 				<view class="reserve" @click="toPlaceOrder">预订</view>
 			</view>
-			<!-- <view class="tipBox">
+			<view class="tipBox">
 				<text class="tTitle">提示</text>
-				<text>周一至周五10:00-22:00 周六周日10:00-23:00</text>
-			</view> -->
+				<text>{{shopData.alternate.openingHours}}</text>
+			</view>
 			<view class="tipBox">
 				<text class="tTitle">保障</text>
 				<text>可退款</text>
@@ -29,32 +29,91 @@
 				{{detail.introduce}}
 			</view>
 		</view>
-		
-			
+		<view class="mouduleBox">
+			<view class="name">可用商户</view>
+			<view class="shopBox" @click="toShop">
+				<image :src="shopData.coverImg" class="shopImg"></image>
+				<view class="shopR">
+					<view class="shopName">{{shopData.name}}</view>
+					<view class="fraction">{{shopData.score}}分</view>
+					<view class="time">开放时间：{{shopData.alternate.openingHours}}</view>
+				</view>
+			</view>
+			<view class="name">本店套餐</view>
+			<view class="productBox">
+				<view class="product" v-for="(item,index) in list" :key="index" @click="toDetail(item.id)">
+					<image :src="item.mainImage"></image>
+					<view class="pName">{{item.name}}</view>
+					<view class="pPrice">
+						<text class="unit">￥</text>
+						<text class="price">{{item.price}}</text>
+						<text class="oldPrice">￥{{item.originalPrice}}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+
 	</view>
 </template>
 
 <script>
-	import {getAmusementPackageDetail} from '@/api/index.js'
+	import {
+		getAmusementPackageDetail,
+		getAmusementDetail,
+		getAmusementPackage
+	} from '@/api/index.js'
 	export default {
 		data() {
 			return {
-				id:'',
-				detail:''
+				id: '',
+				detail: '',
+				shopData: '',
+				list: []
 			}
 		},
-		onLoad(options){
-			this.id=options.id
+		onLoad(options) {
+			this.id = options.id
+			this.list = []
 			this.getDetail()
 		},
 		methods: {
-			async getDetail(){
-				const {data}=await getAmusementPackageDetail({id:this.id})
-				this.detail=data
+			toShop(){
+				uni.redirectTo({
+					url:`/pages_minute/entertainmentDetail/entertainmentDetail?id=${this.detail.amusementId}`
+				})
 			},
-			toPlaceOrder(){
+			toDetail(id){
+				uni.redirectTo({
+					url:`/pages_minute/entertainmentSetMeal/entertainmentSetMeal?id=${id}`
+				})
+			},
+			async getDetail() {
+				const {
+					data
+				} = await getAmusementPackageDetail({
+					id: this.id
+				})
+				this.detail = data
+				this.getData()
+			},
+			getData() {
+				getAmusementDetail({
+					id: this.detail.amusementId
+				}).then(res => {
+					this.shopData = res.data
+				})
+				getAmusementPackage({
+					page: 1,
+					pageSize: 10,
+					amusementId: this.detail.amusementId
+				}).then(res => {
+					this.list = res.data.records
+				})
+			},
+			toPlaceOrder() {
 				uni.navigateTo({
-					url:`/pages_minute/entertainmentPlaceOrder/entertainmentPlaceOrder?id=${this.id}`
+					url: `/pages_minute/entertainmentPlaceOrder/entertainmentPlaceOrder?id=${this.id}`
 				})
 			}
 		}
@@ -62,6 +121,114 @@
 </script>
 
 <style lang="scss">
+	.productBox {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		margin-top: 24rpx;
+
+		.pPrice {
+			margin-top: 24rpx;
+
+			.unit {
+				font-size: 24rpx;
+				color: #333;
+			}
+
+			.oldPrice {
+				font-weight: 400;
+				color: #999999;
+				font-size: 24rpx;
+				text-decoration: line-through;
+				margin-left: 14rpx;
+			}
+
+			.price {
+				font-weight: bold;
+				color: #333333;
+				font-size: 34rpx;
+			}
+		}
+
+		.product {
+			width: 308rpx;
+			margin-bottom: 40rpx;
+
+			image {
+				width: 308rpx;
+				height: 236rpx;
+				border-radius: 24rpx;
+			}
+
+			.pName {
+				font-weight: 500;
+				color: #333333;
+				font-size: 30rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+				margin-top: 20rpx;
+			}
+		}
+	}
+
+	.shopBox {
+		display: flex;
+		margin-top: 28rpx;
+		padding-bottom: 28rpx;
+		border-bottom: 1px solid #EBEBEB;
+		display: flex;
+		align-items: center;
+		margin-bottom: 28rpx;
+
+		.shopR {
+			margin-left: 24rpx;
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+
+			.time {
+				font-weight: 400;
+				color: #333333;
+				font-size: 24rpx;
+				margin-top: 28rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+
+			.shopName {
+				font-weight: 500;
+				color: #333333;
+				font-size: 32rpx;
+			}
+
+			.fraction {
+				margin-top: 16rpx;
+				font-weight: 500;
+				color: #FFFFFF;
+				text-align: center;
+				line-height: 44rpx;
+				font-size: 24rpx;
+				width: 92rpx;
+				height: 44rpx;
+				background: linear-gradient(180deg, #F3982B 0%, #FF543E 100%);
+				border-radius: 12rpx 0px 12rpx 0px;
+			}
+		}
+
+		.shopImg {
+			width: 160rpx;
+			height: 160rpx;
+			border-radius: 24rpx;
+		}
+	}
+
 	.mouduleBox {
 		width: 100%;
 		border-radius: 24rpx;
@@ -69,13 +236,15 @@
 		margin-bottom: 20rpx;
 		padding: 24rpx 30rpx;
 		box-sizing: border-box;
-		.ruleBox{
+
+		.ruleBox {
 			margin-top: 20rpx;
 			font-weight: 400;
 			color: #333333;
 			line-height: 52rpx;
-font-size: 26rpx;
+			font-size: 26rpx;
 		}
+
 		.tipBox {
 			margin-top: 20rpx;
 			font-weight: 400;
