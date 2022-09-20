@@ -12,7 +12,8 @@
 				<view class="status">订单已支付</view>
 				<view class="statusInfo">正在打包中，稍后可前往自提点提取</view>
 			</view>
-			<view class="btn" @click="show=true">核销码</view>
+			<view class="btn" @click="show=true" v-if="!detail.isRefundApply">核销码</view>
+			<view class="btn" v-if="detail.isRefundApply" @click="toRefund()">退款进度</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='2'">
 			<view>
@@ -26,8 +27,8 @@
 				<view class="status">订单已取消</view>
 				<view class="statusInfo">已取消订单，希望再次光顾</view>
 			</view>
-			<view class="btn" @click="toShop" v-if="!detail.isRefundApply">再次购买</view>
-			<view class="btn" v-if="detail.isRefundApply">退款进度</view>
+			<view class="btn" @click="toShop" >再次购买</view>
+			
 		</view>
 		<view class="topBox" v-show="detail.status==='4'">
 			<view>
@@ -113,7 +114,7 @@
 			</view>
 		</view>
 		<view class="cancelTap" v-show="detail.status==='0'" @click="cancelOrder">取消订单</view>
-		<view class="cancelTap" v-show="detail.status==='1'" @click="refundTap">取消订单</view>
+		<view class="cancelTap" v-show="detail.status==='1'&&!detail.isRefundApply" @click="refundTap">取消订单</view>
 
 
 		<!-- 取货码 -->
@@ -136,7 +137,8 @@
 	import {
 		getOrderDetail,
 		addOrderCancel,
-		addOrderPay
+		addOrderPay,
+		addRefundOrder 
 	} from '@/api/order.js'
 	export default {
 		data() {
@@ -153,7 +155,11 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDERDATA']),
-			
+			toRefund(){
+				uni.navigateTo({
+					url:`/pages_minute/refundDetail/refundDetail?id=${this.detail.refundApplyId}`
+				})
+			},
 			// 申请退款
 			refundTap(id) {
 				uni.showModal({
@@ -162,16 +168,12 @@
 					success: async (res) => {
 						if (res.confirm) {
 							await addRefundOrder({
-								orderId: id
+								orderId: this.id
 							})
 							uni.showToast({
 								title: '取消成功'
 							})
-							setTimeout(() => {
-								uni.navigateBack({
-									delta: 1
-								})
-							}, 1000)
+							this.getDetail()
 
 						} else if (res.cancel) {
 							console.log('用户点击取消');
@@ -210,11 +212,7 @@
 						uni.showToast({
 							title: '支付成功'
 						})
-						setTimeout(() => {
-							uni.navigateBack({
-								delta: 1
-							})
-						}, 1000)
+						this.getDetail()
 
 					},
 					// 支付失败回调
@@ -256,11 +254,7 @@
 							uni.showToast({
 								title: '取消成功'
 							})
-							setTimeout(() => {
-								uni.navigateBack({
-									delta: 1
-								})
-							}, 1000)
+							this.getDetail()
 
 						} else if (res.cancel) {
 							console.log('用户点击取消');
