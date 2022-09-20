@@ -19,18 +19,22 @@
 				<view class="status">订单已完成</view>
 				<view class="statusInfo">取货完成，期待您的再次光顾</view>
 			</view>
+			<view class="btn" @click="toShop">再来一单</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='3'">
 			<view>
 				<view class="status">订单已取消</view>
 				<view class="statusInfo">已取消订单，希望再次光顾</view>
 			</view>
+			<view class="btn" @click="toShop" v-if="!detail.isRefundApply">再次购买</view>
+			<view class="btn" v-if="detail.isRefundApply">退款进度</view>
 		</view>
 		<view class="topBox" v-show="detail.status==='4'">
 			<view>
 				<view class="status">订单已退款</view>
 				<view class="statusInfo">订单已退款，希望再次光顾</view>
 			</view>
+			<view class="btn" @click="toShop">再次购买</view>
 		</view>
 		<view class="ztdBox">
 			<view class="zl">
@@ -42,7 +46,7 @@
 				<image src="../../static/order/tel.png" @click="telTap"></image>
 			</view>
 		</view>
-		<view class="orderBox" :key="index" >
+		<view class="orderBox" :key="index">
 			<view class="titleBox" @click="toShop">
 				<image src="../../static/order/shopIco.png" class="shopIco"></image>
 				{{detail.merchantName}}
@@ -109,6 +113,9 @@
 			</view>
 		</view>
 		<view class="cancelTap" v-show="detail.status==='0'" @click="cancelOrder">取消订单</view>
+		<view class="cancelTap" v-show="detail.status==='1'" @click="refundTap">取消订单</view>
+
+
 		<!-- 取货码 -->
 		<u-popup :show="show" mode="center" @close="close" bgColor="transparent">
 			<view class="codeBox">
@@ -123,6 +130,9 @@
 </template>
 
 <script>
+	import {
+		mapMutations
+	} from 'vuex'
 	import {
 		getOrderDetail,
 		addOrderCancel,
@@ -142,12 +152,39 @@
 			this.getDetail()
 		},
 		methods: {
-			telTap(){
+			...mapMutations(['SET_ORDERDATA']),
+			
+			// 申请退款
+			refundTap(id) {
+				uni.showModal({
+					title: '提示',
+					content: '确定取消',
+					success: async (res) => {
+						if (res.confirm) {
+							await addRefundOrder({
+								orderId: id
+							})
+							uni.showToast({
+								title: '取消成功'
+							})
+							setTimeout(() => {
+								uni.navigateBack({
+									delta: 1
+								})
+							}, 1000)
+
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			telTap() {
 				uni.makePhoneCall({
 					phoneNumber: this.detail.merchantTel
 				});
 			},
-			toShop(){
+			toShop() {
 				uni.navigateTo({
 					url: `/pages_minute/specialtyShop/specialtyShop?id=${this.detail.merchantId}`
 				})
@@ -251,12 +288,13 @@
 </script>
 
 <style lang="scss">
-	.setMealBox{
+	.setMealBox {
 		margin-top: 20rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 	}
+
 	.ztdBox {
 		background: #FFFFFF;
 		box-shadow: 0px 0px 20rpx 2rpx rgba(204, 204, 204, 0.1);
@@ -268,14 +306,17 @@
 		align-items: center;
 		justify-content: space-between;
 		margin-top: 20rpx;
-		.zr{
+
+		.zr {
 			display: flex;
-			image{
+
+			image {
 				width: 40rpx;
 				height: 40rpx;
 				margin-left: 36rpx;
 			}
 		}
+
 		.zl {
 			display: flex;
 			align-items: center;
@@ -293,7 +334,7 @@
 	}
 
 	.priceBox {
-		
+
 
 		.oldPrice {
 			font-weight: 400;
@@ -543,13 +584,13 @@
 			color: #333333;
 			font-size: 32rpx;
 			padding: 30rpx 0 28rpx 0;
-		
+
 			.shopIco {
 				width: 32rpx;
 				margin-right: 20rpx;
 				height: 32rpx;
 			}
-		
+
 			.jt {
 				width: 30rpx;
 				height: 30rpx;

@@ -245,11 +245,6 @@
 					type: 3,
 					details: [data]
 				}
-				// const data = this.detail
-				// data.number = this.num
-				// data.price=this.specList[this.sepcCurt].price
-				// data.specificationName=this.specList[this.sepcCurt].name
-				// data.specificationId=this.specList[this.sepcCurt].id
 				this.SET_ORDERDATA([list])
 				uni.navigateTo({
 					url: '/pages_minute/specialtyPlaceOrder/specialtyPlaceOrder'
