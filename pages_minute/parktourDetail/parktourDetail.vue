@@ -40,9 +40,8 @@
 			<!-- 评论 -->
 			<view class="comment">
 				<view class="comment-title">
-					<view class="comment-title-text"><view></view>图片介绍</view>
+					<view class="comment-title-text"><view></view>大家的评价</view>
 					<view class="comment-title-right" @click="viewEvaluation">
-						<!-- 共254条评价 -->
 						全部评价
 						<u-icon name="arrow-right" size="14"></u-icon>
 					</view>
