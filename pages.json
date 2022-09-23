@@ -299,7 +299,27 @@
 				}
 
 			}
-		]
+                ,{
+                    "path" : "myStrategy/fail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "发布攻略",
+                    "enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#ffffff"
+                }
+                
+                },
+				{
+				    "path" : "myStrategy/wait",
+				    "style" :                                                                                    
+				{
+				    "navigationBarTitleText": "发布攻略",
+				    "enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#ffffff"
+				}
+				
+				}
+            ]
 	}],
 	// 底部导航栏
 	"tabBar": {

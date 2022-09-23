@@ -7,8 +7,8 @@
 		</view>
 		<view class="container" :style="{marginTop:barHightTop+'px'}">
 			<view class="infoBox">
-				<view class="infoTitle" v-show="detail.state==='1'">退款成功</view>
-				<view class="infoTitle" v-show="detail.state==='0'">退款中</view>
+				<view class="infoTitle" v-show="detail.state==='2'">退款成功</view>
+				<view class="infoTitle" v-show="detail.state==='1'">退款中</view>
 					<view class="infoTitle" v-show="detail.state==='3'">退款失败</view>
 				<view class="infoLine">
 					<view>退款金额</view>

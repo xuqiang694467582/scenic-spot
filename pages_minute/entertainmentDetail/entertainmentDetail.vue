@@ -9,8 +9,12 @@
 				<view class="name">{{detail.name}}</view>
 				<view class="shopInfo">
 					<view class="fraction">{{detail.score}}分</view>
-					<image src="../../static/parktour/navigation.png" class="navigationIco" @click="navigationTap">
-					</image>
+					<view>
+						<image src="../../static/telIco.png" class="navigationIco" @click="telTap"></image>
+						<image src="../../static/parktour/navigation.png" class="navigationIco" @click="navigationTap">
+						</image>
+					</view>
+					
 				</view>
 				<view class="shopDate">
 					<image src="../../static/time.png"></image>
@@ -108,6 +112,11 @@
 			this.getList()
 		},
 		methods: {
+			telTap(){
+				uni.makePhoneCall({
+					phoneNumber: this.detail.tel
+				});
+			},
 			changeNav(e){
 				let id = ''
 				if (e.index === 0) {
@@ -389,6 +398,7 @@
 		.navigationIco {
 			width: 58rpx;
 			height: 58rpx;
+			margin-left: 32rpx;
 		}
 
 		.name {

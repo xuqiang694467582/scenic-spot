@@ -22,6 +22,10 @@
 				<image src="../../static/order/success.png"></image>
 				<view>已取消<text>已取消订单，希望再次光顾</text></view>
 			</view>
+			<view class="tipBox" v-if="detail.status==='4'">
+				<image src="../../static/order/success.png"></image>
+				<view>已退款<text>已退款，希望再次光顾</text></view>
+			</view>
 			<view class="modalBox">
 				<view class="pTitle">费用信息</view>
 				<view class="pBox">
@@ -99,7 +103,19 @@
 				<view class="cancel" @click="cancelOrder">取消订单</view>
 				<view class="pay" @click="payTap">继续支付</view>
 			</view>
-			<view class="cancelTap" v-if="detail.status==='1'">取消订单</view>
+			<view class="btnBox" v-if="detail.status==='1'&&!detail.isRefundApply">
+				<view class="cancel" @click="refundTap" style="width: 100%;">取消订单</view>
+			</view>
+			<view class="btnBox" v-if="detail.status==='2'">
+				<view class="cancel" style="width: 100%;" @click="againTap">再次预定</view>
+			</view>
+			<view class="btnBox" v-if="detail.isRefundApply">
+				<view class="cancel" @click="toRefund()">退款进度</view>
+				<view class="pay" @click="againTap">再次预定</view>
+			</view>
+			<view class="btnBox" v-if="detail.status==='3'&&!detail.isRefundApply">
+				<view class="cancel" style="width: 100%;" @click="againTap">再次预定</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -108,7 +124,8 @@
 	import {
 		getOrderDetail,
 		addOrderPay,
-		addOrderCancel
+		addOrderCancel,
+		addRefundOrder 
 	} from '@/api/order.js'
 
 	export default {
@@ -128,6 +145,38 @@
 			this.getDetail()
 		},
 		methods: {
+			toRefund(){
+				uni.navigateTo({
+					url:`/pages_minute/refundDetail/refundDetail?id=${this.detail.refundApplyId}`
+				})
+			},
+			// 再次预定
+			againTap(){
+				uni.navigateTo({
+					url:`/pages_minute/hotelDetail/hotelDetail?id=${this.detail.merchantId}`
+				})				
+			},
+			// 申请退款
+			refundTap(id) {
+				uni.showModal({
+					title: '提示',
+					content: '确定取消',
+					success: async (res) => {
+						if (res.confirm) {
+							await addRefundOrder({
+								orderId: this.id
+							})
+							uni.showToast({
+								title: '取消成功'
+							})
+							this.getDetail()
+							
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
 			// 复制订单号
 			copyTap() {
 				uni.setClipboardData({
@@ -162,11 +211,7 @@
 						uni.showToast({
 							title: '支付成功'
 						})
-						setTimeout(() => {
-							uni.navigateBack({
-								delta: 1
-							})
-						}, 1000)
+						this.getDetail()
 
 					},
 					// 支付失败回调
@@ -188,11 +233,7 @@
 							uni.showToast({
 								title: '取消成功'
 							})
-							setTimeout(() => {
-								uni.navigateBack({
-									delta: 1
-								})
-							}, 1000)
+							this.getDetail()
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}

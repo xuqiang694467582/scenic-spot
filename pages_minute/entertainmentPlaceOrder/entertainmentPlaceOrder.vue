@@ -66,7 +66,7 @@
 		computed: {
 			...mapState(['userInfo','scenicData']),
 			price(){
-				return this.detail.price*1*this.num
+				return (this.detail.price*1*this.num).toFixed(2)
 			}
 		},
 		onLoad(options) {
@@ -86,6 +86,13 @@
 				if(!this.phone){
 					uni.showToast({
 						title:'请输入电话',
+						icon:'none'
+					})
+					return
+				}
+				if(this.phone.length!=11){
+					uni.showToast({
+						title:'请输入正确电话',
 						icon:'none'
 					})
 					return

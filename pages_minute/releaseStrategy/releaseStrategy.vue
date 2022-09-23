@@ -6,7 +6,8 @@
 					border="none" height="40rpx" autoHeight></u--textarea>
 			</u-form-item>
 			<u-form-item label="正文" prop="context">
-				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" maxlength="-1" autoHeight>
+				<u--textarea v-model="temp.context" placeholder="添加正文~" fontSize="30rpx" border="none" maxlength="-1"
+					autoHeight>
 				</u--textarea>
 			</u-form-item>
 		</u--form>
@@ -25,8 +26,21 @@
 			</view>
 			<u-icon name="arrow-right" color="#333" size="14"></u-icon>
 		</view>
+		<view class="tipTitle">
+			<image src="../../static/strategy/tip.png"></image>
+			提示含以下内容的攻略将审核不通过：
+		</view>
+		<view class="tipText">1、含有不文明语言、过度性感图片；</view>
+		<view class="tipText">2、含有网址链接、联系方式、二维码或售卖语言；</view>
+		<view class="tipText">3、冒充他人身份或搬运他人作品；</view>
+		<view class="tipText">4、通过有奖方式诱导他人点赞、评论、收藏、转发、关注；</view>
+		<view class="tipText">5、为刻意博取眼球，在标题、封面等处使用夸张表达；</view>
+		<view class="tipText">6、内容包含政治类等违规内容。</view>
 		<view class="release" @click="releaseTap">发布攻略</view>
 	</view>
+
+
+	
 </template>
 
 <script>
@@ -34,7 +48,10 @@
 		mapState
 	} from 'vuex'
 	import {
-		addRaider,getRaiderDetail,updateRaider
+		addRaider,
+		getRaiderDetail,
+		updateRaider,
+		addsubmit
 	} from '@/api/strategy.js'
 	export default {
 		data() {
@@ -46,7 +63,7 @@
 					introductionImg: [],
 					latitude: '',
 					longitude: '',
-					attractionId:''
+					attractionId: ''
 				},
 				fileList1: [],
 				rules: {
@@ -63,28 +80,34 @@
 						trigger: ['blur', 'change']
 					},
 				},
-				id:'',
+				id: '',
 			}
 		},
-		computed: mapState(['uploadUrl', 'token','scenicData']),
+		computed: mapState(['uploadUrl', 'token', 'scenicData','userInfo']),
 		onLoad(options) {
-			this.temp.attractionId=this.scenicData.id
-			if(options.id){
-				this.id=options.id
+			this.temp.attractionId = this.scenicData.id
+			if (options.id) {
+				this.id = options.id
 				this.getDetail()
 			}
-			
+
 		},
 		methods: {
 			// 详情
-			async getDetail(){
-				const {data}=await getRaiderDetail({id:this.id})
+			async getDetail() {
+				const {
+					data
+				} = await getRaiderDetail({
+					id: this.id
+				})
 				for (let key in data) {
-				 this.temp[key]=data[key]
+					this.temp[key] = data[key]
 				}
-				if(data.introductionImg.length>0){
-					this.fileList1=data.introductionImg.map(item=>{
-						return {url:item}
+				if (data.introductionImg.length > 0) {
+					this.fileList1 = data.introductionImg.map(item => {
+						return {
+							url: item
+						}
 					})
 				}
 			},
@@ -100,46 +123,46 @@
 				});
 			},
 			releaseTap() {
-				const that=this
+				const that = this
 				this.$refs.form.validate().then(async (res) => {
 					if (this.fileList1.length > 0) {
 						this.temp.introductionImg = this.fileList1.map(item => {
 							return item.url
 						})
 					}
-					try{
-						if(that.id){
-							that.temp.id=that.id
-							await updateRaider(this.temp)
-							uni.showToast({
-								title: '发布成功'
-							})
-							setTimeout(() => {
-								uni.navigateBack({
-									delta: 1
-								})
-							}, 1000)
-							
-						}else{
+					try {
+						if (that.id) {
+							that.temp.id = that.id
+							await addsubmit({id:that.id,submitter:that.userInfo.nickname})
+							await updateRaider(this.temp)												
+							uni.redirectTo({
+								url:'/pages_minute/myStrategy/wait'
+							})			
+
+						} else {
 							await addRaider(this.temp)
-							uni.showToast({
-								title: '发布成功'
-							})
-							setTimeout(() => {
-								let pages = getCurrentPages(); // 当前页面
-								let beforePage = pages[pages.length - 2]; // 上一页
-								uni.navigateBack({
-								    success: function() {
-								        beforePage.onLoad(); // 执行上一页的onLoad方法
-								    }
-								});
-							}, 1000)
+							uni.redirectTo({
+								url:'/pages_minute/myStrategy/wait'
+							})			
+							
+							// uni.showToast({
+							// 	title: '发布成功'
+							// })
+							// setTimeout(() => {
+							// 	let pages = getCurrentPages(); // 当前页面
+							// 	let beforePage = pages[pages.length - 2]; // 上一页
+							// 	uni.navigateBack({
+							// 		success: function() {
+							// 			beforePage.onLoad(); // 执行上一页的onLoad方法
+							// 		}
+							// 	});
+							// }, 1000)
 						}
-						
-					}catch(res){
+
+					} catch (res) {
 						uni.$u.toast(res.data.msg)
 					}
-					
+
 				}).catch(errors => {
 					uni.$u.toast('请填写完整')
 				})
@@ -196,9 +219,32 @@
 </script>
 
 <style lang="scss">
-	page{
+	.tipText{
+		font-size: 26rpx;
+		font-weight: 400;
+		color: #666666;
+		line-height: 52rpx;
+	}
+	.tipTitle {
+		display: flex;
+		align-items: center;
+		font-weight: 400;
+		color: #333333;
+		font-size: 28rpx;
+		margin-top: 52rpx;
+		margin-bottom: 24rpx;
+
+		image {
+			width: 32rpx;
+			height: 32rpx;
+			margin-right: 8rpx;
+		}
+	}
+
+	page {
 		padding-bottom: 150rpx;
 	}
+
 	.release {
 		width: 642rpx;
 		height: 94rpx;

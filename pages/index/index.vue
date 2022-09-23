@@ -323,7 +323,9 @@
 			uni.login({
 				provider: 'weixin',
 				success: async (loginRes) => {
-					this.$store.dispatch('login', loginRes.code).then(() => {})
+					this.$store.dispatch('login', loginRes.code).then(() => {
+						this.getSoptList()
+					})
 				}
 			});
 			this.barHightTop = uni.getSystemInfoSync().statusBarHeight + 45;
@@ -389,7 +391,10 @@
 				this.getBannerList()
 				this.getNoticebar()
 				this.getCelebrity()
-				this.getStrategyList()
+				if(this.token){
+					this.getStrategyList()
+				}
+			
 			},
 			toHotel(id) {
 				if (this.isGetTel() === false) return

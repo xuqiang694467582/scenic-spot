@@ -90,3 +90,32 @@ export const getReply = (params) => {
     params
   })
 }
+/**
+ * 攻略提交
+ */
+export const addsubmit = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/raider/submit',
+		data: data,
+	})
+}
+/**
+ * 攻略点赞
+ */
+export const addPraise = (data) => {	
+	return http.middleware({
+		method: 'POST', // 必须大写
+		url: '/wx/raider-praise-record/praise',
+		data: data,
+	})
+}
+/**
+ * 攻略点赞取消
+ */
+export const removePraise = (data) => {	
+	return http.middleware({
+		method: 'DELETE', // 必须大写
+		url: `/wx/raider-praise-record/cancel?id=${data}`
+	})
+}
