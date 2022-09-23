@@ -138,14 +138,16 @@
 			},
 			change(e) {
 				this.value = e.value;
-				this.price = Number(this.packData.price) * e.value * this.num;
+				let data = Number(this.packData.price) * this.num * e.value;
+				this.price = data.toFixed(1);
 			},
 			calendarConfirm(e) {
 				this.showCalendar = false;
 				this.model.hotel = `${e[0]} / ${e[e.length - 1]}`;
 				this.time = [e[0],e[e.length - 1]];
 				this.num = e.length - 1;
-				this.price = Number(this.packData.price) * this.value * this.num;
+				let data = Number(this.packData.price) * this.num * this.value;
+				this.price = data.toFixed(1);
 				this.$refs.form.validateField('hotel')
 			},
 			// 立即预定

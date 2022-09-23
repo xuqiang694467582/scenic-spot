@@ -62,7 +62,11 @@
             "scope.userLocation" : {
                 "desc" : "获取当前用户位置"
             }
-        }
+        },
+		"requiredPrivateInfos" : [ "getLocation","chooseLocation" ],
+		"uniStatistics" : {
+			"enable" : true
+		}
     },
     "mp-alipay" : {
         "usingComponents" : true

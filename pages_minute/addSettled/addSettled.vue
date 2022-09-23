@@ -37,8 +37,8 @@
 						<u--input v-model="model.contactNumber" type="number" border="none" placeholder="填写您的联系电话方便联系"></u--input>
 					</u-form-item>
 					<view class="form-title">商家地址</view>
-					<u-form-item label="商家地址" prop="address" @click="getAddress()">
-						<u--input v-model="model.address"  disabledColor="#ffffff" border="none" placeholder="标记商家地址"></u--input>
+					<u-form-item label="商家地址" prop="address" @click="getAddress">
+						<u--input v-model="model.address" disabled disabledColor="#ffffff" border="none" placeholder="标记商家地址"></u--input>
 						<u-icon slot="right" name="arrow-right"></u-icon>
 					</u-form-item>
 				</view>
@@ -277,7 +277,7 @@
 				// 调整页面
 				this.businessType = false;
 			},
-			// 选择商户位置
+			// 选择位置
 			getAddress(){
 				let _this = this;
 				uni.chooseLocation({

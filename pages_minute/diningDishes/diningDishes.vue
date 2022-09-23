@@ -28,6 +28,9 @@
 					预定
 				</view>
 			</view>
+			<view style="margin: 4rem 0;" v-if="recommend.length === 0 && type === 0">
+				<u-empty mode="list" text="当前商家暂无推荐套餐"></u-empty>
+			</view>
 		</view>
 		<!-- 商家菜品 -->
 		<view class="content-combo" v-if="type === 1">
@@ -40,6 +43,9 @@
 						<view style="font-size: 34rpx;color: #FE5A3D;font-weight: bold;">￥{{ item.price }}</view>
 					</view>
 				</view>
+			</view>
+			<view style="margin: 4rem 0;" v-if="dishesList.length === 0 && type === 1">
+				<u-empty mode="list" text="当前商家暂无菜品"></u-empty>
 			</view>
 		</view>
 	</view>

@@ -218,7 +218,7 @@
 						</view>
 					</view>
 				</view>
-				<view>
+				<!-- <view>
 					<text>支付方式</text>
 					<view style="display: flex;align-items: center;margin: 20rpx 0;">
 						<view style="margin-right: 10rpx;" v-for="(item, index) in tag5" :key="index">
@@ -227,7 +227,7 @@
 							</u-tag>
 						</view>
 					</view>
-				</view>
+				</view> -->
 				<u-divider></u-divider>
 				<view style="display: flex;align-items: center;justify-content: space-between;">
 					<text style="font-size: 26rpx;color: #666;margin: 0 40rpx;" @click="clearItem()">清空</text>
@@ -314,7 +314,7 @@
 				],
 				tag3: [],
 				tag4: [],
-				tag5: [],
+				// tag5: [],
 				// 筛选参数
 				startTime: '',
 				endTime: '',
@@ -358,7 +358,7 @@
 						roomType: this.roomType,
 						wifi: this.wifi,
 						meal: this.meal,
-						paymentMethod: this.paymentMethod
+						// paymentMethod: this.paymentMethod
 					})
 					this.recommend = res.data.records;
 				}catch(e){}
@@ -396,15 +396,15 @@
 					})
 				})
 				// 支付方式
-				const res3 = await getDictCode({
-					dictCode: 'paymentMethod'
-				})
-				res3.data.map((val) => {
-					this.tag5.push({
-						text: val.name,
-						checked: false
-					})
-				})
+				// const res3 = await getDictCode({
+				// 	dictCode: 'paymentMethod'
+				// })
+				// res3.data.map((val) => {
+				// 	this.tag5.push({
+				// 		text: val.name,
+				// 		checked: false
+				// 	})
+				// })
 			},
 			backTap() {
 				uni.navigateBack({
@@ -501,23 +501,23 @@
 					item.checked = item.text === name ? true : false
 				})
 			},
-			checkClick5(name){
-				this.paymentMethod = name;
-				this.tag5.map((item) => {
-					item.checked = item.text === name ? true : false
-				})
-			},
+			// checkClick5(name){
+			// 	this.paymentMethod = name;
+			// 	this.tag5.map((item) => {
+			// 		item.checked = item.text === name ? true : false
+			// 	})
+			// },
 			// 清空所选
 			clearItem() {
 				this.tag1 = [];
 				this.tag3 = [];
 				this.tag4 = [];
-				this.tag5 = [];
+				// this.tag5 = [];
 				this.dict();
 				this.roomType = '';
 				this.wifi = '';
 				this.meal = '';
-				this.paymentMethod = '';
+				// this.paymentMethod = '';
 				this.loadReco(this.id);
 				this.show = false;
 			},

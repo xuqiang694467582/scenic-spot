@@ -70,7 +70,7 @@
 					<!-- <view style="color: #999;font-size: 26rpx;display: flex;align-items: center;" @click="toProductList(0)">查看榜单<u-icon name="arrow-right" size="12"></u-icon></view> -->
 				</view>
 				<view class="cele-c">
-					<view class="cele-c-l" @click="gotoCele(0)">
+					<view v-if="celebrity[0]" class="cele-c-l" @click="gotoCele(0)">
 						<image :src="celebrity && celebrity[0].coverImg"></image>
 						<view class="cele-c-tag">TOP1</view>
 						<view class="cele-c-text">
@@ -82,8 +82,8 @@
 						</view>
 					</view>
 					<view class="cele-c-r">
-						<view v-if="celebrity.length > 2" class="cele-c-r-t" @click="gotoCele(1)">
-							<image v-if="celebrity[1]" class="cele-c-r-t-image"
+						<view v-if="celebrity[1]" class="cele-c-r-t" @click="gotoCele(1)">
+							<image class="cele-c-r-t-image"
 								:src="celebrity && celebrity[1].coverImg"></image>
 							<view class="cele-c-tag">TOP2</view>
 							<view class="cele-c-text">
@@ -94,8 +94,8 @@
 								<!-- <view class="cele-c-text-b">11543人打卡</view> -->
 							</view>
 						</view>
-						<view v-if="celebrity.length > 3" class="cele-c-r-t" @click="gotoCele(2)">
-							<image v-if="celebrity[2]" class="cele-c-r-t-image"
+						<view v-if="celebrity[2]" class="cele-c-r-t" @click="gotoCele(2)">
+							<image class="cele-c-r-t-image"
 								:src="celebrity && celebrity[2].coverImg"></image>
 							<view class="cele-c-tag">TOP3</view>
 							<view class="cele-c-text">

@@ -3,10 +3,10 @@
 		<view class="comment-list" v-for="(item,index) in list" :key="index">
 			<view class="comment-list-title">
 				<view class="comment-list-title-left">
-					<u-avatar :src="item.userAvatar" size="36"></u-avatar>
+					<u-avatar :src="item.isAnonymous === false ? item.userAvatar : require('@/static/parktour/anon.png')" size="36"></u-avatar>
 					<view class="comment-list-title-left-text">
-						<text class="comment-list-title-left-text-n">{{ item.userName }}</text>
-						<text class="comment-list-title-left-text-t">{{ item.commentDateStr }}</text>
+						<view class="comment-list-title-left-text-n">{{ item.isAnonymous === false ? item.userName : '****' }}</view>
+						<text class="comment-list-title-left-text-t">{{ $u.timeFormat(item.commentDateStr, 'yyyy-mm-dd') }}</text>
 					</view>
 				</view>
 				<view class="comment-list-title-right">{{ item.score }}分</view>
@@ -79,12 +79,16 @@ page{
 				justify-content: space-between;
 				
 				&-text{
-					
+					display: flex;
 					&-n{
 						font-size: 30rpx;
 						font-weight: 600;
 						margin-left: 24rpx;
 						margin-right: 28rpx;
+						max-width: 300rpx;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow:ellipsis;
 					}
 					
 					&-t{

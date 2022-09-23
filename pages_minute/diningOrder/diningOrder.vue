@@ -12,7 +12,7 @@
 			<!-- 顶部 -->
 			<view class="block">
 				<view class="block-title">
-					<image src="../../static/hotel.png"></image>
+					<!-- <image src="../../static/hotel.png"></image> -->
 					<view style="width: 80%;">
 						<view>双人餐，提供免费饮品</view>
 						<view style="font-size: 24rpx;color: #333;margin: 10rpx 0;">11:00-13:00、17:00-21:30</view>
